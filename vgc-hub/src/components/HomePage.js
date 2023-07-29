@@ -3,8 +3,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dropzone from "react-dropzone";
-import { Link } from 'react-router-dom';
-
+import "../styles/homepage.css";
+import Post from "./Post";
 
 const HomePage = () => {
   const [content, setContent] = useState("");
@@ -38,6 +38,7 @@ const HomePage = () => {
       selectedFiles.forEach((file, index) => {
         formData.append("media", file); // Utilisez un seul nom de champ pour tous les fichiers
       });
+
 
       // Envoyez une requête POST au backend pour ajouter le post
       const jwtToken = localStorage.getItem("jwtToken");
@@ -74,80 +75,46 @@ const HomePage = () => {
   };
 
   return (
-    <div>
-      <h2>Page d'Accueil</h2>
-      {posts.map((post) => (
-        <div key={post._id}>
-                      <Link to={`/post/${post._id}`}>
-          {/* Afficher le nom d'utilisateur de l'utilisateur ayant créé le post, précédé d'un @, avec un lien cliquable pour arriver sur "/:username" */}
-          <p>
-      <Link to={`/${post.user?.username}`}>@{post.user?.username}</Link>
-    </p>
-          {/* Afficher son avatar image avec src (http://localhost:5000/avatars/${user.avatar}) */}
-          <img
-            src={`http://localhost:5000/avatars/${post.user?.avatar}`}
-            alt={`Avatar de ${post.user?.username}`}
-            width={50}
-          />
-          <p>{post.content}</p>
-          <p>Créé le : {post.createdAt}</p>
-          {post.media.map((mediaUrl) => {
-            const extension = mediaUrl.split(".").pop();
-            const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
-              extension.toLowerCase()
-            );
-
-            return isVideo ? (
-              <video
-                key={mediaUrl}
-                src={`http://localhost:5000/posts/media/${mediaUrl}`}
-                controls
-                width={320}
-                height={240}
-              />
-            ) : (
-              <img
-                key={mediaUrl}
-                src={`http://localhost:5000/posts/media/${mediaUrl}`}
-                alt={mediaUrl}
-                width={200}
-              />
-            );
-          })}
-          </Link>
-        </div>
-      ))}
-
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="content">Contenu</label>
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold mb-4">Home</h2>
+      <form onSubmit={handleSubmit} className="mb-4">
+        <div className="form-group">
+          <label htmlFor="content" className="block mb-2 font-bold">
+            Contenu
+          </label>
           <textarea
             id="content"
+            className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            required
+            required={!selectedFiles.length} // Rendre le champ requis s'il n'y a pas de média attaché
           />
         </div>
-        <div>
-          {/* Dropzone pour sélectionner les fichiers */}
-          <Dropzone
-            onDrop={handleFileSelect}
-            accept={['image/*', 'video/*']}
-            multiple
-          >
+        <div className="form-group">
+          <Dropzone onDrop={handleFileSelect} accept={["image/*", "video/*"]} multiple>
             {({ getRootProps, getInputProps }) => (
-              <div {...getRootProps()}>
+              <div className="dropzone border-dashed border-2 border-gray-300 rounded p-4" {...getRootProps()}>
                 <input {...getInputProps()} name="media" />
-                <p>
-                  Faites glisser jusqu'à 4 fichiers ici ou cliquez pour les
-                  télécharger
+                <p className="mb-2">
+                  Faites glisser jusqu'à 4 fichiers ici ou cliquez pour les télécharger
                 </p>
               </div>
             )}
           </Dropzone>
-        </div>
-        <button type="submit">Ajouter le Post</button>
+          </div>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Ajouter le Post
+        </button>
       </form>
+      <div className="grid gap-4 grid-cols-1">
+        {posts.map((post) => (
+          <Post key={post._id} post={post} className="w-full" />
+        ))}
+      </div>
+
       <ToastContainer />
     </div>
   );

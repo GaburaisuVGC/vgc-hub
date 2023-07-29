@@ -1,0 +1,33 @@
+/* In your main CSS file (e.g., styles.css) */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+
+.post {
+    /* Styles pour la div principale du post */
+    @apply p-4 rounded-lg shadow-md bg-white cursor-pointer transition ease-in-out duration-300;
+  
+    /* Définissez le style pour les enfants directs du composant */
+    & > p {
+      @apply mb-2 text-gray-600;
+    }
+  
+    & > img {
+      @apply mb-4;
+    }
+  
+    & > p:last-child {
+      @apply mt-4 text-gray-500;
+    }
+  
+    /* Styles pour les médias du post */
+    .post-media {
+      @apply mt-4 flex flex-wrap gap-4;
+    }
+  
+    .post-media img,
+    .post-media video {
+      @apply rounded-lg shadow-md;
+    }
+  }

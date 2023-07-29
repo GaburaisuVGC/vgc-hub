@@ -4,14 +4,15 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwt_decode from "jwt-decode";
+import "../styles/postpage.css"
 
 const PostPage = () => {
   const { postId } = useParams();
   const [post, setPost] = useState(null);
-    const [loggedInUserId, setLoggedInUserId] = useState("");
-    const [user, setUser] = useState(null);
-    const [verified, setVerified] = useState(false);
-    const navigate = useNavigate();
+  const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [user, setUser] = useState(null);
+  const [verified, setVerified] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -43,7 +44,7 @@ const PostPage = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-        const username = localStorage.getItem("loggedInUsername");
+      const username = localStorage.getItem("loggedInUsername");
       try {
         const response = await axios.get(
           `http://localhost:5000/users/${username}`
@@ -88,50 +89,88 @@ const PostPage = () => {
     }
   };
 
-  return (
-    <div>
-      <h2>Post</h2>
-      <p>{post.content}</p>
-      <p>Créé le: {post.createdAt}</p>
-      {/* Afficher le nom d'utilisateur de l'utilisateur ayant créé le post, précédé d'un @, avec un lien cliquable pour arriver sur "/:username" */}
-        <Link to={`/${post.user?.username}`}>@{post.user?.username}</Link>
-      {/* Afficher son avatar image avec src (http://localhost:5000/avatars/${user.avatar}) */}
-      <img
-        src={`http://localhost:5000/avatars/${post.user?.avatar}`}
-        alt={`Avatar de ${post.user?.username}`}
-        width={50}
-      />
-      {post.media.map((mediaUrl) => {
-        const extension = mediaUrl.split(".").pop();
-        const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
-          extension.toLowerCase()
-        );
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
-        return isVideo ? (
-          <video
-            key={mediaUrl}
-            src={`http://localhost:5000/posts/media/${mediaUrl}`}
-            controls
-            width={320}
-            height={240}
-          />
-        ) : (
-          <img
-            key={mediaUrl}
-            src={`http://localhost:5000/posts/media/${mediaUrl}`}
-            alt={mediaUrl}
-            width={200}
-          />
-        );
-      })}
-      {/* Affichez les boutons Modifier et Supprimer uniquement si l'utilisateur est connecté et est l'auteur du post ou s'il est administrateur */}
-      {loggedInUserId && user && loggedInUserId === user._id && (user._id === post.user._id || user.role === "admin") && (
-        <div>
-          <button onClick={handleDeletePost}>Supprimer</button>
-          {/* Ajoutez ici le bouton Modifier avec la logique pour rediriger vers la page d'édition du post */}
-            <Link to={`/post/${postId}/edit`}>Modifier</Link>
-        </div>
-      )}
+  const getImageGridClass = (numImages) => {
+    switch (numImages) {
+      case 1:
+        return "grid-cols-1";
+      case 2:
+        return "grid-cols-2";
+      case 3:
+        return "grid-cols-3";
+      default:
+        return "grid-cols-2"; // For 4 images or more, use 2 columns
+    }
+  };
+
+  return (
+    <div className="container mx-auto">
+    <h2 className="text-3xl font-bold my-4">Post</h2>
+    <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4">
+      <div className="flex items-center mb-4">
+        <img
+          src={`http://localhost:5000/avatars/${post.user?.avatar}`}
+          alt={`Avatar de ${post.user?.username}`}
+          width={50}
+          className="rounded-full mr-2"
+        />
+        <Link to={`/${post.user?.username}`} className="text-blue-500">
+          @{post.user?.username}
+        </Link>
+      </div>
+      <p>{post.content}</p>
+      <div className={`grid ${getImageGridClass(post.media.length)} gap-4`}>
+        {post.media.map((mediaUrl) => {
+          const extension = mediaUrl.split(".").pop();
+          const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
+            extension.toLowerCase()
+          );
+
+          return isVideo ? (
+            <video
+              key={mediaUrl}
+              src={`http://localhost:5000/posts/media/${mediaUrl}`}
+              controls
+              className="rounded shadow-md media-item"
+            />
+          ) : (
+            <img
+              key={mediaUrl}
+              src={`http://localhost:5000/posts/media/${mediaUrl}`}
+              alt={mediaUrl}
+              className="rounded shadow-md media-item"
+            />
+          );
+        })}
+      </div>
+      <p className="mt-4">Le {formatDate(post.createdAt)}</p>
+        {loggedInUserId && user && loggedInUserId === user._id && (user._id === post.user._id || user.role === "admin") && (
+          <div className="mt-4">
+            <button
+              onClick={handleDeletePost}
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Supprimer
+            </button>
+            <Link
+              to={`/post/${postId}/edit`}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-2"
+            >
+              Modifier
+            </Link>
+          </div>
+        )}
+      </div>
       <ToastContainer />
     </div>
   );

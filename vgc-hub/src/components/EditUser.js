@@ -245,46 +245,50 @@ const EditUser = () => {
 };
 
 return (
-    <div>
+    <div className="container mx-auto">
       {user ? (
         <div>
-          <h2>{user.username}'s Profile</h2>
-
+          <h2 className="text-3xl font-bold my-4">{user.username}'s Profile</h2>
           {isAdmin && (
-            <div>
-              <div>
-                <h3>Modifier l'Username</h3>
+            <div className="space-y-4">
+              <div className="flex items-center">
+                <h3 className="font-bold">Modifier l'Username</h3>
                 <input
                   type="text"
                   value={usernameInput}
                   onChange={(e) => setUsernameInput(e.target.value)}
+                  className="px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
                 />
                 <button
                   onClick={handleUpdateUsername}
                   disabled={usernameInput === user.username}
+                  className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
                   Sauvegarder l'Username
                 </button>
               </div>
-              <div>
-                <h3>Modifier l'Email</h3>
+              <div className="flex items-center">
+                <h3 className="font-bold">Modifier l'Email</h3>
                 <input
                   type="email"
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
+                  className="px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
                 />
                 <button
                   onClick={handleUpdateEmail}
                   disabled={emailInput === user.email}
+                  className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
                   Sauvegarder l'Email
                 </button>
               </div>
-              <div>
-                <h3>Modifier le Rôle</h3>
+              <div className="flex items-center">
+                <h3 className="font-bold">Modifier le Rôle</h3>
                 <select
                   value={roleInput}
                   onChange={(e) => setRoleInput(e.target.value)}
+                  className="px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
                 >
                   <option value="user">Utilisateur</option>
                   <option value="admin">Administrateur</option>
@@ -292,34 +296,40 @@ return (
                 <button
                   onClick={handleUpdateRole}
                   disabled={roleInput === user.role}
+                  className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
                   Sauvegarder le Rôle
                 </button>
               </div>
-
-              <div>
-              <h2>Avatar</h2>
-        {avatar ? (
-          <img
-          src={`http://localhost:5000/avatars/${avatar}`}
-          alt="Avatar de l'utilisateur"
-          style={{ width: "200px", height: "200px" }}
-        />
-        ) : (
-          <p>Aucun avatar téléchargé</p>
-        )}
-        <Dropzone onDrop={(acceptedFiles) => setSelectedFile(acceptedFiles[0])}>
-          {({ getRootProps, getInputProps }) => (
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              <p>
-                Faites glisser un fichier ici ou cliquez pour télécharger un
-                avatar
-              </p>
-            </div>
-          )}
-        </Dropzone>
-        <button onClick={handleUploadAvatar} disabled={!selectedFile}>Télécharger l'avatar</button>
+              <div className="flex items-center">
+                <h2 className="font-bold">Avatar</h2>
+                {avatar ? (
+                  <img
+                    src={`http://localhost:5000/avatars/${avatar}`}
+                    alt="Avatar de l'utilisateur"
+                    className="w-32 h-32 rounded-full mx-4"
+                  />
+                ) : (
+                  <p>Aucun avatar téléchargé</p>
+                )}
+                <Dropzone onDrop={(acceptedFiles) => setSelectedFile(acceptedFiles[0])}>
+                  {({ getRootProps, getInputProps }) => (
+                    <div className="border rounded-md p-4 mt-2 cursor-pointer" {...getRootProps()}>
+                      <input {...getInputProps()} />
+                      <p>
+                        Faites glisser un fichier ici ou cliquez pour télécharger un
+                        avatar
+                      </p>
+                    </div>
+                  )}
+                </Dropzone>
+                <button
+                  onClick={handleUploadAvatar}
+                  disabled={!selectedFile}
+                  className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ml-2"
+                >
+                  Télécharger l'avatar
+                </button>
               </div>
             </div>
           )}

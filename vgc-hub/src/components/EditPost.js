@@ -53,24 +53,30 @@ const EditPost = () => {
   };
 
   return (
-    <div>
-      <h2>Modifier le Post</h2>
-      <form onSubmit={handleUpdate}>
-        <div>
-            <p>Information : Les médias attachés ne peuvent être retirés ou modifiés. Il est préférable de supprimer le post et en refaire un autre.</p>
-          <label htmlFor="content">Contenu</label>
-          <textarea
-            id="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Mettre à jour le Post</button>
-      </form>
-      <ToastContainer />
-    </div>
-  );
+    <div className="container mx-auto">
+    <h2 className="text-3xl font-bold my-4">Modifier le Post</h2>
+    <form onSubmit={handleUpdate} className="max-w-md mx-auto bg-white p-4 rounded-lg shadow-md">
+      <div className="mb-4">
+        <p className="mb-2 text-gray-600">Information : Les médias attachés ne peuvent être retirés ou modifiés. Il est préférable de supprimer le post et en refaire un autre.</p>
+        <label htmlFor="content" className="block mb-2 font-medium text-gray-700">Contenu</label>
+        <textarea
+          id="content"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          required
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+      >
+        Mettre à jour le Post
+      </button>
+    </form>
+    <ToastContainer />
+  </div>
+);
 };
 
 export default EditPost;

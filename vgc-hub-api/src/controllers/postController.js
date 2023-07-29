@@ -5,39 +5,40 @@ const User = require('../models/user');
 // Contrôleur pour ajouter un nouveau post
 exports.createPost = async (req, res) => {
     console.log("body", req.body);
-  const { content } = req.body;
-  const { user } = req;
-
-  try {
-    // Vérifier si le contenu du post est fourni
-    if (!content) {
-      return res.status(400).json({ message: 'Veuillez fournir du contenu pour le post' });
+    const { content } = req.body;
+    const { user } = req;
+  
+    try {
+      // Vérifier si le nombre de médias dépasse 4
+      if (req.files && req.files.length > 4) {
+        return res.status(400).json({ message: 'Vous ne pouvez télécharger que 4 images ou 1 vidéo par post' });
+      }
+  
+      // Vérifier si l'utilisateur est connecté
+      if (!user) {
+        return res.status(401).json({ message: 'Vous devez être connecté pour créer un post' });
+      }
+  
+      // Vérifier si le contenu du post est fourni si le nombre de médias est inférieur ou égal à 4
+      if (!content && req.files.length === 0) {
+        return res.status(400).json({ message: 'Veuillez fournir du contenu pour le post' });
+      }
+  
+      // Créer le nouveau post
+      const post = new Post({
+        user: user._id,
+        content,
+        media: req.files ? req.files.map(file => file.filename) : [],
+      });
+  
+      await post.save();
+  
+      return res.json({ message: 'Post ajouté avec succès', post });
+    } catch (error) {
+        console.log(error)
+      return res.status(500).json({ message: 'Une erreur est survenue lors de l\'ajout du post', error });
     }
-
-    // Vérifier si l'utilisateur est connecté
-    if (!user) {
-      return res.status(401).json({ message: 'Vous devez être connecté pour créer un post' });
-    }
-
-    // Vérifier si le nombre de médias dépasse 4
-    if (req.media && req.media.length > 4) {
-      return res.status(400).json({ message: 'Vous ne pouvez télécharger que 4 images ou 1 vidéo par post' });
-    }
-
-    // Créer le nouveau post
-    const post = new Post({
-      user: user._id,
-      content,
-      media: req.files ? req.files.map(file => file.filename) : [],
-    });
-
-    await post.save();
-
-    return res.json({ message: 'Post ajouté avec succès', post });
-  } catch (error) {
-    return res.status(500).json({ message: 'Une erreur est survenue lors de l\'ajout du post', error });
-  }
-};
+  };
 
 exports.getPosts = async (req, res) => {
     try {

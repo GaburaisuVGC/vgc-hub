@@ -1,0 +1,4 @@
+.media-item {
+    width: 200px; /* Mettez ici la taille désirée pour l'image */
+    height: auto; /* Laissez "auto" pour conserver le ratio d'aspect de l'image */
+  }
