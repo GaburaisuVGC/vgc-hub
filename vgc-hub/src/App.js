@@ -10,13 +10,23 @@ import VerifyEmail from './components/VerifyEmail';
 import AdminPanel from './components/AdminPanel';
 import EditUser from './components/EditUser';
 import ProfilePage from './components/ProfilePage';
+import HomePage from './components/HomePage';
+import ResetPasswordPage from './components/ResetPasswordPage';
+import ForgotPasswordPage from './components/ForgotPasswordPage';
+import PostPage from './components/PostPage';
+import EditPost from './components/EditPost';
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route exact path="/" element={<HomePage />} />
         <Route exact path="/:username" element={<ProfilePage />} />
+        <Route exact path="/post/:postId" element={<PostPage />} />
+        <Route exact path="/post/:postId/edit" element={<EditPost />} />
         <Route exact path="/edit/:username" element={<Profile />} />
+        <Route exact path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/email-verification-error" element={<EmailVerificationError />} />

@@ -8,8 +8,10 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['user', 'admin'], default: 'user' }, // Ajoutez le champ role avec les valeurs possibles 'user' ou 'admin'
   avatar: {
     type: String,
-    default: '/default-avatar.png', // Définissez une image par défaut pour les utilisateurs qui n'ont pas d'avatar
+    default: 'default-avatar', // Définissez une image par défaut pour les utilisateurs qui n'ont pas d'avatar
   },
+  resetPasswordToken: { type: String, default: null }, // Champ pour stocker le token de réinitialisation du mot de passe
+  resetPasswordExpires: { type: Date, default: null }, // Champ pour stocker la date d'expiration du token de réinitialisation du mot de passe
 });
 
 const User = mongoose.model('User', userSchema, 'users');

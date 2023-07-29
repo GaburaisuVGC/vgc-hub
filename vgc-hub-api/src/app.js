@@ -28,10 +28,12 @@ mongoose.connect(MONGODB_URI, {
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const avatarRoutes = require('./routes/avatarRoutes');
+const postRoutes = require('./routes/postRoutes');
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/avatars', avatarRoutes);
+app.use('/posts', postRoutes);
 
 const port = process.env.PORT;
 
