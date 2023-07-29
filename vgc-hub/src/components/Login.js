@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
@@ -8,6 +8,15 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Vérifier si l'utilisateur est déjà connecté (en vérifiant la présence du jeton JWT)
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      // Rediriger vers la page d'accueil si l'utilisateur est déjà connecté
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,6 +28,7 @@ const Login = () => {
 
       // Stocker le jeton JWT dans le localStorage
       localStorage.setItem('jwtToken', response.data.token);
+      localStorage.setItem("loggedInUsername", username);
 
       // Rediriger vers la page du profil utilisateur après une connexion réussie
       navigate(`/${username}`);
