@@ -10,6 +10,9 @@ router.put('/:userId', authController.verifyJwt, userController.updateProfile);
 // Route pour afficher le profil de l'utilisateur (consultation)
 router.get('/:username', userController.getProfile);
 
+// Route pour afficher le profil de l'utilisateur par son ID
+router.get('/id/:userId', userController.getUserById);
+
 // Route pour supprimer le compte de l'utilisateur
 router.delete('/:userId', authController.verifyJwt, userController.deleteAccount);
 

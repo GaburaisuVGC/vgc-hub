@@ -58,6 +58,14 @@ const Profile = () => {
     fetchProfile();
   }, [username]);
 
+  useEffect(() => {
+    // Ajoute cette condition pour vérifier si l'utilisateur est connecté et si le profil visité n'est pas le sien
+    if (loggedInUserId && user && loggedInUserId !== user._id) {
+      // Rediriger vers l'accueil
+      navigate("/");
+    }
+  }, [loggedInUserId, user, navigate]);
+
   // Handle changing the password
   const handleChangePassword = async () => {
     try {

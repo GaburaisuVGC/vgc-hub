@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -64,6 +64,8 @@ const Login = () => {
         />
         <button type="submit">Login</button>
       </form>
+      <Link to="/signup">S'inscrire</Link>
+      <Link to="/forgot-password">Mot de passe oublié</Link>
       <ToastContainer />
     </div>
   );
