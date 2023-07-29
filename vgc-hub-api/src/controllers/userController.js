@@ -8,45 +8,47 @@ const grid = require('gridfs-stream');
 
 // Contrôleur pour mettre à jour le profil de l'utilisateur (modification)
 exports.updateProfile = async (req, res) => {
-    const userId = req.params.userId;
-    const { username, email, password } = req.body;
-  
-    try {
-      const user = await User.findById(userId);
-  
-      // Vérifier si l'utilisateur existe
-      if (!user) {
-        return res.status(404).json({ message: 'Utilisateur non trouvé' });
-      }
-  
-      // Vérifier si l'utilisateur est autorisé à modifier le profil (admin ou utilisateur authentifié)
-      if (user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-        return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à effectuer cette action' });
-      }
-  
-      // Check if the username is valid
-      const usernameRegex = /^[a-zA-Z0-9_]{1,20}$/; // Allow letters (a-z, A-Z), numbers (0-9), and underscore (_) with a maximum length of 20 characters
-      if (username && !username.match(usernameRegex)) {
-        return res.status(400).json({ message: 'Le nom d\'utilisateur doit contenir entre 1 et 20 caractères alphanumériques (lettres, chiffres et underscore)' });
-      }
-  
-      // Check if the username is already taken
-      if (username && (await User.findOne({ username }))) {
-        return res.status(409).json({ message: 'Le nom d\'utilisateur est déjà utilisé' });
-      }
-  
-      // Mettre à jour les champs si les valeurs sont fournies dans la requête
-      if (username) user.username = username;
-      if (email) user.email = email;
-      if (password) user.password = await bcrypt.hash(password, 10);
-  
-      await user.save();
-  
-      return res.json({ message: 'Profil mis à jour avec succès', user });
-    } catch (err) {
-      return res.status(500).json({ message: 'Une erreur est survenue lors de la mise à jour du profil', error: err });
+  const userId = req.params.userId;
+  const { username, email, password, role, avatar } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    // Vérifier si l'utilisateur existe
+    if (!user) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
     }
-  };
+
+    // Vérifier si l'utilisateur est autorisé à modifier le profil (admin ou utilisateur authentifié)
+    if (user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à effectuer cette action' });
+    }
+
+    // Check if the username is valid
+    const usernameRegex = /^[a-zA-Z0-9_]{1,20}$/; // Allow letters (a-z, A-Z), numbers (0-9), and underscore (_) with a maximum length of 20 characters
+    if (username && !username.match(usernameRegex)) {
+      return res.status(400).json({ message: 'Le nom d\'utilisateur doit contenir entre 1 et 20 caractères alphanumériques (lettres, chiffres et underscore)' });
+    }
+
+    // Check if the username is already taken
+    if (username && (await User.findOne({ username }))) {
+      return res.status(409).json({ message: 'Le nom d\'utilisateur est déjà utilisé' });
+    }
+
+    // Mettre à jour les champs si les valeurs sont fournies dans la requête
+    if (username) user.username = username;
+    if (email) user.email = email;
+    if (password) user.password = await bcrypt.hash(password, 10);
+    if (role && req.user.role === 'admin') user.role = role;
+    if (avatar && req.user.role === 'admin') user.avatar = avatar;
+
+    await user.save();
+
+    return res.json({ message: 'Profil mis à jour avec succès', user });
+  } catch (err) {
+    return res.status(500).json({ message: 'Une erreur est survenue lors de la mise à jour du profil', error: err });
+  }
+};
   
 
 // Contrôleur pour afficher le profil de l'utilisateur (consultation)
@@ -54,7 +56,7 @@ exports.getProfile = async (req, res) => {
     const username = req.params.username;
   
     try {
-        const user = await User.findOne({ username }).select('_id username email isVerified avatar');
+        const user = await User.findOne({ username }).select('_id username email isVerified avatar role');
   
       // Vérifier si l'utilisateur existe
       if (!user) {
@@ -84,10 +86,12 @@ exports.deleteAccount = async (req, res) => {
       return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à effectuer cette action' });
     }
 
-    await user.remove();
+    // Use deleteOne() to delete the user document
+    await User.deleteOne({ _id: userId });
 
     return res.json({ message: 'Compte supprimé avec succès' });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: 'Une erreur est survenue lors de la suppression du compte', error: err });
   }
 };
@@ -100,7 +104,7 @@ exports.getAllUsers = async (req, res) => {
       return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à effectuer cette action' });
     }
 
-    const users = await User.find();
+    const users = await User.find().select('_id username email isVerified avatar role');;
 
     return res.json({ users });
   } catch (err) {

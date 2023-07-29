@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 
 const Signup = () => {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Vérifier si l'utilisateur est déjà connecté (en vérifiant la présence du jeton JWT)
+    const jwtToken = localStorage.getItem('jwtToken');
+    if (jwtToken) {
+      // Rediriger vers la page d'accueil si l'utilisateur est déjà connecté
+      navigate('/');
+    }
+  }, [navigate]);
+
+
   const validationSchema = Yup.object().shape({
     username: Yup.string().required('Le nom d\'utilisateur est requis'),
     email: Yup.string().email('L\'adresse e-mail est invalide').required('L\'adresse e-mail est requise'),
