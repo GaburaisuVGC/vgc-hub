@@ -23,8 +23,8 @@ const VerifyEmail = () => {
   }, [token, navigate]);
 
   return (
-    <div>
-      <h2>Email Verification</h2>
+    <div className="max-w-md mx-auto p-4">
+      <h2 className="text-2xl font-bold mb-4">Email Verification</h2>
       <p>Vérification de l'e-mail en cours...</p>
     </div>
   );

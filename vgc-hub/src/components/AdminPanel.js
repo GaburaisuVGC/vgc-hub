@@ -137,30 +137,42 @@ const fetchProfile = (jwtToken) => {
   
 
   return (
-    <div>
-      <h1>Panel Admin</h1>
+    <div className="container mx-auto">
+      <h1 className="text-3xl font-bold my-4">Panel Admin</h1>
       <section>
-        <h2>Liste des Utilisateurs</h2>
+        <h2 className="text-2xl font-bold">Liste des Utilisateurs</h2>
         <ul>
           {users.map((user) => (
-            <li key={user._id}>
-              <img
-                src={`http://localhost:5000/avatars/${user.avatar}`}
-                alt="Avatar de l'utilisateur"
-                style={{ width: "50px", height: "50px" }}
-              />
-              <span>{user.username}</span>
-              <span>{user.email}</span>
-              <span>{user.role}</span>
-              {/* bouton qui link vers /admin/edit/:username pour modifier l'user */}
-                <Link to={`/admin/edit/${user.username}`}>
-                    <button>Modifier</button>
-                </Link>
-              <button onClick={() => handleDeleteUser(user._id)}>
+            <li key={user._id} className="py-4 border-b border-gray-300">
+              <div className="flex items-center">
+                <img
+                  src={`http://localhost:5000/avatars/${user.avatar}`}
+                  alt="Avatar de l'utilisateur"
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+                <div>
+                  <span className="text-lg font-semibold">{user.username}</span>
+                  <span className="block text-sm">{user.email}</span>
+                  <span className="block text-sm">Rôle: {user.role}</span>
+                </div>
+              </div>
+              {/* Bouton qui link vers /admin/edit/:username pour modifier l'utilisateur */}
+              <Link to={`/admin/edit/${user.username}`}>
+                <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                  Modifier
+                </button>
+              </Link>
+              <button
+                onClick={() => handleDeleteUser(user._id)}
+                className="mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+              >
                 Supprimer
               </button>
               {userRole === "admin" && user.role !== "admin" && (
-                <button onClick={() => handleMakeAdmin(user._id)}>
+                <button
+                  onClick={() => handleMakeAdmin(user._id)}
+                  className="mt-2 ml-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                >
                   Donner le rôle admin
                 </button>
               )}
@@ -172,5 +184,4 @@ const fetchProfile = (jwtToken) => {
     </div>
   );
 };
-
 export default AdminPanel;

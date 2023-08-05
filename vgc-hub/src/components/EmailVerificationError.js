@@ -14,9 +14,9 @@ const EmailVerificationError = () => {
   }, [navigate]);
 
   return (
-    <div>
-      <h2>Email Verification Error</h2>
-      <p>You are not verified. Please check your email or</p>
+    <div className="w-64 mx-auto mt-4 text-center">
+      <h2 className="text-2xl font-bold mb-4">Email Verification Error</h2>
+      <p className="mb-4">You are not verified. Please check your email or</p>
       <EmailResendForm />
     </div>
   );

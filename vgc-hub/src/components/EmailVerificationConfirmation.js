@@ -14,8 +14,8 @@ const EmailVerificationConfirmation = () => {
   }, [navigate]);
 
   return (
-    <div>
-      <h2>Email Verification Confirmation</h2>
+    <div className="w-64 mx-auto mt-4 text-center">
+      <h2 className="text-2xl font-bold mb-4">Email Verification Confirmation</h2>
       <p>Your email has been verified. You will be redirected to the home page in 5 seconds.</p>
     </div>
   );

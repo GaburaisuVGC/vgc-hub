@@ -4,6 +4,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Post from "./Post";
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -73,76 +74,40 @@ const ProfilePage = () => {
   };
 
   return (
-    <div>
-      {user ? (
-        <div>
-          <h2>{user.username}'s Profile</h2>
-          <img
-            src={`http://localhost:5000/avatars/${user.avatar}`}
-            alt="Avatar de l'utilisateur"
-            style={{ width: "200px", height: "200px" }}
-          />
-          {loggedInUserId && user && loggedInUserId === user._id && (
-            <div>
-              <Link to={`/edit/${user.username}`}>Modifier le Profil</Link>
-              <button onClick={handleLogout}>Déconnexion</button>
-            </div>
-          )}
-          <div>
-            <h3>Derniers Posts</h3>
-            {userPosts.length > 0 ? (
-              userPosts.map((post) => (
-                <div key={post._id}>
-                    <Link to={`/post/${post._id}`}>
-                {/* Afficher le nom d'utilisateur de l'utilisateur ayant créé le post, précédé d'un @, avec un lien cliquable pour arriver sur "/:username" */}
-                <p>
-            <Link to={`/${post.user?.username}`}>@{post.user?.username}</Link>
-          </p>
-                {/* Afficher son avatar image avec src (http://localhost:5000/avatars/${user.avatar}) */}
-                <img
-                  src={`http://localhost:5000/avatars/${post.user?.avatar}`}
-                  alt={`Avatar de ${post.user?.username}`}
-                  width={50}
-                />
-                <p>{post.content}</p>
-                <p>Créé le : {post.createdAt}</p>
-                {post.media.map((mediaUrl) => {
-                  const extension = mediaUrl.split(".").pop();
-                  const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
-                    extension.toLowerCase()
-                  );
-      
-                  return isVideo ? (
-                    <video
-                      key={mediaUrl}
-                      src={`http://localhost:5000/posts/media/${mediaUrl}`}
-                      controls
-                      width={320}
-                      height={240}
-                    />
-                  ) : (
-                    <img
-                      key={mediaUrl}
-                      src={`http://localhost:5000/posts/media/${mediaUrl}`}
-                      alt={mediaUrl}
-                      width={200}
-                    />
-                  );
-                })}
-                </Link>
-              </div>
-              ))
-            ) : (
-              <p>Aucun post trouvé.</p>
-            )}
+    <div className="container mx-auto">
+    {user ? (
+      <div className="bg-white rounded-lg shadow-md p-4 mt-4">
+        <h2 className="text-3xl font-bold mb-4">{user.username}'s Profile</h2>
+        <img
+          src={`http://localhost:5000/avatars/${user.avatar}`}
+          alt="Avatar de l'utilisateur"
+          className="rounded-full w-48 h-48 object-cover mb-4"
+        />
+        {loggedInUserId && user && loggedInUserId === user._id && (
+          <div className="mb-4">
+            <Link to={`/edit/${user.username}`} className="text-blue-500 mr-4">Modifier le Profil</Link>
+            <button onClick={handleLogout} className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">Déconnexion</button>
           </div>
+        )}
+        <div>
+          <h3 className="text-2xl font-bold mb-2">Derniers Posts</h3>
+          {userPosts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {userPosts.map((post) => (
+                <Post key={post._id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <p>Aucun post trouvé.</p>
+          )}
         </div>
-      ) : (
-        <p>Loading Profile...</p>
-      )}
-      <ToastContainer />
-    </div>
-  );
+      </div>
+    ) : (
+      <p>Loading Profile...</p>
+    )}
+    <ToastContainer />
+  </div>
+);
 };
 
 export default ProfilePage;
