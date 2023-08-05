@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -45,8 +45,8 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="w-64 mx-auto mt-4 text-center">
+      <h2 className="text-2xl font-bold mb-4">Login</h2>
       <form onSubmit={handleLogin}>
         <input
           type="text"
@@ -54,6 +54,7 @@ const Login = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           autoComplete="on"
+          className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
         <input
           type="password"
@@ -61,9 +62,21 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="on"
+          className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
-        <button type="submit">Login</button>
+        <button
+          type="submit"
+          className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+        >
+          Login
+        </button>
       </form>
+      <Link to="/signup" className="text-blue-500 hover:underline block mt-2">
+        S'inscrire
+      </Link>
+      <Link to="/forgot-password" className="text-blue-500 hover:underline block mt-2">
+        Mot de passe oublié
+      </Link>
       <ToastContainer />
     </div>
   );

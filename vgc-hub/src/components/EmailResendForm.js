@@ -27,22 +27,27 @@ const EmailResendForm = () => {
   };
 
   return (
-    <form onSubmit={handleResendVerification}>
-      <div>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit" disabled={isLoading}>
-        {isLoading ? 'Sending...' : 'Resend Verification Email'}
-      </button>
-    </form>
-  );
+    <form onSubmit={handleResendVerification} className="w-64 mx-auto mt-4">
+    <div className="mb-4">
+      <label htmlFor="email" className="block mb-2 font-bold">Email:</label>
+      <input
+        type="email"
+        id="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
+      />
+    </div>
+    <button
+      type="submit"
+      disabled={isLoading}
+      className={`w-full py-2 text-white bg-blue-500 rounded-md ${isLoading ? 'bg-blue-400 cursor-not-allowed' : 'hover:bg-blue-600'}`}
+    >
+      {isLoading ? 'Sending...' : 'Resend Verification Email'}
+    </button>
+  </form>
+);
 };
 
 export default EmailResendForm;

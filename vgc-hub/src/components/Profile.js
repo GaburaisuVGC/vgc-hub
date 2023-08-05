@@ -58,6 +58,14 @@ const Profile = () => {
     fetchProfile();
   }, [username]);
 
+  useEffect(() => {
+    // Ajoute cette condition pour vérifier si l'utilisateur est connecté et si le profil visité n'est pas le sien
+    if (loggedInUserId && user && loggedInUserId !== user._id) {
+      // Rediriger vers l'accueil
+      navigate("/");
+    }
+  }, [loggedInUserId, user, navigate]);
+
   // Handle changing the password
   const handleChangePassword = async () => {
     try {
@@ -274,78 +282,101 @@ const Profile = () => {
   };
 
   return (
-    <div>
+    <div className="max-w-md mx-auto p-4">
       {user ? (
         <div>
-          <h2>{user.username}'s Profile</h2>
+          <h2 className="text-2xl font-bold mb-4">{user.username}'s Profile</h2>
 
           {loggedInUserId && user && loggedInUserId === user._id && (
             <div>
               <div>
-                <h3>Modifier l'Username</h3>
+                <h3 className="text-lg font-bold mb-2">Modifier l'Username</h3>
                 <input
                   type="text"
                   value={usernameInput}
                   onChange={(e) => setUsernameInput(e.target.value)}
+                  className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
                 <button
                   onClick={handleUpdateUsername}
                   disabled={usernameInput === user.username}
+                  className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                 >
                   Sauvegarder l'Username
                 </button>
               </div>
-              <div>
-                <h3>Modifier l'Email</h3>
+              <div className="mt-4">
+                <h3 className="text-lg font-bold mb-2">Modifier l'Email</h3>
                 <input
                   type="email"
                   value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
+                  className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 />
                 <button
                   onClick={handleUpdateEmail}
                   disabled={emailInput === user.email}
+                  className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                 >
                   Sauvegarder l'Email
                 </button>
-                <button onClick={handleLogout}>Logout</button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full mt-2 px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                >
+                  Logout
+                </button>
               </div>
 
-              <div>
-                <h2>Change Password</h2>
-                <div>
-                  <label htmlFor="currentPassword">Current Password</label>
+              <div className="mt-4">
+                <h2 className="text-2xl font-bold mb-2">Change Password</h2>
+                <div className="mb-4">
+                  <label htmlFor="currentPassword" className="block font-bold">
+                    Current Password
+                  </label>
                   <input
                     type="password"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
+                    className="w-full px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                <div>
-                  <label htmlFor="newPassword">New Password</label>
+                <div className="mb-4">
+                  <label htmlFor="newPassword" className="block font-bold">
+                    New Password
+                  </label>
                   <input
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
+                    className="w-full px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                <div>
-                  <label htmlFor="confirmPassword">Confirm Password</label>
+                <div className="mb-4">
+                  <label htmlFor="confirmPassword" className="block font-bold">
+                    Confirm Password
+                  </label>
                   <input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="w-full px-4 py-2 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
-                <button onClick={handleChangePassword}>Change Password</button>
+                <button
+                  onClick={handleChangePassword}
+                  className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                >
+                  Change Password
+                </button>
               </div>
-              <div>
-                <h2>Avatar</h2>
+              <div className="mt-4">
+                <h2 className="text-2xl font-bold mb-2">Avatar</h2>
                 {avatar ? (
                   <img
                     src={`http://localhost:5000/avatars/${avatar}`}
                     alt="Avatar de l'utilisateur"
-                    style={{ width: "200px", height: "200px" }}
+                    className="w-48 h-48 mb-4 rounded"
                   />
                 ) : (
                   <p>Aucun avatar téléchargé</p>
@@ -354,7 +385,7 @@ const Profile = () => {
                   onDrop={(acceptedFiles) => setSelectedFile(acceptedFiles[0])}
                 >
                   {({ getRootProps, getInputProps }) => (
-                    <div {...getRootProps()}>
+                    <div {...getRootProps()} className="p-4 border rounded cursor-pointer">
                       <input {...getInputProps()} />
                       <p>
                         Faites glisser un fichier ici ou cliquez pour
@@ -363,16 +394,23 @@ const Profile = () => {
                     </div>
                   )}
                 </Dropzone>
-                <button onClick={handleUploadAvatar} disabled={!selectedFile}>
+                <button
+                  onClick={handleUploadAvatar}
+                  disabled={!selectedFile}
+                  className="w-full mt-4 px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                >
                   Télécharger l'avatar
                 </button>
               </div>
-              <div>
-        <h2>Supprimer le Compte</h2>
-        <button onClick={handleDeleteAccount} style={{ background: "red" }}>
-          Supprimer le Compte
-        </button>
-      </div>
+              <div className="mt-4">
+                <h2 className="text-2xl font-bold mb-2">Supprimer le Compte</h2>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="w-full px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:bg-red-600"
+                >
+                  Supprimer le Compte
+                </button>
+              </div>
             </div>
           )}
         </div>

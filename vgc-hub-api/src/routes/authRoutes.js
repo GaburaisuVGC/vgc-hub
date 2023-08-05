@@ -33,4 +33,10 @@ router.get('/verify/:token', async (req, res) => {
 // Route for resending verification email
 router.post('/resend-verification', authController.resend);
 
+// Route for forgot password
+router.post('/forgot-password', authController.forgotPassword);
+
+// Route pour la réinitialisation du mot de passe
+router.post('/reset-password/:resetToken', authController.resetPassword);
+
 module.exports = router;
