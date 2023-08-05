@@ -75,7 +75,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container-1 mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold mb-4">Home</h2>
       <form onSubmit={handleSubmit} className="mb-4">
         <div className="form-group">
@@ -111,10 +111,24 @@ const HomePage = () => {
       </form>
       <div className="grid gap-4 grid-cols-1">
         {posts.map((post) => (
-          <Post key={post._id} post={post} className="w-full" />
+          <div
+            key={post._id}
+            className={
+              post.media.length === 1
+                ? "post-container-single"
+                : post.media.length === 2
+                ? "post-container-two"
+                : post.media.length === 3
+                ? "post-container-three"
+                : post.media.length === 4
+                ? "post-container-four"
+                : "" // Ajoutez une classe vide pour les autres cas
+            }
+          >
+            <Post key={post._id} post={post} />
+          </div>
         ))}
       </div>
-
       <ToastContainer />
     </div>
   );

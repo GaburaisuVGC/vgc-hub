@@ -1,6 +1,6 @@
 /* Ajoutez le CSS responsive ici */
-.container {
-    max-width: 1200px;
+.container-1 {
+    max-width: 980px;
     margin: 0 auto;
     padding: 20px;
   }

@@ -10,7 +10,9 @@ app.use(express.json()); // Pour parser les requêtes JSON
 app.use(express.urlencoded({ extended: false })); // Pour parser les requêtes URL-encoded
 
 const mongoose = require('mongoose');
+const http = require('http');
 
+const initSocket = require('./utils/socketLogic'); 
 
 // Remplacez 'MONGODB_URI' par l'URI de votre base de données MongoDB
 const MONGODB_URI = process.env.MONGODB_URI; 
@@ -23,6 +25,11 @@ mongoose.connect(MONGODB_URI, {
 }).catch(err => {
   console.error('Error connecting to MongoDB:', err);
 });
+
+const server = http.createServer(app); // Créez le serveur HTTP
+
+// Initialisez le WebSocket en passant le serveur en argument
+const io = initSocket(server);
 
 // Importez et utilisez les routes
 const authRoutes = require('./routes/authRoutes');
@@ -37,6 +44,6 @@ app.use('/posts', postRoutes);
 
 const port = process.env.PORT;
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

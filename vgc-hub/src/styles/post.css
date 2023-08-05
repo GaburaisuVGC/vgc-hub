@@ -1,33 +1,87 @@
-/* In your main CSS file (e.g., styles.css) */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+/* post.css */
 
-
+/* Styles pour la div principale du post */
 .post {
-    /* Styles pour la div principale du post */
-    @apply p-4 rounded-lg shadow-md bg-white cursor-pointer transition ease-in-out duration-300;
-  
-    /* Définissez le style pour les enfants directs du composant */
-    & > p {
-      @apply mb-2 text-gray-600;
-    }
-  
-    & > img {
-      @apply mb-4;
-    }
-  
-    & > p:last-child {
-      @apply mt-4 text-gray-500;
-    }
-  
-    /* Styles pour les médias du post */
-    .post-media {
-      @apply mt-4 flex flex-wrap gap-4;
-    }
-  
-    .post-media img,
-    .post-media video {
-      @apply rounded-lg shadow-md;
-    }
-  }
+  /* Copiez les styles communs ici */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+/* Définissez le style pour les enfants directs du composant */
+.post > p {
+  /* Copiez les styles communs pour les paragraphes ici */
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+/* Avatar, username et date alignés à gauche */
+.post > img,
+.post > p:first-child {
+  align-self: flex-start;
+}
+
+/* Définissez le style pour les médias du post */
+.media-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Style pour un seul média */
+.media-container-single {
+  grid-template-columns: 1fr;
+}
+
+/* Style pour deux médias */
+.media-container-two {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Style pour trois médias */
+.media-container-three {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Style pour quatre médias */
+.media-container-four {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Style pour chaque élément média (image ou vidéo) */
+.media-item {
+  min-width: 100px;
+  min-height: 100px;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Style pour les vidéos */
+.media-item-video video {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Style pour les différents agencements de médias */
+
+/* 3 médias - colonne de gauche à 100% et colonne de droite à 50% chacune */
+.media-container-three .media-item:nth-child(1) {
+  grid-row: span 2;
+}
+
+.media-container-three .media-item:nth-child(2),
+.media-container-three .media-item:nth-child(3) {
+  grid-row: span 1;
+}

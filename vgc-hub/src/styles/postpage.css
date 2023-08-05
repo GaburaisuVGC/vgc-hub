@@ -1,4 +1,22 @@
 .media-item {
-    width: 200px; /* Mettez ici la taille désirée pour l'image */
-    height: auto; /* Laissez "auto" pour conserver le ratio d'aspect de l'image */
+    height: auto;
+    min-height: 20vh;
+    min-width: 100%;
   }
+
+  .media-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-gap: 0.5rem;
+  }
+
+/* postpage.css ou votre feuille de styles */
+.media-container-single {
+  display: flex;
+}
+
+/* Style pour les médias uniques (images et vidéos) */
+.media-container-single .media-item {
+  max-width: 100%;
+  max-height: 100%;
+}

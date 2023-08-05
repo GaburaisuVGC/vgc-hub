@@ -25,6 +25,7 @@ const Signup = () => {
     email: Yup.string().email('L\'adresse e-mail est invalide').required('L\'adresse e-mail est requise'),
     password: Yup.string()
       .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+      .max(64, 'Le mot de passe ne peut pas contenir plus de 64 caractères')
       .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Le mot de passe doit contenir au moins une majuscule et un chiffre')
       .required('Le mot de passe est requis'),
   });

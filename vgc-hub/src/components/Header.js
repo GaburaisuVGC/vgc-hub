@@ -48,7 +48,7 @@ const Header = () => {
       <div className="navbar-left">
         <Link to="/" className="navbar-logo text-3xl text-white">VGC Hub</Link>
       </div>
-      <div className="navbar-right flex items-center">
+      <div className="navbar-right flex items-center ml-auto">
         {loggedInUserId && user && loggedInUserId === user._id ? (
           <div className="flex items-center">
             <div className="user-info flex items-center" onClick={handleUserInfoClick}>

@@ -58,6 +58,7 @@ exports.getPosts = async (req, res) => {
           content: post.content,
           createdAt: post.createdAt,
           media: post.media.map((filename) => `${filename}`), // Ajoutez le lien vers le média ici
+          edited: post.edited,
         };
       });
   
@@ -101,6 +102,7 @@ exports.getUserPosts = async (req, res) => {
           content: post.content,
           createdAt: post.createdAt,
           media: post.media.map((filename) => `${filename}`), // Ajoutez le lien vers le média ici
+          edited: post.edited,
         };
       });
   
