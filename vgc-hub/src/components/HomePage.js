@@ -12,6 +12,7 @@ const HomePage = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [timeline, setTimeline] = useState([]);
   const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [remainingChars, setRemainingChars] = useState(500);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -109,6 +110,13 @@ const HomePage = () => {
     setSelectedFiles(selectedFiles);
   };
 
+  const handleContentChange = (e) => {
+    const inputContent = e.target.value;
+    const maxLength = 500;
+    setRemainingChars(maxLength - inputContent.length);
+    setContent(inputContent.slice(0, maxLength)); // Limit the content to the maximum character count
+  };
+
 
 
   return (
@@ -121,11 +129,16 @@ const HomePage = () => {
           </label>
           <textarea
             id="content"
+            rows={5}
             className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={handleContentChange}
+            maxLength="500"
             required={!selectedFiles.length}
           />
+          <div className="text-right text-gray-500">
+            {remainingChars} caractères restants
+          </div>
         </div>
         <div className="form-group">
           <Dropzone onDrop={handleFileSelect} accept={["image/*", "video/*"]} multiple>

@@ -38,7 +38,9 @@ const PostPage = () => {
   const [replies, setReplies] = useState([]);
   const [repliedPost, setRepliedPost] = useState(null);
   const [showOptionsPanel, setShowOptionsPanel] = useState(false);
-  const [isReportFormOpen, setIsReportFormOpen] = useState(false); // Ajouter le state pour le composant ReportForm
+  const [isReportFormOpen, setIsReportFormOpen] = useState(false);
+  const [remainingChars, setRemainingChars] = useState(500);
+  const [remainingQuoteChars, setRemainingQuoteChars] = useState(500);
   const navigate = useNavigate();
 
   const fetchPost = async () => {
@@ -449,6 +451,21 @@ const PostPage = () => {
     setIsReportFormOpen(false);
   };
 
+  const handleContentChange = (e) => {
+    const inputContent = e.target.value;
+    const maxLength = 500;
+    setRemainingChars(maxLength - inputContent.length);
+    setContent(inputContent.slice(0, maxLength)); // Limit the content to the maximum character count
+  };
+
+  const handleQuoteContentChange = (e) => {
+    const inputContent = e.target.value;
+    const maxLength = 500;
+    setRemainingQuoteChars(maxLength - inputContent.length);
+    setQuoteContent(inputContent.slice(0, maxLength)); // Limit the content to the maximum character count
+  };
+
+
   return (
     <div className="container mx-auto">
       {showLikesModal && (
@@ -716,11 +733,15 @@ const PostPage = () => {
       <form onSubmit={handleQuoteSubmit}>
         <textarea
           value={quoteContent}
-          onChange={(e) => setQuoteContent(e.target.value)}
           placeholder="Enter your quote here..."
           required
-          className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:border-blue-500"
+          className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring focus:border-blue-500"
+          onChange={handleQuoteContentChange}
+          maxLength="500"
         />
+                                <div className="text-right text-gray-500">
+            {remainingQuoteChars} caractères restants
+          </div>
         <div className="mt-4 flex justify-end">
           <button
             type="submit"
@@ -748,11 +769,15 @@ const PostPage = () => {
               <textarea
               id="content"
                 placeholder="Reply here..."
-                className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:border-blue-500"
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
                 required={!selectedFiles.length} // Rendre le champ requis s'il n'y a pas de média attaché
+                className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring focus:border-blue-500"
+                onChange={handleContentChange}
+                maxLength="500"
               />
+                        <div className="text-right text-gray-500">
+            {remainingChars} caractères restants
+          </div>
                       <div className="form-group">
           <Dropzone onDrop={handleFileSelect} accept={["image/*", "video/*"]} multiple>
             {({ getRootProps, getInputProps }) => (
