@@ -9,7 +9,7 @@ const { ExtractJwt } = require('passport-jwt');
 
 exports.signup = async (req, res) => {
     const { username, email, password } = req.body;
-    const reservedUsernames = ['signup', 'login', 'admin', 'verify', 'id']; // Ajoutez d'autres noms réservés au besoin
+    const reservedUsernames = ['signup', 'login', 'admin', 'verify', 'id', 'follow', 'unfollow']; // Ajoutez d'autres noms réservés au besoin
 
     // Vérifiez si l'adresse e-mail est déjà utilisée
     const existingUserByEmail = await User.findOne({ email });

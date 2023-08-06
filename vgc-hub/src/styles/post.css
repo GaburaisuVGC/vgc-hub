@@ -55,6 +55,35 @@
   grid-template-columns: 1fr 1fr;
 }
 
+/* Définissez le style pour les médias du post */
+.media-container-quoted {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+  width: 30%;
+}
+
+/* Style pour un seul média */
+.media-container-single-quoted {
+  grid-template-columns: 1fr;
+}
+
+/* Style pour deux médias */
+.media-container-two-quoted {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Style pour trois médias */
+.media-container-three-quoted {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Style pour quatre médias */
+.media-container-four-quoted {
+  grid-template-columns: 1fr 1fr;
+}
+
 /* Style pour chaque élément média (image ou vidéo) */
 .media-item {
   min-width: 100px;

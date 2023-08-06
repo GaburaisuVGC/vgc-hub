@@ -30,4 +30,14 @@ router.put(
     userController.updateAvatar
   );
 
+// Follow a user
+router.post('/follow/:userId', authController.verifyJwt, userController.followUser);
+
+// Unfollow a user
+router.post('/unfollow/:userId', authController.verifyJwt, userController.unfollowUser);
+
+// Get followers and followings
+router.get("/:userId/followers", userController.getFollowers);
+router.get("/:userId/followings", userController.getFollowings);
+
 module.exports = router;

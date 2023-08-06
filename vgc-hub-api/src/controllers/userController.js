@@ -57,7 +57,7 @@ exports.getProfile = async (req, res) => {
     const username = req.params.username;
   
     try {
-        const user = await User.findOne({ username }).select('_id username email isVerified avatar role');
+        const user = await User.findOne({ username }).select('_id username email isVerified avatar role likes reposts followers following');
   
       // Vérifier si l'utilisateur existe
       if (!user) {
@@ -108,7 +108,7 @@ exports.getAllUsers = async (req, res) => {
       return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à effectuer cette action' });
     }
 
-    const users = await User.find().select('_id username email isVerified avatar role');
+    const users = await User.find().select('_id username email isVerified avatar role followers following');
 
     return res.json({ users });
   } catch (err) {
@@ -124,7 +124,7 @@ exports.getUserById = async (req, res) => {
       return res.status(400).json({ message: "Invalid user ID" });
     }
 
-    const user = await User.findOne({ _id: userId }).select('_id username avatar');
+    const user = await User.findOne({ _id: userId }).select('_id username avatar likes reposts followers following');
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -236,5 +236,82 @@ exports.updateAvatar = async (req, res) => {
     return res.json({ message: 'Avatar mis à jour avec succès' });
   } catch (err) {
     return res.status(500).json({ error: 'Une erreur est survenue lors de la mise à jour de l\'avatar' });
+  }
+};
+
+// followUser controller
+exports.followUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const currentUser = req.user; // Assuming you have the logged-in user available in req.user
+
+    console.log('currentUser', currentUser)
+
+    // Check if the authenticated user is trying to follow themselves
+    if (currentUser._id.toString() === userId) {
+      return res.status(400).json({ message: 'You cannot follow yourself.' });
+    }
+
+    // Add the userId to the following array of the logged-in user
+    currentUser.following.push(userId);
+    await currentUser.save();
+
+    // Add the logged-in user's ID to the followers array of the followed user
+    const followedUser = await User.findById(userId);
+    followedUser.followers.push(currentUser._id);
+    await followedUser.save();
+
+    res.status(200).json({ message: 'Successfully followed the user.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error following the user.', error });
+  }
+};
+
+// unfollowUser controller
+exports.unfollowUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const currentUser = req.user; // Assuming you have the logged-in user available in req.user
+
+    // Remove the userId from the following array of the logged-in user
+    currentUser.following = currentUser.following.filter(
+      (followedUserId) => followedUserId.toString() !== userId
+    );
+    await currentUser.save();
+
+    // Remove the logged-in user's ID from the followers array of the followed user
+    const followedUser = await User.findById(userId);
+    followedUser.followers = followedUser.followers.filter(
+      (followerId) => followerId.toString() !== currentUser._id.toString()
+    );
+    await followedUser.save();
+
+    res.status(200).json({ message: 'Successfully unfollowed the user.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error unfollowing the user.', error });
+  }
+};
+
+exports.getFollowers = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId).populate("followers", "username avatar");
+    res.status(200).json({ followers: user.followers });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching followers.", error });
+  }
+};
+
+exports.getFollowings = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId).populate("following", "username avatar");
+    res.status(200).json({ followings: user.following });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching followings.", error });
   }
 };
