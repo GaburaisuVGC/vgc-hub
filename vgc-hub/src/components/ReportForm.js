@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwt_decode from "jwt-decode";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ReportForm = ({ postId, userId, onClose }) => {
   const [comment, setComment] = useState("");
@@ -17,8 +18,8 @@ const ReportForm = ({ postId, userId, onClose }) => {
     }
 
     const url = postId
-      ? `http://localhost:5000/reports/posts/${postId}`
-      : `http://localhost:5000/reports/users/${userId}`;
+      ? `${BACKEND_URL}/reports/posts/${postId}`
+      : `${BACKEND_URL}/reports/users/${userId}`;
 
     axios
       .post(

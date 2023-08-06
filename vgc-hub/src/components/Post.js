@@ -6,6 +6,7 @@ import { GiPaperClip, GiHearts, GiChatBubble } from "react-icons/gi";
 import { BsFillArrowUpSquareFill } from "react-icons/bs";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Post = ({ post }) => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Post = ({ post }) => {
 
       // Requête pour récupérer les informations complètes de l'utilisateur
       axios
-        .get(`http://localhost:5000/users/${username}`)
+        .get(`${BACKEND_URL}/users/${username}`)
         .then((response) => {
           setLoggedInUser(response.data.user);
         })
@@ -57,7 +58,7 @@ const Post = ({ post }) => {
   useEffect(() => {
     if (post.quoteOf) {
       axios
-        .get(`http://localhost:5000/posts/post/${post.quoteOf}`)
+        .get(`${BACKEND_URL}/posts/post/${post.quoteOf}`)
         .then((response) => {
           setQuotedPost(response.data.post);
         })
@@ -105,7 +106,7 @@ const Post = ({ post }) => {
   useEffect(() => {
     if (post.replyTo) {
       axios
-        .get(`http://localhost:5000/posts/post/${post.replyTo}`)
+        .get(`${BACKEND_URL}/posts/post/${post.replyTo}`)
         .then((response) => {
           setRepliedPost(response.data.post);
         })
@@ -142,7 +143,7 @@ const Post = ({ post }) => {
       formData.append("quoteOf", post._id); // Ajoutez l'ID du post que vous citez
 
       // Envoyez une requête POST au backend pour ajouter le post cité
-      await axios.post("http://localhost:5000/posts", formData, {
+      await axios.post(`${BACKEND_URL}/posts`, formData, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -169,7 +170,7 @@ const Post = ({ post }) => {
       if (isLiked) {
         // Unlike the post
         await axios.post(
-          `http://localhost:5000/posts/like/${post._id}`,
+          `${BACKEND_URL}/posts/like/${post._id}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -181,7 +182,7 @@ const Post = ({ post }) => {
       } else {
         // Like the post
         await axios.post(
-          `http://localhost:5000/posts/like/${post._id}`,
+          `${BACKEND_URL}/posts/like/${post._id}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -209,7 +210,7 @@ const Post = ({ post }) => {
       if (isReposted) {
         // Un-repost the post
         await axios.post(
-          `http://localhost:5000/posts/repost/${post._id}`,
+          `${BACKEND_URL}/posts/repost/${post._id}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -223,7 +224,7 @@ const Post = ({ post }) => {
       } else {
         // Repost the post
         await axios.post(
-          `http://localhost:5000/posts/repost/${post._id}`,
+          `${BACKEND_URL}/posts/repost/${post._id}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -324,7 +325,7 @@ const Post = ({ post }) => {
           </div>
         )}
         <img
-          src={`http://localhost:5000/avatars/${post.user?.avatar}`}
+          src={`${BACKEND_URL}/avatars/${post.user?.avatar}`}
           alt={`Avatar de ${post.user?.username}`}
           width={50}
           className="rounded-full mr-2"
@@ -361,7 +362,7 @@ const Post = ({ post }) => {
                 >
                   {isVideo ? (
                     <video
-                      src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                      src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                       controls
                       style={{
                         borderRadius: "16px",
@@ -370,7 +371,7 @@ const Post = ({ post }) => {
                     />
                   ) : (
                     <img
-                      src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                      src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                       alt={mediaUrl}
                     />
                   )}
@@ -386,7 +387,7 @@ const Post = ({ post }) => {
           >
                     <div className="flex items-center mb-4">
           <img
-            src={`http://localhost:5000/avatars/${quotedPost.user?.avatar}`}
+            src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
             alt={`Avatar de ${quotedPost.user?.username}`}
             width={50}
             className="rounded-full mr-2"
@@ -419,7 +420,7 @@ const Post = ({ post }) => {
             return isVideo ? (
               <div key={mediaUrl} className="rounded shadow-md media-item">
                 <video
-                  src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                   controls
                   style={{
                     borderRadius: "16px",
@@ -430,7 +431,7 @@ const Post = ({ post }) => {
             ) : (
               <div key={mediaUrl} className="rounded shadow-md media-item">
                 <img
-                  src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                   alt={mediaUrl}
                   style={{
                     width: "50%",

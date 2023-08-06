@@ -6,6 +6,7 @@ import Dropzone from "react-dropzone";
 import "../styles/homepage.css";
 import Post from "./Post";
 import jwt_decode from "jwt-decode";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const HomePage = () => {
   const [content, setContent] = useState("");
@@ -21,11 +22,11 @@ const HomePage = () => {
         let response;
 
         if (!jwtToken) {
-          response = await axios.get("http://localhost:5000/posts");
+          response = await axios.get(`${BACKEND_URL}/posts`);
         } else {
           const decodedToken = jwt_decode(jwtToken);
           setLoggedInUserId(decodedToken.userId);
-          response = await axios.get("http://localhost:5000/posts/timeline", {
+          response = await axios.get(`${BACKEND_URL}/posts/timeline`, {
             headers: {
               Authorization: `Bearer ${jwtToken}`,
             },
@@ -76,7 +77,7 @@ const HomePage = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/posts",
+        `${BACKEND_URL}/posts`,
         formData,
         {
           headers: {

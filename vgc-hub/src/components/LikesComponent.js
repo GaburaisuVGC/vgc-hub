@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const LikesComponent = ({ postId, setShowLikesModal }) => {
   const [likes, setLikes] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/posts/post/${postId}/likes`).then((response) => {
+    axios.get(`${BACKEND_URL}/posts/post/${postId}/likes`).then((response) => {
       setLikes(response.data.likes);
     });
   }, [postId]);
@@ -24,7 +25,7 @@ const LikesComponent = ({ postId, setShowLikesModal }) => {
           {likes.map((user) => (
             <li key={user._id} className="flex items-center mb-2">
               <img
-                src={`http://localhost:5000/avatars/${user?.avatar}`}
+                src={`${BACKEND_URL}/avatars/${user?.avatar}`}
                 alt={`Avatar de ${user?.username}`}
                 width={50}
                 className="rounded-full mr-2"

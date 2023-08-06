@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ const ForgotPasswordPage = () => {
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/auth/forgot-password', { email });
+      const response = await axios.post(`${BACKEND_URL}/auth/forgot-password`, { email });
       toast.success(response.data.message);
     } catch (error) {
       if (error.response.data.error) {

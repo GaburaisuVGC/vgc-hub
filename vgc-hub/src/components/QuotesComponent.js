@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Post from './Post';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const QuotesComponent = ({ postId, setShowQuotesModal }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/posts/post/${postId}/quotes`).then((response) => {
+    axios.get(`${BACKEND_URL}/posts/post/${postId}/quotes`).then((response) => {
       setPosts(response.data.quotes);
     });
   }, [postId]);

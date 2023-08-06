@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Post from "./Post";
 import ReportForm from "./ReportForm";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -33,7 +34,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/posts/${username}`);
+        const response = await axios.get(`${BACKEND_URL}/posts/${username}`);
         setUserPosts(response.data.posts);
       } catch (error) {
         toast.error("Erreur lors de la récupération des posts de l'utilisateur.");
@@ -63,7 +64,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/users/${username}`);
+        const response = await axios.get(`${BACKEND_URL}/users/${username}`);
         setUser(response.data.user);
         setVerified(response.data.user.isVerified);
           setFollowerCount(response.data.user.followers.length);
@@ -82,7 +83,7 @@ const ProfilePage = () => {
                 const jwtToken = localStorage.getItem("jwtToken");
                 if (jwtToken) {
                 const loggedUsername = localStorage.getItem("loggedInUsername");
-                const loggedInUserResponse = await axios.get(`http://localhost:5000/users/${loggedUsername}`);
+                const loggedInUserResponse = await axios.get(`${BACKEND_URL}/users/${loggedUsername}`);
                 if (loggedInUserResponse && loggedInUserResponse.data.user.blockedUsers.includes(response.data.user._id)) {
                   setIsBlockedByYou(true);
                 }
@@ -133,7 +134,7 @@ const ProfilePage = () => {
         toast.error("Vous devez être connecté pour citer un post.");
         return;
       }
-      await axios.post(`http://localhost:5000/users/follow/${user._id}`, null, {
+      await axios.post(`${BACKEND_URL}/users/follow/${user._id}`, null, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -157,7 +158,7 @@ const ProfilePage = () => {
         return;
       }
 
-      await axios.post(`http://localhost:5000/users/unfollow/${user._id}`, null, {
+      await axios.post(`${BACKEND_URL}/users/unfollow/${user._id}`, null, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -177,7 +178,7 @@ const ProfilePage = () => {
 
   const handleFollowersClick = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/users/${user._id}/followers`);
+      const response = await axios.get(`${BACKEND_URL}/users/${user._id}/followers`);
       setFollowersList(response.data.followers);
       setShowFollowersModal(true);
     } catch (error) {
@@ -187,7 +188,7 @@ const ProfilePage = () => {
 
   const handleFollowingsClick = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/users/${user._id}/followings`);
+      const response = await axios.get(`${BACKEND_URL}/users/${user._id}/followings`);
       setFollowingsList(response.data.followings);
       setShowFollowingsModal(true);
     } catch (error) {
@@ -210,7 +211,7 @@ const ProfilePage = () => {
       // Vérifier si l'utilisateur connecté est bloqué par le propriétaire du profil
       if (isBlockedByYou) {
         // Débloquer l'utilisateur
-        const response = await axios.post(`http://localhost:5000/users/unblock/${user._id}`, null, {
+        const response = await axios.post(`${BACKEND_URL}/users/unblock/${user._id}`, null, {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
@@ -230,7 +231,7 @@ const ProfilePage = () => {
         }
       } else {
         // Bloquer l'utilisateur
-        const response = await axios.post(`http://localhost:5000/users/block/${user._id}`, null, {
+        const response = await axios.post(`${BACKEND_URL}/users/block/${user._id}`, null, {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
           },
@@ -278,7 +279,7 @@ const ProfilePage = () => {
 
     // Récupérer le rôle de l'utilisateur connecté
     axios
-      .get(`http://localhost:5000/users/id/${loggedInUserId}`, {
+      .get(`${BACKEND_URL}/users/id/${loggedInUserId}`, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -305,7 +306,7 @@ const ProfilePage = () => {
   
       // Effectuer la requête PUT pour bannir ou débannir l'utilisateur
       const response = await axios.post(
-        `http://localhost:5000/users/${user.status === 'banned' ? "unban" : "ban"}/${user._id}`,
+        `${BACKEND_URL}/users/${user.status === 'banned' ? "unban" : "ban"}/${user._id}`,
         null,
         {
           headers: {
@@ -471,7 +472,7 @@ const ProfilePage = () => {
 
 
           <img
-            src={`http://localhost:5000/avatars/${user.avatar}`}
+            src={`${BACKEND_URL}/avatars/${user.avatar}`}
             alt="Avatar de l'utilisateur"
             className="rounded-full w-48 h-48 object-cover mb-4"
           />
@@ -546,7 +547,7 @@ const ProfilePage = () => {
               {followersList.map((follower) => (
                 <li key={follower._id} className="flex items-center mb-2">
                   <img
-                    src={`http://localhost:5000/avatars/${follower.avatar}`}
+                    src={`${BACKEND_URL}/avatars/${follower.avatar}`}
                     alt={`Avatar de ${follower.username}`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
                   />
@@ -574,7 +575,7 @@ const ProfilePage = () => {
               {followingsList.map((following) => (
                 <li key={following._id} className="flex items-center mb-2">
                   <img
-                    src={`http://localhost:5000/avatars/${following.avatar}`}
+                    src={`${BACKEND_URL}/avatars/${following.avatar}`}
                     alt={`Avatar de ${following.username}`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
                   />

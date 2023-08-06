@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const BannedRouteGuard = ({ children }) => {
   const [userStatus, setUserStatus] = useState("");
@@ -20,7 +21,7 @@ const BannedRouteGuard = ({ children }) => {
     // Only fetch user data when loggedInUserId is available
     if (loggedInUserId) {
       axios
-        .get(`http://localhost:5000/users/id/${loggedInUserId}`, {
+        .get(`${BACKEND_URL}/users/id/${loggedInUserId}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
           },

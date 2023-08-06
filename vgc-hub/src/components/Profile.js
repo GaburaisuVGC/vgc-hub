@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Dropzone from "react-dropzone";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Profile = () => {
   const { username } = useParams();
@@ -42,7 +43,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/users/${username}`
+          `${BACKEND_URL}/users/${username}`
         );
         setUser(response.data.user);
         setUsernameInput(response.data.user.username);
@@ -80,7 +81,7 @@ const Profile = () => {
       };
 
       const response = await axios.put(
-        `http://localhost:5000/users/${user._id}/change-password`,
+        `${BACKEND_URL}/users/${user._id}/change-password`,
         {
           currentPassword,
           newPassword,
@@ -120,7 +121,7 @@ const Profile = () => {
 
         // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
-          `http://localhost:5000/users/${user._id}`,
+          `${BACKEND_URL}/users/${user._id}`,
           {
             username: usernameInput,
           },
@@ -167,7 +168,7 @@ const Profile = () => {
 
         // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
-          `http://localhost:5000/users/${user._id}`,
+          `${BACKEND_URL}/users/${user._id}`,
           {
             email: emailInput,
           },
@@ -232,7 +233,7 @@ const Profile = () => {
       // Envoyez une requête PUT au backend pour mettre à jour l'avatar
       const userId = user._id;
       const response = await axios.put(
-        `http://localhost:5000/users/${userId}/avatar`,
+        `${BACKEND_URL}/users/${userId}/avatar`,
         formData,
         {
           headers: {
@@ -262,7 +263,7 @@ const Profile = () => {
           onClick: () => {
             // Requête DELETE pour supprimer le compte de l'utilisateur connecté
             axios
-              .delete(`http://localhost:5000/users/${loggedInUserId}`, {
+              .delete(`${BACKEND_URL}/users/${loggedInUserId}`, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
                 },
@@ -381,7 +382,7 @@ const Profile = () => {
                 <h2 className="text-2xl font-bold mb-2">Avatar</h2>
                 {avatar ? (
                   <img
-                    src={`http://localhost:5000/avatars/${avatar}`}
+                    src={`${BACKEND_URL}/avatars/${avatar}`}
                     alt="Avatar de l'utilisateur"
                     className="w-48 h-48 mb-4 rounded"
                   />

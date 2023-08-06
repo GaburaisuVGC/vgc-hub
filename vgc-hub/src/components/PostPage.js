@@ -13,6 +13,7 @@ import QuotesComponent from './QuotesComponent';
 import Dropzone from "react-dropzone";
 import Post from "./Post";
 import ReportForm from "./ReportForm";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -45,7 +46,7 @@ const PostPage = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/posts/post/${postId}`);
+      const response = await axios.get(`${BACKEND_URL}/posts/post/${postId}`);
       const postData = response.data.post;
       setPost(postData);
   
@@ -71,11 +72,11 @@ const PostPage = () => {
   
   const fetchReplyTo = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/posts/post/${postId}`);
+      const response = await axios.get(`${BACKEND_URL}/posts/post/${postId}`);
   
       if (response.data.post.replyTo) {
         axios
-          .get(`http://localhost:5000/posts/post/${response.data.post.replyTo}`)
+          .get(`${BACKEND_URL}/posts/post/${response.data.post.replyTo}`)
           .then((response) => {
             setRepliedPost(response.data.post);
           });
@@ -87,11 +88,11 @@ const PostPage = () => {
   
   const fetchQuotedPost = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/posts/post/${postId}`);
+      const response = await axios.get(`${BACKEND_URL}/posts/post/${postId}`);
   
       if (response.data.post.quoteOf) {
         axios
-          .get(`http://localhost:5000/posts/post/${response.data.post.quoteOf}`)
+          .get(`${BACKEND_URL}/posts/post/${response.data.post.quoteOf}`)
           .then((response) => {
             setQuotedPost(response.data.post);
           });
@@ -130,7 +131,7 @@ const PostPage = () => {
       const username = localStorage.getItem("loggedInUsername");
       try {
         const response = await axios.get(
-          `http://localhost:5000/users/${username}`
+          `${BACKEND_URL}/users/${username}`
         );
         setUser(response.data.user);
         setVerified(response.data.user.isVerified);
@@ -162,7 +163,7 @@ const PostPage = () => {
   const fetchReplies = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/posts/post/${postId}/replies`
+        `${BACKEND_URL}/posts/post/${postId}/replies`
       );
       setReplies(response.data.replies);
     } catch (error) {
@@ -190,7 +191,7 @@ const PostPage = () => {
       formData.append("quoteOf", postId); // Ajoutez l'ID du post que vous citez
 
       // Envoyez une requête POST au backend pour ajouter le post cité
-      await axios.post("http://localhost:5000/posts", formData, {
+      await axios.post(`${BACKEND_URL}/posts`, formData, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -221,7 +222,7 @@ const PostPage = () => {
       if (isLiked) {
         // Unlike the post
         await axios.post(
-          `http://localhost:5000/posts/like/${postId}`,
+          `${BACKEND_URL}/posts/like/${postId}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -233,7 +234,7 @@ const PostPage = () => {
       } else {
         // Like the post
         await axios.post(
-          `http://localhost:5000/posts/like/${postId}`,
+          `${BACKEND_URL}/posts/like/${postId}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -261,7 +262,7 @@ const PostPage = () => {
       if (isReposted) {
         // Un-repost the post
         await axios.post(
-          `http://localhost:5000/posts/repost/${postId}`,
+          `${BACKEND_URL}/posts/repost/${postId}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -275,7 +276,7 @@ const PostPage = () => {
       } else {
         // Repost the post
         await axios.post(
-          `http://localhost:5000/posts/repost/${postId}`,
+          `${BACKEND_URL}/posts/repost/${postId}`,
           { userId: loggedInUserId },
           {
             headers: {
@@ -305,7 +306,7 @@ const PostPage = () => {
 
       // Envoyez une requête DELETE au backend pour supprimer le post
       const response = await axios.delete(
-        `http://localhost:5000/posts/${postId}`,
+        `${BACKEND_URL}/posts/${postId}`,
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -402,7 +403,7 @@ const PostPage = () => {
       }
 
       // Envoyez une requête POST au backend pour ajouter la réponse
-      await axios.post(`http://localhost:5000/posts/${postId}/reply`, formData, {
+      await axios.post(`${BACKEND_URL}/posts/${postId}/reply`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${jwtToken}`,
@@ -569,7 +570,7 @@ const PostPage = () => {
 )}
         <div className="flex items-center mb-4">
           <img
-            src={`http://localhost:5000/avatars/${post.user?.avatar}`}
+            src={`${BACKEND_URL}/avatars/${post.user?.avatar}`}
             alt={`Avatar de ${post.user?.username}`}
             width={50}
             className="rounded-full mr-2"
@@ -589,7 +590,7 @@ const PostPage = () => {
             return isVideo ? (
               <div key={mediaUrl} className="rounded shadow-md media-item">
                 <video
-                  src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                   controls
                   className={getImageClass(post.media.length)}
                   style={{
@@ -600,7 +601,7 @@ const PostPage = () => {
             ) : (
               <div key={mediaUrl} className="rounded shadow-md media-item">
                 <img
-                  src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                   alt={mediaUrl}
                   className={getImageClass(post.media.length)}
                 />
@@ -619,7 +620,7 @@ const PostPage = () => {
           >
                     <div className="flex items-center mb-4">
           <img
-            src={`http://localhost:5000/avatars/${quotedPost.user?.avatar}`}
+            src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
             alt={`Avatar de ${quotedPost.user?.username}`}
             width={50}
             className="rounded-full mr-2"
@@ -642,7 +643,7 @@ const PostPage = () => {
             return isVideo ? (
               <div key={mediaUrl} className="rounded shadow-md media-item">
                 <video
-                  src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                   controls
                   className={getImageClass(quotedPost.media.length)}
                   style={{
@@ -654,7 +655,7 @@ const PostPage = () => {
             ) : (
               <div key={mediaUrl} className="rounded shadow-md media-item">
                 <img
-                  src={`http://localhost:5000/posts/media/${mediaUrl}`}
+                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
                   alt={mediaUrl}
                   className={getImageClass(quotedPost.media.length)}
                 />

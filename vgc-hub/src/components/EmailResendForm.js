@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const EmailResendForm = () => {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ const EmailResendForm = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/auth/resend-verification', {
+      const response = await axios.post(`${BACKEND_URL}/auth/resend-verification`, {
         email,
       });
 

@@ -6,6 +6,7 @@ import jwt_decode from "jwt-decode";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { Link } from "react-router-dom";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const AdminPanel = () => {
   const [users, setUsers] = useState([]);
@@ -27,7 +28,7 @@ const AdminPanel = () => {
 
     // Requête GET pour récupérer la liste des utilisateurs depuis le backend
     axios
-      .get("http://localhost:5000/users/admin/users", {
+      .get(`${BACKEND_URL}/users/admin/users`, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -43,7 +44,7 @@ const AdminPanel = () => {
 
     // Requête GET pour récupérer la liste des rapports depuis le backend
     axios
-      .get("http://localhost:5000/reports", {
+      .get(`${BACKEND_URL}/reports`, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -58,7 +59,7 @@ const AdminPanel = () => {
         // Fonction pour récupérer les informations de l'utilisateur par son ID
         const getUserById = async (userId) => {
           try {
-            const userResponse = await axios.get(`http://localhost:5000/users/id/${userId}`, {
+            const userResponse = await axios.get(`${BACKEND_URL}/users/id/${userId}`, {
               headers: {
                 Authorization: `Bearer ${jwtToken}`,
               },
@@ -107,7 +108,7 @@ const AdminPanel = () => {
     }
 
     axios
-      .get(`http://localhost:5000/users/${loggedInUsername}`, {
+      .get(`${BACKEND_URL}/users/${loggedInUsername}`, {
         headers: {
           Authorization: `Bearer ${jwtToken}`,
         },
@@ -127,7 +128,7 @@ const AdminPanel = () => {
     // Requête PUT pour mettre à jour le rôle de l'utilisateur en "admin"
     axios
       .put(
-        `http://localhost:5000/users/admin/users/${userId}`,
+        `${BACKEND_URL}/users/admin/users/${userId}`,
         { role: "admin" },
         {
           headers: {
@@ -162,7 +163,7 @@ const AdminPanel = () => {
           onClick: () => {
             // Requête DELETE pour supprimer l'utilisateur spécifié par son ID
             axios
-              .delete(`http://localhost:5000/users/${userId}`, {
+              .delete(`${BACKEND_URL}/users/${userId}`, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
                 },
@@ -198,7 +199,7 @@ const AdminPanel = () => {
           onClick: () => {
             // Requête DELETE pour supprimer le rapport spécifié par son ID
             axios
-              .delete(`http://localhost:5000/reports/${reportId}`, {
+              .delete(`${BACKEND_URL}/reports/${reportId}`, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
                 },
@@ -249,7 +250,7 @@ const AdminPanel = () => {
             <li key={user._id} className="py-4 border-b border-gray-300">
               <div className="flex items-center">
                 <img
-                  src={`http://localhost:5000/avatars/${user.avatar}`}
+                  src={`${BACKEND_URL}/avatars/${user.avatar}`}
                   alt="Avatar de l'utilisateur"
                   className="w-12 h-12 rounded-full mr-4"
                 />
@@ -334,7 +335,7 @@ const AdminPanel = () => {
                       </span>
                     </Link>
                     <img
-                      src={`http://localhost:5000/avatars/${report.user?.avatar}`}
+                      src={`${BACKEND_URL}/avatars/${report.user?.avatar}`}
                       alt={`Avatar de ${report.user?.username}`}
                       width={50}
                       className="rounded-full mr-2 ml-4"

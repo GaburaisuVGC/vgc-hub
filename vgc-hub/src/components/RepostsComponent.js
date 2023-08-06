@@ -3,12 +3,13 @@ import axios from 'axios';
 
 const RepostsComponent = ({ postId, setShowRepostsModal }) => {
   const [reposts, setReposts] = useState([]);
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/posts/post/${postId}/reposts`).then((response) => {
+    axios.get(`${BACKEND_URL}/posts/post/${postId}/reposts`).then((response) => {
       setReposts(response.data.reposts);
     });
-  }, [postId]);
+  }, [BACKEND_URL, postId]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur">
@@ -24,7 +25,7 @@ const RepostsComponent = ({ postId, setShowRepostsModal }) => {
           {reposts.map((user) => (
             <li key={user._id} className="flex items-center mb-2">
               <img
-                src={`http://localhost:5000/avatars/${user?.avatar}`}
+                src={`${BACKEND_URL}/avatars/${user?.avatar}`}
                 alt={`Avatar de ${user?.username}`}
                 width={50}
                 className="rounded-full mr-2"
