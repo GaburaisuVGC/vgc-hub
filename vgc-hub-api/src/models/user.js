@@ -12,6 +12,18 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordToken: { type: String, default: null }, // Champ pour stocker le token de réinitialisation du mot de passe
   resetPasswordExpires: { type: Date, default: null }, // Champ pour stocker la date d'expiration du token de réinitialisation du mot de passe
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+  reposts: [
+    {
+      post: { type: mongoose.Schema.Types.ObjectId, ref: 'Post' },
+      repostedAt: { type: Date, default: Date.now }, // Ajouter la date du repost ici
+    },
+  ],
+  followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Users who follow the current user
+  following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Users that the current user follows
+  blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  personalAvatar: { type: Boolean, default: false},
+  status: { type: String, enum: ['default', 'banned'], default: 'default' },
 });
 
 const User = mongoose.model('User', userSchema, 'users');

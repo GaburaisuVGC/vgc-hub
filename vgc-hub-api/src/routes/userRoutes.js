@@ -30,4 +30,26 @@ router.put(
     userController.updateAvatar
   );
 
+// Follow a user
+router.post('/follow/:userId', authController.verifyJwt, userController.followUser);
+
+// Unfollow a user
+router.post('/unfollow/:userId', authController.verifyJwt, userController.unfollowUser);
+
+// Get followers and followings
+router.get("/:userId/followers", userController.getFollowers);
+router.get("/:userId/followings", userController.getFollowings);
+
+// Block a user
+router.post('/block/:userId', authController.verifyJwt, userController.blockUser);
+
+// Unblock a user
+router.post('/unblock/:userId', authController.verifyJwt, userController.unblockUser);
+
+// ban a user
+router.post('/ban/:userId', authController.verifyJwt, userController.banUser);
+
+// unban a user
+router.post('/unban/:userId', authController.verifyJwt, userController.unbanUser);
+
 module.exports = router;

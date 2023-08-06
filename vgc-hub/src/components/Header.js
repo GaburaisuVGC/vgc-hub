@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Header = () => {
   const [loggedInUserId, setLoggedInUserId] = useState('');
@@ -20,13 +21,16 @@ const Header = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const username = localStorage.getItem('loggedInUsername');
-      try {
-        const response = await axios.get(`http://localhost:5000/users/${username}`);
-        setUser(response.data.user);
-      } catch (error) {
-        // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        toast.error('Erreur lors de la récupération du profil.');
+      const jwtToken = localStorage.getItem('jwtToken');
+      if (jwtToken) {
+        const username = localStorage.getItem('loggedInUsername');
+        try {
+          const response = await axios.get(`${BACKEND_URL}/users/${username}`);
+          setUser(response.data.user);
+        } catch (error) {
+          // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
+          toast.error('Erreur lors de la récupération du profil.');
+        }
       }
     };
 
@@ -54,7 +58,7 @@ const Header = () => {
             <div className="user-info flex items-center" onClick={handleUserInfoClick}>
               {/* Afficher l'avatar de l'utilisateur et son nom d'utilisateur */}
               <img
-                src={`http://localhost:5000/avatars/${user?.avatar}`}
+                src={`${BACKEND_URL}/avatars/${user?.avatar}`}
                 alt="Avatar"
                 className="user-avatar w-10 h-10 rounded-full cursor-pointer"
               />

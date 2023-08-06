@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ResetPasswordPage = () => {
   const { resetToken } = useParams();
@@ -13,7 +14,7 @@ const ResetPasswordPage = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:5000/auth/reset-password/${resetToken}`, {
+      const response = await axios.post(`${BACKEND_URL}/auth/reset-password/${resetToken}`, {
         newPassword,
         confirmPassword,
       });

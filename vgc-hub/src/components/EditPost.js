@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const EditPost = () => {
   const { postId } = useParams();
@@ -13,7 +14,7 @@ const EditPost = () => {
     // Fetch the post data by its ID
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/posts/post/${postId}`);
+        const response = await axios.get(`${BACKEND_URL}/posts/post/${postId}`);
         setContent(response.data.post.content);
       } catch (error) {
         // Handle error if the post data couldn't be fetched
@@ -36,7 +37,7 @@ const EditPost = () => {
       }
 
       await axios.put(
-        `http://localhost:5000/posts/${postId}`,
+        `${BACKEND_URL}/posts/${postId}`,
         { content },
         {
           headers: {
