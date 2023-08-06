@@ -746,6 +746,7 @@ exports.getTimeline = async (req, res) => {
         .populate('user', 'username avatar isVerified role')
         .lean();
 
+        if (repostedPost) {
       followingPosts.push({
         _id: repostedPost._id,
         user: repostedPost.user,
@@ -763,6 +764,8 @@ exports.getTimeline = async (req, res) => {
         replies: repostedPost.replies,
         replyTo: repostedPost.replyTo,
       });
+
+    }
     }
 
     // Trier les posts par ordre décroissant en fonction de la date de création
