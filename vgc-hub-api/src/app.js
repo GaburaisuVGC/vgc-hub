@@ -45,7 +45,7 @@ app.use('/reports', reportRoutes);
 app.use('/private', privateMessageRoutes);
 app.use('/group', groupMessageRoutes);
 
-const port = process.env.PORT;
+const port = process.env.BACKEND_PORT || 5000;
 
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
