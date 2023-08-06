@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const EditUser = () => {
   const { username } = useParams();
@@ -21,7 +22,7 @@ const EditUser = () => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/users/${username}`
+          `${BACKEND_URL}/users/${username}`
         );
         setUser(response.data.user);
         setUsernameInput(response.data.user.username);
@@ -38,7 +39,7 @@ const EditUser = () => {
         if (loggedInUsername) {
             try {
                 const response = await axios.get(
-                  `http://localhost:5000/users/${loggedInUsername}`
+                  `${BACKEND_URL}/users/${loggedInUsername}`
                 );
                 if (response.data.user.role !== "admin") {
                     // Si l'utilisateur connecté n'est pas un admin, redirigez-le vers la page d'accueil ou une autre page appropriée.
@@ -92,7 +93,7 @@ const EditUser = () => {
         const userId = user._id;
         // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
-          `http://localhost:5000/users/${userId}`,
+          `${BACKEND_URL}/users/${userId}`,
           {
             username: usernameInput,
           },
@@ -137,7 +138,7 @@ const EditUser = () => {
         const userId = user._id;
         // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
-          `http://localhost:5000/users/${userId}`,
+          `${BACKEND_URL}/users/${userId}`,
           {
             email: emailInput,
           },
@@ -182,7 +183,7 @@ const EditUser = () => {
         const userId = user._id;
         // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
-          `http://localhost:5000/users/${userId}`,
+          `${BACKEND_URL}/users/${userId}`,
           {
             role: roleInput,
           },
@@ -225,7 +226,7 @@ const EditUser = () => {
     // Envoyez une requête PUT au backend pour mettre à jour l'avatar
     const userId = user._id;
     const response = await axios.put(
-      `http://localhost:5000/users/${userId}/avatar`,
+      `${BACKEND_URL}/users/${userId}/avatar`,
       formData,
       {
         headers: {
@@ -305,7 +306,7 @@ return (
                 <h2 className="font-bold">Avatar</h2>
                 {avatar ? (
                   <img
-                    src={`http://localhost:5000/avatars/${avatar}`}
+                    src={`${BACKEND_URL}/avatars/${avatar}`}
                     alt="Avatar de l'utilisateur"
                     className="w-32 h-32 rounded-full mx-4"
                   />

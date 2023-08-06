@@ -20,3 +20,43 @@ code {
 body {
   font-family: 'League Spartan', sans-serif;
 }
+
+/* For WebKit-based browsers */
+
+/* Set the width of the scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+
+/* Customize the thumb */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+/* Customize the track */
+::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+/* Customize the corner */
+::-webkit-scrollbar-corner {
+  background-color: #f1f1f1;
+}
+
+/* For Firefox */
+/* Set the width of the scrollbar */
+/* Note: This property is currently only supported in Firefox */
+/* You may need to add vendor prefixes for other browsers */
+body {
+  scrollbar-width: thin;
+}
+
+/* Customize the thumb */
+/* Note: This property is currently only supported in Firefox */
+/* You may need to add vendor prefixes for other browsers */
+body::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 8px;
+}

@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Signup = () => {
 
@@ -32,7 +32,7 @@ const Signup = () => {
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
-      const response = await axios.post('http://localhost:5000/auth/signup', {
+      const response = await axios.post(`${BACKEND_URL}/auth/signup`, {
         username: values.username,
         email: values.email,
         password: values.password,
