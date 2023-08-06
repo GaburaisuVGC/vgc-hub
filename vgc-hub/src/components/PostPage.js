@@ -12,6 +12,7 @@ import RepostsComponent from './RepostsComponent';
 import QuotesComponent from './QuotesComponent';
 import Dropzone from "react-dropzone";
 import Post from "./Post";
+import ReportForm from "./ReportForm";
 
 const PostPage = () => {
   const { postId } = useParams();
@@ -36,6 +37,8 @@ const PostPage = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [replies, setReplies] = useState([]);
   const [repliedPost, setRepliedPost] = useState(null);
+  const [showOptionsPanel, setShowOptionsPanel] = useState(false);
+  const [isReportFormOpen, setIsReportFormOpen] = useState(false); // Ajouter le state pour le composant ReportForm
   const navigate = useNavigate();
 
   const fetchPost = async () => {
@@ -120,6 +123,8 @@ const PostPage = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      const jwtToken = localStorage.getItem("jwtToken");
+      if (jwtToken) {
       const username = localStorage.getItem("loggedInUsername");
       try {
         const response = await axios.get(
@@ -130,6 +135,8 @@ const PostPage = () => {
       } catch (error) {
         // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
         toast.error("Erreur lors de la récupération du profil.");
+      }
+
       }
     };
 
@@ -414,13 +421,32 @@ const PostPage = () => {
 
       // Fonction pour gérer la sélection de fichiers
       const handleFileSelect = (acceptedFiles) => {
-        // Limitez le nombre de fichiers sélectionnés à 4 (images et vidéos)
-        setSelectedFiles(acceptedFiles.slice(0, 4));
-      };
+          const REACT_APP_MAX_FILE_SIZE = process.env.REACT_APP_MAX_FILE_SIZE || 10 * 1024 * 1024; // Utiliser 10 MB comme valeur par défaut si la variable d'environnement n'est pas définie
+      
+          const selectedFiles = acceptedFiles.slice(0, 4); // Limiter le nombre de fichiers sélectionnés à 4
+      
+          // Vérifier la taille de chaque fichier
+          const oversizedFiles = selectedFiles.filter((file) => file.size > REACT_APP_MAX_FILE_SIZE);
+      
+          if (oversizedFiles.length > 0) {
+            toast.error(`Certains fichiers dépassent la taille maximale autorisée (${REACT_APP_MAX_FILE_SIZE} octets).`);
+            return;
+          }
+      
+          setSelectedFiles(selectedFiles);
+        };
 
   // Fonction pour ouvrir le modal de réponse
   const handleReplyClick = () => {
     setReplyModalOpen(true);
+  };
+
+  const handleOptionsClick = () => {
+    setShowOptionsPanel(!showOptionsPanel);
+  };
+
+  const handleReportFormClose = () => {
+    setIsReportFormOpen(false);
   };
 
   return (
@@ -474,20 +500,56 @@ const PostPage = () => {
       </div>
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4 relative">
       <div>
-        {repliedPost && (
-          <p className="text-gray-500">
-            Reply to{" "}
-            <Link to={`/${repliedPost.user?.username}`}>
-              @{repliedPost.user?.username}
-            </Link>
-          </p>
-        )}
+      {repliedPost && (
+  <p className="text-gray-500">
+    Reply to{" "}
+    {repliedPost.user?.username ? (
+      <Link to={`/${repliedPost.user.username}`}>
+        @{repliedPost.user.username}
+      </Link>
+    ) : (
+      "deleted-user"
+    )}
+  </p>
+)}
       </div>
         {hasMedia && (
           <div className="absolute top-0 right-0 mt-2 mr-2">
             <GiPaperClip size={24} />
           </div>
         )}
+                    {loggedInUserId ?(
+        <>
+        {/* div qui fixe le bouton à droite */}
+        <div className="flex mb-4">
+  <button
+    className="text-xl text-gray-600 ml-auto rounded-full bg-gray-300 p-2 hover:bg-gray-400 w-10 h-10 flex items-center justify-center mt-4"
+    onClick={handleOptionsClick}
+    aria-label="Options"
+  >
+    ...
+  </button>
+</div>
+
+
+
+        </>
+      )
+      : null}
+        {showOptionsPanel && (
+  <div className="flex mb-4">
+    <div className="absolute top-10 mt-8 right-0 bg-white rounded-lg shadow-md p-2 space-y-2">
+
+    <button
+        // Afficher le formulaire de signalement au clic
+        onClick={() => setIsReportFormOpen(true)}
+        className={`block w-full text-left px-4 py-2 text-red-500 hover:text-red-600`}
+      >
+        Signaler le post
+      </button>
+    </div>
+  </div>
+)}
         <div className="flex items-center mb-4">
           <img
             src={`http://localhost:5000/avatars/${post.user?.avatar}`}
@@ -722,6 +784,13 @@ const PostPage = () => {
           </div>
         </div>
       )}
+
+      {/* Afficher le formulaire de signalement si isReportFormOpen est true */}
+
+      {isReportFormOpen && (
+        <ReportForm postId={post._id} onClose={handleReportFormClose} />
+      )}
+
          {loggedInUserId &&
           user &&
           loggedInUserId === user._id &&

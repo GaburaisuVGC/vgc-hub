@@ -14,17 +14,19 @@ import UserProfileEdit from './pages/profile/UserProfileEdit';
 import SignupPage from './pages/auth/SignupPage';
 import LoginPage from './pages/auth/LoginPage';
 import Panel from './pages/admin/Panel';
+import BannedRouteGuard from "./components/BannedRouteGuard";
+require('dotenv').config();
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route exact path="/:username" element={<UserProfile />} />
-        <Route exact path="/post/:postId" element={<PostInfo />} />
-        <Route exact path="/post/:postId/edit" element={<PostEdit />} />
-        <Route exact path="/edit/:username" element={<UserProfileEdit />} />
-        <Route exact path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
+        <Route path="/" element={<BannedRouteGuard><Home /></BannedRouteGuard>} />
+        <Route path="/:username" element={<UserProfile />} />
+        <Route path="/post/:postId" element={<BannedRouteGuard><PostInfo /></BannedRouteGuard>} />
+        <Route path="/post/:postId/edit" element={<BannedRouteGuard><PostEdit /></BannedRouteGuard>} />
+        <Route path="/edit/:username" element={<UserProfileEdit />} />
+        <Route path="/reset-password/:resetToken" element={<ResetPasswordPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -32,8 +34,8 @@ function App() {
         <Route path="/email-verification-confirmation" element={<EmailVerificationConfirmation />} />
         <Route path="/verify/:token" element={<VerifyEmail />} />
         <Route path="/admin" element={<Panel />} />
-        <Route exact path="/admin/edit/:username" element={<EditUser />} />
-        {/* Ajoutez d'autres routes ici pour d'autres pages */}
+        <Route path="/admin/edit/:username" element={<EditUser />} />
+        {/* Add other routes here for other pages */}
       </Routes>
     </Router>
   );

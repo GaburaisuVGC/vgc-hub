@@ -36,11 +36,13 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const avatarRoutes = require('./routes/avatarRoutes');
 const postRoutes = require('./routes/postRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/avatars', avatarRoutes);
 app.use('/posts', postRoutes);
+app.use('/reports', reportRoutes);
 
 const port = process.env.PORT;
 

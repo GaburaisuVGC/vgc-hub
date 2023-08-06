@@ -21,6 +21,9 @@ const userSchema = new mongoose.Schema({
   ],
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Users who follow the current user
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Users that the current user follows
+  blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  personalAvatar: { type: Boolean, default: false},
+  status: { type: String, enum: ['default', 'banned'], default: 'default' },
 });
 
 const User = mongoose.model('User', userSchema, 'users');

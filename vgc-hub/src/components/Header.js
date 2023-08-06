@@ -20,13 +20,16 @@ const Header = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const username = localStorage.getItem('loggedInUsername');
-      try {
-        const response = await axios.get(`http://localhost:5000/users/${username}`);
-        setUser(response.data.user);
-      } catch (error) {
-        // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        toast.error('Erreur lors de la récupération du profil.');
+      const jwtToken = localStorage.getItem('jwtToken');
+      if (jwtToken) {
+        const username = localStorage.getItem('loggedInUsername');
+        try {
+          const response = await axios.get(`http://localhost:5000/users/${username}`);
+          setUser(response.data.user);
+        } catch (error) {
+          // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
+          toast.error('Erreur lors de la récupération du profil.');
+        }
       }
     };
 

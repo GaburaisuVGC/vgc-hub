@@ -294,7 +294,7 @@ const Post = ({ post }) => {
   
 
   return (
-    <div className="post">
+    <div className="post relative">
       <div>
         {post.isReposted && (
           <p className="text-gray-500">
@@ -304,14 +304,18 @@ const Post = ({ post }) => {
         )}
       </div>
       <div>
-        {repliedPost && (
-          <p className="text-gray-500">
-            Reply to{" "}
-            <Link to={`/${repliedPost.user?.username}`}>
-              @{repliedPost.user?.username}
-            </Link>
-          </p>
-        )}
+      {repliedPost && (
+  <p className="text-gray-500">
+    Reply to{" "}
+    {repliedPost.user?.username ? (
+      <Link to={`/${repliedPost.user.username}`}>
+        @{repliedPost.user.username}
+      </Link>
+    ) : (
+      "deleted-user"
+    )}
+  </p>
+)}
       </div>
       <div className="flex items-start mb-4 relative">
         {post.media && post.media.length > 0 && (
@@ -438,7 +442,7 @@ const Post = ({ post }) => {
         </div>
           </div>
         )}
-<div className="flex items-center justify-start mt-2">
+<div className="flex items-center justify-between mt-2">
   {/* Afficher le bouton Like et le nombre de likes */}
   <div className="flex items-center mr-6">
     <button onClick={handleLikeClick} className="flex items-center">
@@ -466,16 +470,17 @@ const Post = ({ post }) => {
       <span className="text-gray-500">{quoteCount} Quote</span>
     </button>
   </div>
-    {/* Afficher le bouton Reply, fixé tout à droite*/}
-    <div className="flex items-center ml-auto">
-        <button onClick={handlePostClick} className="flex items-center">
-          <GiChatBubble size={24} className="mr-2 text-gray-500" />
-        </button>
-        <span onClick={handlePostClick} className="text-gray-500">
-          {replyCount}
-        </span>
-      </div>
+  {/* Afficher le bouton Reply, fixé tout à droite*/}
+  <div className="flex items-center ml-auto">
+    <button onClick={handlePostClick} className="flex items-center">
+      <GiChatBubble size={24} className="mr-2 text-gray-500" />
+    </button>
+    <span onClick={handlePostClick} className="text-gray-500">
+      {replyCount}
+    </span>
+  </div>
 </div>
+
 
 {quoteModalOpen && (
   <div className="quote-modal fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">

@@ -211,6 +211,13 @@ const Profile = () => {
         return;
       }
 
+      // Vérifier la taille du fichier sélectionné en utilisant la valeur de REACT_APP_MAX_FILE_SIZE définie dans .env
+      const REACT_APP_MAX_FILE_SIZE = process.env.REACT_APP_MAX_FILE_SIZE;
+      if (selectedFile.size > REACT_APP_MAX_FILE_SIZE) {
+        toast.error(`La taille du fichier doit être inférieure à ${REACT_APP_MAX_FILE_SIZE / (1024 * 1024)} MB.`);
+        return;
+      }
+
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
         // Si le JWT token n'est pas disponible, l'utilisateur n'est pas authentifié, ne pas poursuivre la mise à jour
@@ -261,8 +268,8 @@ const Profile = () => {
                 },
               })
               .then(() => {
-                // Effacer le JWT token du localStorage après la suppression du compte
-                localStorage.removeItem("jwtToken");
+                // Effacter les autres items du localStorage
+                localStorage.clear()
                 // Rediriger vers la page d'accueil
                 navigate("/");
               })

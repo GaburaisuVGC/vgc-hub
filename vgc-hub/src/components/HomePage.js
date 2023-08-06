@@ -95,7 +95,18 @@ const HomePage = () => {
   };
 
   const handleFileSelect = (acceptedFiles) => {
-    setSelectedFiles(acceptedFiles.slice(0, 4));
+    const REACT_APP_MAX_FILE_SIZE = process.env.REACT_APP_MAX_FILE_SIZE || 10 * 1024 * 1024; // Utiliser 10 MB comme valeur par défaut si la variable d'environnement n'est pas définie
+
+    const selectedFiles = acceptedFiles.slice(0, 4); // Limiter le nombre de fichiers sélectionnés à 4
+    // Vérifier la taille de chaque fichier
+    const oversizedFiles = selectedFiles.filter((file) => file.size > REACT_APP_MAX_FILE_SIZE);
+
+    if (oversizedFiles.length > 0) {
+      toast.error(`Certains fichiers dépassent la taille maximale autorisée (${REACT_APP_MAX_FILE_SIZE} octets).`);
+      return;
+    }
+
+    setSelectedFiles(selectedFiles);
   };
 
 
