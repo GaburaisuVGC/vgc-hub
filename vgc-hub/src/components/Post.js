@@ -34,7 +34,7 @@ const Post = ({ post }) => {
 
       // Requête pour récupérer les informations complètes de l'utilisateur
       axios
-        .get(`${BACKEND_URL}/users/${username}`)
+        .get(`${BACKEND_URL}/users/${username.toLowerCase()}`)
         .then((response) => {
           setLoggedInUser(response.data.user);
         })

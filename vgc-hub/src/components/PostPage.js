@@ -131,7 +131,7 @@ const PostPage = () => {
       const username = localStorage.getItem("loggedInUsername");
       try {
         const response = await axios.get(
-          `${BACKEND_URL}/users/${username}`
+          `${BACKEND_URL}/users/${username.toLowerCase()}`
         );
         setUser(response.data.user);
         setVerified(response.data.user.isVerified);

@@ -66,7 +66,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`${BACKEND_URL}/users/${username}`);
+        const response = await axios.get(`${BACKEND_URL}/users/${username.toLowerCase()}`);
         setUser(response.data.user);
         setFollowerCount(response.data.user.followers.length);
         setFollowingCount(response.data.user.following.length);
@@ -84,7 +84,7 @@ const ProfilePage = () => {
                 const jwtToken = localStorage.getItem("jwtToken");
                 if (jwtToken) {
                 const loggedUsername = localStorage.getItem("loggedInUsername");
-                const loggedInUserResponse = await axios.get(`${BACKEND_URL}/users/${loggedUsername}`);
+                const loggedInUserResponse = await axios.get(`${BACKEND_URL}/users/${loggedUsername.toLowerCase()}`);
                 if (loggedInUserResponse) {
                   setVerified(loggedInUserResponse.data.user.isVerified);
                 }
