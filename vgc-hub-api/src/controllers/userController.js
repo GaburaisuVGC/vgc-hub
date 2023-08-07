@@ -74,7 +74,7 @@ exports.getProfile = async (req, res) => {
 
   try {
     const user = await User.findOne({ username }).select(
-      "_id username email isVerified avatar role likes reposts followers following blockedUsers status"
+      "_id username plainName email isVerified avatar role likes reposts followers following blockedUsers status"
     );
 
     // Vérifier si l'utilisateur existe
@@ -238,7 +238,7 @@ exports.getAllUsers = async (req, res) => {
     }
 
     const users = await User.find().select(
-      "_id username email isVerified avatar role followers following blockedUsers status"
+      "_id username plainName email isVerified avatar role followers following blockedUsers status"
     );
 
     return res.json({ users });
@@ -262,7 +262,7 @@ exports.getUserById = async (req, res) => {
     }
 
     const user = await User.findOne({ _id: userId }).select(
-      "_id username avatar likes reposts followers following blockedUsers role status"
+      "_id username plainName avatar likes reposts followers following blockedUsers role status"
     );
 
     if (!user) {
@@ -498,7 +498,7 @@ exports.getFollowers = async (req, res) => {
     const { userId } = req.params;
     const user = await User.findById(userId).populate(
       "followers",
-      "username avatar"
+      "username plainName avatar"
     );
     res.status(200).json({ followers: user.followers });
   } catch (error) {
@@ -512,7 +512,7 @@ exports.getFollowings = async (req, res) => {
     const { userId } = req.params;
     const user = await User.findById(userId).populate(
       "following",
-      "username avatar"
+      "username plainName avatar"
     );
     res.status(200).json({ followings: user.following });
   } catch (error) {
