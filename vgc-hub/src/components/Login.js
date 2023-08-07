@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { set } from 'mongoose';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
