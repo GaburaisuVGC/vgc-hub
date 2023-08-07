@@ -34,7 +34,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const response = await axios.get(`${BACKEND_URL}/posts/${username}`);
+        const response = await axios.get(`${BACKEND_URL}/posts/${username.toLowerCase()}`);
         setUserPosts(response.data.posts);
       } catch (error) {
         toast.error("Erreur lors de la récupération des posts de l'utilisateur.");
