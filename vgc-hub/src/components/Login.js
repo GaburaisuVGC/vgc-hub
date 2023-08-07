@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { set } from 'mongoose';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
@@ -21,7 +22,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    username = username.toLowerCase();
+    setUsername(username.toLowerCase());
     try {
       const response = await axios.post(`${BACKEND_URL}/auth/login`, {
         username,
