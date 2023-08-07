@@ -31,7 +31,8 @@ exports.signup = async (req, res) => {
     // Hachez le mot de passe avant de l'enregistrer dans la base de données
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
-      username,
+      username: username.toLowerCase(),
+      plainName: username,
       email,
       password: hashedPassword,
     });
@@ -149,6 +150,7 @@ const sendVerificationEmail = (email, verificationToken) => {
 passport.use(new LocalStrategy(
     { usernameField: 'username' }, // Spécifiez que nous utilisons l'e-mail comme nom d'utilisateur
     async (username, password, done) => {
+      username = username.toLowerCase();
       try {
         const user = await User.findOne({ username });
         if (!user) {
