@@ -43,7 +43,7 @@ const Profile = () => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `${BACKEND_URL}/users/${username}`
+          `${BACKEND_URL}/users/${username.toLowerCase()}`
         );
         setUser(response.data.user);
         setUsernameInput(response.data.user.username);
