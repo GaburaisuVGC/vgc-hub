@@ -21,6 +21,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    username = username.toLowerCase();
     try {
       const response = await axios.post(`${BACKEND_URL}/auth/login`, {
         username,
@@ -29,7 +30,7 @@ const Login = () => {
 
       // Stocker le jeton JWT dans le localStorage
       localStorage.setItem('jwtToken', response.data.token);
-      localStorage.setItem("loggedInUsername", username);
+      localStorage.setItem("loggedInUsername", username.toLowerCase());
 
       // Rediriger vers la page du profil utilisateur après une connexion réussie
       navigate(`/${username}`);
