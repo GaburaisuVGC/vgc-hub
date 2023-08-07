@@ -12,7 +12,7 @@ const ProfilePage = () => {
   const { username } = useParams();
   const [user, setUser] = useState(null);
   const [loggedInUserId, setLoggedInUserId] = useState("");
-  const [verified, setVerified] = useState(false);
+  const [verified, setVerified] = useState(true);
   const [userPosts, setUserPosts] = useState([]);
   const [followerCount, setFollowerCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
@@ -53,22 +53,23 @@ const ProfilePage = () => {
       const decodedToken = jwt_decode(jwtToken);
       setLoggedInUserId(decodedToken.userId);
     }
+
   }, []);
 
   useEffect(() => {
-    if (user && !verified) {
+    // si l'utilisateur connecté existe et qu'il n'est pas vérifié
+    if (loggedInUserId && !verified) {
       navigate("/email-verification-error");
     }
-  }, [user, verified, navigate]);
+  }, [loggedInUserId, verified, navigate]);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(`${BACKEND_URL}/users/${username}`);
         setUser(response.data.user);
-        setVerified(response.data.user.isVerified);
-          setFollowerCount(response.data.user.followers.length);
-          setFollowingCount(response.data.user.following.length);
+        setFollowerCount(response.data.user.followers.length);
+        setFollowingCount(response.data.user.following.length);
         setFollowers(response.data.user.followers);
         setFollowings(response.data.user.following);
                 // Vérifier si l'utilisateur connecté est dans la liste des utilisateurs bloqués
@@ -84,6 +85,9 @@ const ProfilePage = () => {
                 if (jwtToken) {
                 const loggedUsername = localStorage.getItem("loggedInUsername");
                 const loggedInUserResponse = await axios.get(`${BACKEND_URL}/users/${loggedUsername}`);
+                if (loggedInUserResponse) {
+                  setVerified(loggedInUserResponse.data.user.isVerified);
+                }
                 if (loggedInUserResponse && loggedInUserResponse.data.user.blockedUsers.includes(response.data.user._id)) {
                   setIsBlockedByYou(true);
                 }
@@ -386,7 +390,10 @@ const ProfilePage = () => {
       {user ? (
         <div className="bg-white rounded-lg shadow-md p-4 mt-4">
           <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold mb-4">{user.username}'s Profile</h2>
+          <h2 className="text-3xl font-bold mb-4">{user.plainName}'s Profile
+          <p className="text-gray-600 text-sm">@{user.username}</p>
+          </h2>
+
           {loggedInUserId !== user._id && isFollowingYou && (
     <span className="bg-gray-300 text-gray-700 px-2 py-1 rounded mr-2">Follows you</span>
             )}
