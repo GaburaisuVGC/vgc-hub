@@ -38,7 +38,7 @@ const BannedRouteGuard = ({ children }) => {
 
   if (userStatus === "banned") {
     // Use the Navigate component to redirect the user
-    return <Navigate to={`/${username}`} />;
+    return <Navigate to={`/${username.toLowerCase()}`} />;
   }
 
   // Render the children if not banned
