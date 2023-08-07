@@ -33,7 +33,7 @@ const Login = () => {
       localStorage.setItem("loggedInUsername", username.toLowerCase());
 
       // Rediriger vers la page du profil utilisateur après une connexion réussie
-      navigate(`/${username}`);
+      navigate(`/${username.toLowerCase()}`);
 
     } catch (error) {
       // Si erreur, afficher le message d'erreur renvoyé par le backend

@@ -25,7 +25,7 @@ const Header = () => {
       if (jwtToken) {
         const username = localStorage.getItem('loggedInUsername');
         try {
-          const response = await axios.get(`${BACKEND_URL}/users/${username}`);
+          const response = await axios.get(`${BACKEND_URL}/users/${username.toLowerCase()}`);
           setUser(response.data.user);
         } catch (error) {
           // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
