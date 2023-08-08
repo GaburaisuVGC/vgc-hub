@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Dropzone from "react-dropzone";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -336,7 +336,7 @@ const EditUser = () => {
       ) : (
         <p>Loading Profile...</p>
       )}
-      <ToastContainer />
+       
     </div>
   );
 };
