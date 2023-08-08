@@ -105,7 +105,7 @@ const ProfilePage = () => {
   }, [username, loggedInUserId]);
 
   const handleLogout = () => {
-    localStorage.removeItem("jwtToken");
+    localStorage.clear();
     navigate("/login");
   };
 
