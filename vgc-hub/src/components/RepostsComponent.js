@@ -26,7 +26,7 @@ const RepostsComponent = ({ postId, setShowRepostsModal }) => {
             <li key={user._id} className="flex items-center mb-2">
               <img
                 src={`${BACKEND_URL}/avatars/${user?.avatar}`}
-                alt={`Avatar de ${user?.username}`}
+                alt={`${user?.username}'s avatar`}
                 width={50}
                 className="rounded-full mr-2"
               />

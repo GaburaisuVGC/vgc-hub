@@ -52,4 +52,7 @@ router.post('/ban/:userId', authController.verifyJwt, userController.banUser);
 // unban a user
 router.post('/unban/:userId', authController.verifyJwt, userController.unbanUser);
 
+// Route pour rechercher un utilisateur par nom d'utilisateur
+router.get('/search/:username', userController.searchUserByUsername);
+
 module.exports = router;

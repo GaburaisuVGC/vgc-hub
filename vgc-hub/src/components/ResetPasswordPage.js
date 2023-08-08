@@ -9,7 +9,7 @@ const ResetPasswordPage = () => {
   const { resetToken } = useParams();
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
@@ -19,29 +19,27 @@ const ResetPasswordPage = () => {
         confirmPassword,
       });
 
-      // Afficher un message de succès ou rediriger vers la page de connexion après la réinitialisation du mot de passe réussie
+      // Display a success message or navigate to the login page after successful password reset
       toast.success(response.data.message);
-      // Rediriger vers la page de connexion
-        navigate('/login');
-
-      // Ici, tu peux rediriger l'utilisateur vers la page de connexion après la réinitialisation du mot de passe réussie
+      // Redirect to the login page
+      navigate('/login');
     } catch (error) {
-      // Afficher un message d'erreur en cas d'échec de la réinitialisation du mot de passe
+      // Display an error message if password reset fails
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error('Erreur lors de la réinitialisation du mot de passe.');
+        toast.error('Error while resetting the password.');
       }
     }
   };
 
   return (
     <div className="max-w-md mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Réinitialisation du Mot de Passe</h2>
+      <h2 className="text-2xl font-bold mb-4">Password Reset</h2>
       <form onSubmit={handleResetPassword}>
         <input
           type="password"
-          placeholder="Nouveau mot de passe"
+          placeholder="New Password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
           autoComplete="on"
@@ -49,14 +47,14 @@ const ResetPasswordPage = () => {
         />
         <input
           type="password"
-          placeholder="Confirmer le mot de passe"
+          placeholder="Confirm Password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           autoComplete="on"
           className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
         />
         <button type="submit" className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
-          Réinitialiser le mot de passe
+          Reset Password
         </button>
       </form>
       <ToastContainer />

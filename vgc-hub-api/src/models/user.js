@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
   blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   personalAvatar: { type: Boolean, default: false},
   status: { type: String, enum: ['default', 'banned'], default: 'default' },
+  color: { type: String, default: '#FFFFFF' },
 });
 
 const User = mongoose.model('User', userSchema, 'users');

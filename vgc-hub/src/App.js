@@ -15,6 +15,10 @@ import SignupPage from './pages/auth/SignupPage';
 import LoginPage from './pages/auth/LoginPage';
 import Panel from './pages/admin/Panel';
 import BannedRouteGuard from "./components/BannedRouteGuard";
+import AboutVgcHub from './pages/infos/About';
+import QuestionsAndAnswers from './pages/infos/QandA';
+import PrivacyPage from './pages/infos/Privacy';
+import GDPRPage from './pages/infos/GDPR';
 require('dotenv').config();
 
 function App() {
@@ -35,6 +39,10 @@ function App() {
         <Route path="/verify/:token" element={<VerifyEmail />} />
         <Route path="/admin" element={<Panel />} />
         <Route path="/admin/edit/:username" element={<EditUser />} />
+        <Route path="/about" element={<AboutVgcHub />} />
+        <Route path="/qa" element={<QuestionsAndAnswers />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/gdpr" element={<GDPRPage />} />
         {/* Add other routes here for other pages */}
       </Routes>
     </Router>

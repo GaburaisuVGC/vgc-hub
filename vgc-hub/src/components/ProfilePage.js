@@ -34,17 +34,21 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserPosts = async () => {
       try {
-        const response = await axios.get(`${BACKEND_URL}/posts/${username.toLowerCase()}`);
+        const response = await axios.get(
+          `${BACKEND_URL}/posts/${username.toLowerCase()}`
+        );
         setUserPosts(response.data.posts);
       } catch (error) {
-        toast.error("Erreur lors de la récupération des posts de l'utilisateur.");
+        toast.error(
+          "Error retrieving posts. Please refresh the page to try again."
+        );
       }
     };
 
     if (user) {
       fetchUserPosts();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   useEffect(() => {
@@ -53,7 +57,6 @@ const ProfilePage = () => {
       const decodedToken = jwt_decode(jwtToken);
       setLoggedInUserId(decodedToken.userId);
     }
-
   }, []);
 
   useEffect(() => {
@@ -66,38 +69,46 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get(`${BACKEND_URL}/users/${username.toLowerCase()}`);
+        const response = await axios.get(
+          `${BACKEND_URL}/users/${username.toLowerCase()}`
+        );
         setUser(response.data.user);
         setFollowerCount(response.data.user.followers.length);
         setFollowingCount(response.data.user.following.length);
         setFollowers(response.data.user.followers);
         setFollowings(response.data.user.following);
-                // Vérifier si l'utilisateur connecté est dans la liste des utilisateurs bloqués
-                if (loggedInUserId && response.data.user.blockedUsers.includes(loggedInUserId)) {
-                  setIsBlocked(true);
-                } else {
-                  setIsBlocked(false);
-                }
-        
-                // Vérifier si l'utilisateur connecté a bloqué le propriétaire du profil
-                // fetch l'user connecté
-                const jwtToken = localStorage.getItem("jwtToken");
-                if (jwtToken) {
-                const loggedUsername = localStorage.getItem("loggedInUsername");
-                const loggedInUserResponse = await axios.get(`${BACKEND_URL}/users/${loggedUsername.toLowerCase()}`);
-                if (loggedInUserResponse) {
-                  setVerified(loggedInUserResponse.data.user.isVerified);
-                }
-                if (loggedInUserResponse && loggedInUserResponse.data.user.blockedUsers.includes(response.data.user._id)) {
-                  setIsBlockedByYou(true);
-                }
+        // Vérifier si l'utilisateur connecté est dans la liste des utilisateurs bloqués
+        if (
+          loggedInUserId &&
+          response.data.user.blockedUsers.includes(loggedInUserId)
+        ) {
+          setIsBlocked(true);
+        } else {
+          setIsBlocked(false);
+        }
 
-              
-              }
-
+        // Vérifier si l'utilisateur connecté a bloqué le propriétaire du profil
+        // fetch l'user connecté
+        const jwtToken = localStorage.getItem("jwtToken");
+        if (jwtToken) {
+          const loggedUsername = localStorage.getItem("loggedInUsername");
+          const loggedInUserResponse = await axios.get(
+            `${BACKEND_URL}/users/${loggedUsername.toLowerCase()}`
+          );
+          if (loggedInUserResponse) {
+            setVerified(loggedInUserResponse.data.user.isVerified);
+          }
+          if (
+            loggedInUserResponse &&
+            loggedInUserResponse.data.user.blockedUsers.includes(
+              response.data.user._id
+            )
+          ) {
+            setIsBlockedByYou(true);
+          }
+        }
       } catch (error) {
-        console.log(error);
-        toast.error("Erreur lors de la récupération du profil.");
+        toast.error("Error retrieving user profile.");
       }
     };
 
@@ -128,14 +139,14 @@ const ProfilePage = () => {
   useEffect(() => {
     checkFollowingStatus();
     checkYourFollowingStatus();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedInUserId, followers, followings]);
 
   const handleFollow = async () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour citer un post.");
+        toast.error("You must be logged in to follow a user.");
         return;
       }
       await axios.post(`${BACKEND_URL}/users/follow/${user._id}`, null, {
@@ -150,7 +161,7 @@ const ProfilePage = () => {
       setFollowerCount(followerCount + 1);
       setIsFollowing(true);
     } catch (error) {
-      toast.error("Erreur lors du suivi de l'utilisateur.");
+      toast.error("Error following user.");
     }
   };
 
@@ -158,7 +169,7 @@ const ProfilePage = () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour citer un post.");
+        toast.error("You must be logged in to unfollow a user.");
         return;
       }
 
@@ -174,29 +185,31 @@ const ProfilePage = () => {
       setFollowerCount(followerCount - 1);
       setIsFollowing(false);
     } catch (error) {
-      toast.error("Erreur lors de la suppression du suivi de l'utilisateur.");
+      toast.error("Error unfollowing user.");
     }
   };
 
-
-
   const handleFollowersClick = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/users/${user._id}/followers`);
+      const response = await axios.get(
+        `${BACKEND_URL}/users/${user._id}/followers`
+      );
       setFollowersList(response.data.followers);
       setShowFollowersModal(true);
     } catch (error) {
-      toast.error("Erreur lors de la récupération des followers.");
+      toast.error("Error retrieving followers.");
     }
   };
 
   const handleFollowingsClick = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/users/${user._id}/followings`);
+      const response = await axios.get(
+        `${BACKEND_URL}/users/${user._id}/followings`
+      );
       setFollowingsList(response.data.followings);
       setShowFollowingsModal(true);
     } catch (error) {
-      toast.error("Erreur lors de la récupération des followings.");
+      toast.error("Error retrieving followings.");
     }
   };
   const handleModalClose = () => {
@@ -208,39 +221,51 @@ const ProfilePage = () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour bloquer/débloquer un utilisateur.");
+        toast.error(
+          "You must be logged in to block/unblock a user. Please login and try again."
+        );
         return;
       }
-  
+
       // Vérifier si l'utilisateur connecté est bloqué par le propriétaire du profil
       if (isBlockedByYou) {
         // Débloquer l'utilisateur
-        const response = await axios.post(`${BACKEND_URL}/users/unblock/${user._id}`, null, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        });
-  
+        const response = await axios.post(
+          `${BACKEND_URL}/users/unblock/${user._id}`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
         // Vérifier la réponse de la route
         if (response.status === 200) {
           setUser((prevUser) => ({
             ...prevUser,
-            blockedUsers: prevUser.blockedUsers.filter((id) => id !== loggedInUserId),
+            blockedUsers: prevUser.blockedUsers.filter(
+              (id) => id !== loggedInUserId
+            ),
           }));
           setIsBlockedByYou(false);
-          toast.success("Vous avez débloqué l'utilisateur.");
+          toast.success("You have unblocked the user.");
           window.location.reload();
         } else {
-          toast.error("Erreur lors du déblocage de l'utilisateur.");
+          toast.error("Error unblocking user.");
         }
       } else {
         // Bloquer l'utilisateur
-        const response = await axios.post(`${BACKEND_URL}/users/block/${user._id}`, null, {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        });
-  
+        const response = await axios.post(
+          `${BACKEND_URL}/users/block/${user._id}`,
+          null,
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+
         // Vérifier la réponse de la route
         if (response.status === 200) {
           setUser((prevUser) => ({
@@ -248,17 +273,16 @@ const ProfilePage = () => {
             blockedUsers: [...prevUser.blockedUsers, loggedInUserId],
           }));
           setIsBlockedByYou(true);
-          toast.success("Vous avez bloqué l'utilisateur.");
+          toast.success("You have blocked the user.");
           window.location.reload();
         } else {
-          toast.error("Erreur lors du blocage de l'utilisateur.");
+          toast.error("Error blocking user.");
         }
       }
     } catch (error) {
-      toast.error("Erreur lors du blocage/déblocage de l'utilisateur.");
+      toast.error("Error blocking/unblocking user.");
     }
   };
-  
 
   const handleOptionsClick = () => {
     setShowOptionsPanel(!showOptionsPanel);
@@ -294,7 +318,7 @@ const ProfilePage = () => {
       })
       .catch((error) => {
         // Gérer les erreurs de récupération du rôle, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        console.error("Erreur lors de la récupération du rôle de l'utilisateur :", error);
+        toast.error("Error retrieving user role.");
       });
 
     // ... (autres requêtes et actions nécessaires)
@@ -304,13 +328,17 @@ const ProfilePage = () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour bannir/débannir un utilisateur.");
+        toast.error(
+          "You must be logged in to ban/unban a user. Please login and try again."
+        );
         return;
       }
-  
+
       // Effectuer la requête PUT pour bannir ou débannir l'utilisateur
       const response = await axios.post(
-        `${BACKEND_URL}/users/${user.status === 'banned' ? "unban" : "ban"}/${user._id}`,
+        `${BACKEND_URL}/users/${user.status === "banned" ? "unban" : "ban"}/${
+          user._id
+        }`,
         null,
         {
           headers: {
@@ -318,232 +346,246 @@ const ProfilePage = () => {
           },
         }
       );
-  
+
       // Vérifier la réponse de la route
       if (response.status === 200) {
         // Mettre à jour le statut de l'utilisateur localement
         setUser((prevUser) => ({
           ...prevUser,
-          status: user.status === 'banned'  ? "default" : "banned",
+          status: user.status === "banned" ? "default" : "banned",
         }));
-  
+
         // Afficher le message de succès approprié
-        const successMessage = user.status === 'banned' 
-          ? "Vous avez débanni l'utilisateur."
-          : "Vous avez banni l'utilisateur.";
+        const successMessage =
+          user.status === "banned"
+            ? "You have unbanned the user."
+            : "You have banned the user.";
         toast.success(successMessage);
       } else {
-        toast.error("Erreur lors du bannissement/débannissement de l'utilisateur.");
+        toast.error(
+          "Error banning/unbanning user. Please try again or contact support."
+        );
       }
     } catch (error) {
-      toast.error("Erreur lors du bannissement/débannissement de l'utilisateur.");
+      toast.error(
+        "Error banning/unbanning user. Please try again or contact support."
+      );
     }
   };
 
-    // Vérifier si l'utilisateur est banni
+  // Vérifier si l'utilisateur est banni
 
-    if (user) {
-      if (loggedInUserId && loggedInUserId === user._id && user?.status === 'banned') {
-        return (
-          <div className="container mx-auto">
-            <div className="bg-gray-100 text-gray-800 rounded-md p-4">
-              <p>Vous êtes banni.</p>
+  if (user) {
+    if (
+      loggedInUserId &&
+      loggedInUserId === user._id &&
+      user?.status === "banned"
+    ) {
+      return (
+        <div className="container mx-auto" style={{ paddingTop: "100px" }}>
+          <div className="bg-gray-100 text-gray-800 rounded-md p-4">
+            <p>Your account has been banned.</p>
+            <button
+              onClick={() => navigate(`/edit/${user.username}`)}
+              className="block w-full text-left px-4 py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              Edit Profile
+            </button>
+            <button
+              onClick={handleLogout}
+              className="block w-full text-left px-4 py-2 mt-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            >
+              Logout
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (user?.status === "banned") {
+      return (
+        <div className="container mx-auto" style={{ paddingTop: "100px" }}>
+          <div className="bg-gray-100 text-gray-800 rounded-md p-4">
+            <p>This user has been banned.</p>
+            {loggedInUserRole === "admin" && (
               <button
-                onClick={() => navigate(`/edit/${user.username}`)}
+                onClick={handleBanDeban}
                 className="block w-full text-left px-4 py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
               >
-                Modifier le Profil
+                Unban
               </button>
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 mt-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
-                Déconnexion
-              </button>
-            </div>
+            )}
           </div>
-        );
-      }
-  
-      if (user?.status === 'banned') {
-        return (
-          <div className="container mx-auto">
-            <div className="bg-gray-100 text-gray-800 rounded-md p-4">
-              <p>Cet utilisateur est banni.</p>
-              {loggedInUserRole === 'admin' && (
-                <button
-                  onClick={handleBanDeban}
-                  className="block w-full text-left px-4 py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                >
-                  Unban
-                </button>
-              )}
-            </div>
-          </div>
-        );
-      }
+        </div>
+      );
     }
-  
+  }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto" style={{ paddingTop: "100px" }}>
       {user ? (
         <div className="bg-white rounded-lg shadow-md p-4 mt-4">
           <div className="flex items-center justify-between mb-4">
-          <h2 className="text-3xl font-bold mb-4">{user.plainName}'s Profile
-          <p className="text-gray-600 text-sm">@{user.username}</p>
-          </h2>
+            <h2 className="text-3xl font-bold mb-4">
+              {user.plainName}
+              <p className="text-gray-600 text-sm">@{user.username}</p>
+            </h2>
 
-          {loggedInUserId !== user._id && isFollowingYou && (
-    <span className="bg-gray-300 text-gray-700 px-2 py-1 rounded mr-2">Follows you</span>
+            {loggedInUserId !== user._id && isFollowingYou && (
+              <span className="bg-gray-300 text-gray-700 px-2 py-1 rounded mr-2">
+                Follows you
+              </span>
             )}
+          </div>
+          {/* le bouton ... doit être fixé à droite, accessible à tous les users connectés */}
+          {/* si nous sommes l'user de la page = accès à modifier et déconnexion dans un modal */}
+          {/* si nous ne sommes pas l'user de la page = accès à bloquer/débloquer */}
+          {/* je veux que le modal soit une liste et que les boutons soient designés pour paraitre bien dans la liste (pas de petit bouton rouge ou bleu) */}
+          {loggedInUserId ? (
+            <>
+              {/* div qui fixe le bouton à droite */}
+              <div className="flex">
+                <button
+                  className="text-xl text-gray-600 ml-auto rounded-full bg-gray-300 p-2 hover:bg-gray-400 w-10 h-10 flex items-center justify-center"
+                  onClick={handleOptionsClick}
+                  aria-label="Options"
+                >
+                  ...
+                </button>
+              </div>
+            </>
+          ) : null}
+
+          {showOptionsPanel && (
+            <div className="flex">
+              <div className="absolute top-40 mt-28 right-0 bg-white rounded-lg shadow-md p-2 space-y-2">
+                {/* si nous sommes l'user de la page = accès à modifier et déconnexion dans un modal */}
+                {loggedInUserId === user._id ? (
+                  <>
+                    <button
+                      onClick={() => navigate(`/edit/${user.username}`)}
+                      className="block w-full text-left px-4 py-2 hover:text-blue-500"
+                    >
+                      Edit Profile
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-4 py-2 text-red-500 hover:text-red-600"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  // si nous ne sommes pas l'user de la page = accès à bloquer/débloquer
+                  // je veux que le modal soit une liste et que les boutons soient designés pour paraitre bien dans la liste (pas de petit bouton rouge ou bleu)
+                  <>
+                    <button
+                      onClick={handleBlockUnblock}
+                      className={`block w-full text-left px-4 py-2 ${
+                        isBlocked || isBlockedByYou
+                          ? "text-red-500"
+                          : "text-blue-500"
+                      } hover:text-red-600`}
+                      disabled={isBlocked}
+                    >
+                      {isBlocked
+                        ? "You are blocked"
+                        : isBlockedByYou
+                        ? "Unblock"
+                        : "Block"}
+                    </button>
+
+                    <button
+                      // Afficher le formulaire de signalement au clic
+                      onClick={() => setIsReportFormOpen(true)}
+                      className={`block w-full text-left px-4 py-2 text-red-500 hover:text-red-600`}
+                    >
+                      Report
+                    </button>
+                    {/* Affiche le bouton Ban/Deban uniquement si l'utilisateur connecté a le rôle "admin" */}
+                    {loggedInUserRole === "admin" && (
+                      <button
+                        onClick={handleBanDeban}
+                        className="block w-full text-left px-4 py-2 text-red-500 hover:text-red-600"
+                      >
+                        {user?.status === "banned" ? "Unban" : "Ban"}
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-            {/* le bouton ... doit être fixé à droite, accessible à tous les users connectés */}
-            {/* si nous sommes l'user de la page = accès à modifier et déconnexion dans un modal */}
-            {/* si nous ne sommes pas l'user de la page = accès à bloquer/débloquer */}
-            {/* je veux que le modal soit une liste et que les boutons soient designés pour paraitre bien dans la liste (pas de petit bouton rouge ou bleu) */}
-            {loggedInUserId ?(
-        <>
-        {/* div qui fixe le bouton à droite */}
-        <div className="flex mb-4">
-  <button
-    className="text-xl text-gray-600 ml-auto rounded-full bg-gray-300 p-2 hover:bg-gray-400 w-10 h-10 flex items-center justify-center"
-    onClick={handleOptionsClick}
-    aria-label="Options"
-  >
-    ...
-  </button>
-</div>
-
-
-
-        </>
-      )
-      : null}
-
-{showOptionsPanel && (
-  <div className="flex mb-4">
-    <div className="absolute top-40 mt-16 right-0 bg-white rounded-lg shadow-md p-2 space-y-2">
-      {/* si nous sommes l'user de la page = accès à modifier et déconnexion dans un modal */}
-      {loggedInUserId === user._id ? (
-        <>
-          <button
-            onClick={() => navigate(`/edit/${user.username}`)}
-            className="block w-full text-left px-4 py-2 hover:text-blue-500"
-          >
-            Modifier le Profil
-          </button>
-          <button
-            onClick={handleLogout}
-            className="block w-full text-left px-4 py-2 text-red-500 hover:text-red-600"
-          >
-            Déconnexion
-          </button>
-        </>
-      ) : (
-        // si nous ne sommes pas l'user de la page = accès à bloquer/débloquer
-        // je veux que le modal soit une liste et que les boutons soient designés pour paraitre bien dans la liste (pas de petit bouton rouge ou bleu)
-        <>
-        <button
-          onClick={handleBlockUnblock}
-          className={`block w-full text-left px-4 py-2 ${
-            isBlocked || isBlockedByYou ? "text-red-500" : "text-blue-500"
-          } hover:text-red-600`}
-          disabled={isBlocked}
-        >
-          {isBlocked ? "Vous êtes bloqué" : isBlockedByYou ? "Débloquer" : "Bloquer"}
-        </button>
-
-        <button
-        // Afficher le formulaire de signalement au clic
-        onClick={() => setIsReportFormOpen(true)}
-        className={`block w-full text-left px-4 py-2 text-red-500 hover:text-red-600`}
-      >
-        Signaler
-      </button>
-            {/* Affiche le bouton Ban/Deban uniquement si l'utilisateur connecté a le rôle "admin" */}
-            {loggedInUserRole === "admin" && (
-        <button
-          onClick={handleBanDeban}
-          className="block w-full text-left px-4 py-2 text-red-500 hover:text-red-600"
-        >
-          {user?.status === "banned" ? "Unban" : "Ban"}
-        </button>
-      )}
-        </>
-      )}
-    </div>
-  </div>
-)}
-
-
+          )}
 
           <img
             src={`${BACKEND_URL}/avatars/${user.avatar}`}
-            alt="Avatar de l'utilisateur"
+            alt={`${user.username}'s avatar`}
             className="rounded-full w-48 h-48 object-cover mb-4"
           />
-<div className="flex items-center mb-4">
-  <span className="mr-2 font-bold" onClick={handleFollowersClick}>
-    Followers: {followerCount}
-  </span>
-  <span className="mr-2 font-bold" onClick={handleFollowingsClick}>
-    Following: {followingCount}
-  </span>
-  {loggedInUserId !== user._id && !isBlocked && !isBlockedByYou ? (
-    isFollowing ? (
-      <button
-        onClick={handleUnfollow}
-        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-      >
-        Unfollow
-      </button>
-    ) : (
-      <button
-        onClick={handleFollow}
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Follow
-      </button>
-    )
-  ) : null}
-</div>
-
-
+          <div className="flex items-center mb-4">
+            <span className="mr-2 font-bold" onClick={handleFollowersClick}>
+              {followerCount} Followers
+            </span>
+            <span className="mr-2 font-bold" onClick={handleFollowingsClick}>
+              {followingCount} Followings
+            </span>
+            {loggedInUserId !== user._id && !isBlocked && !isBlockedByYou ? (
+              isFollowing ? (
+                <button
+                  onClick={handleUnfollow}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Unfollow
+                </button>
+              ) : (
+                <button
+                  onClick={handleFollow}
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Follow
+                </button>
+              )
+            ) : null}
+          </div>
 
           <div>
-  {isBlocked ? (
-    <p>Vous êtes bloqué par cet utilisateur.</p>
-  ) : isBlockedByYou ? (
-    <p>Vous avez bloqué cet utilisateur.</p>
-  ) : (
-    <>
-      <h3 className="text-2xl font-bold mb-2">Derniers Posts</h3>
-      {userPosts.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {userPosts.map((post) => (
-            <Post key={post._id} post={post} />
-          ))}
+            {isBlocked ? (
+              <p>You are blocked by this user.</p>
+            ) : isBlockedByYou ? (
+              <p>You have blocked this user.</p>
+            ) : (
+              <>
+                <h3 className="text-2xl font-bold mb-2">Latest Posts</h3>
+                {userPosts.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {userPosts.map((post) => (
+                      <Post key={post._id} post={post} />
+                    ))}
+                  </div>
+                ) : (
+                  <p>No posts yet.</p>
+                )}
+              </>
+            )}
+          </div>
         </div>
       ) : (
-        <p>Aucun post trouvé.</p>
-      )}
-    </>
-  )}
-</div>
+        <div className="flex items-center justify-center h-screen">
+        <p
+          className="text-2xl font-bold text-gray-800"
+        >
+          Loading Profile...</p>
         </div>
-      ) : (
-        <p>Loading Profile...</p>
       )}
 
-{isReportFormOpen && (
+      {isReportFormOpen && (
         <ReportForm userId={user._id} onClose={handleReportFormClose} />
       )}
 
-{showFollowersModal && (
+      {showFollowersModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-4">
-          <button
+            <button
               onClick={handleModalClose}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-4 mb-4"
             >
@@ -555,7 +597,7 @@ const ProfilePage = () => {
                 <li key={follower._id} className="flex items-center mb-2">
                   <img
                     src={`${BACKEND_URL}/avatars/${follower.avatar}`}
-                    alt={`Avatar de ${follower.username}`}
+                    alt={`${follower.username}'s avatar`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
                   />
                   <Link to={`/${follower.username}`} className="text-blue-500">
@@ -571,7 +613,7 @@ const ProfilePage = () => {
       {showFollowingsModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-4">
-          <button
+            <button
               onClick={handleModalClose}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mt-4 mb-4"
             >
@@ -583,7 +625,7 @@ const ProfilePage = () => {
                 <li key={following._id} className="flex items-center mb-2">
                   <img
                     src={`${BACKEND_URL}/avatars/${following.avatar}`}
-                    alt={`Avatar de ${following.username}`}
+                    alt={`${following.username}'s avatar`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
                   />
                   <Link to={`/${following.username}`} className="text-blue-500">

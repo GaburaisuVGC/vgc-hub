@@ -27,7 +27,7 @@ const EmailVerificationError = () => {
                 onClick={handleLogout}
                 className=" w-full px-4 py-2 mt-4 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
               >
-                Déconnexion
+                Logout
               </button>
     </div>
   );

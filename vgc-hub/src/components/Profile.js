@@ -20,7 +20,7 @@ const Profile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [verified, setVerified] = useState(false);
-  // État local pour stocker le fichier sélectionné
+  // Local state to store the selected file
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatar, setAvatar] = useState("");
   const navigate = useNavigate();
@@ -51,8 +51,7 @@ const Profile = () => {
         setVerified(response.data.user.isVerified);
         setAvatar(response.data.user.avatar);
       } catch (error) {
-        // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        toast.error("Erreur lors de la récupération du profil.");
+        toast.error("Error retrieving profile.");
       }
     };
 
@@ -60,9 +59,8 @@ const Profile = () => {
   }, [username]);
 
   useEffect(() => {
-    // Ajoute cette condition pour vérifier si l'utilisateur est connecté et si le profil visité n'est pas le sien
+    // Add this condition to check if the user is logged in and if the visited profile is not their own
     if (loggedInUserId && user && loggedInUserId !== user._id) {
-      // Rediriger vers l'accueil
       navigate("/");
     }
   }, [loggedInUserId, user, navigate]);
@@ -72,7 +70,7 @@ const Profile = () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous n'êtes pas connecté.");
+        toast.error("You are not logged in.");
         return;
       }
 
@@ -95,7 +93,7 @@ const Profile = () => {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Erreur lors du changement de mot de passe.");
+        toast.error("Error changing password.");
       }
     }
   };
@@ -106,7 +104,7 @@ const Profile = () => {
       if (loggedInUserId && user && loggedInUserId === user._id) {
         const jwtToken = localStorage.getItem("jwtToken");
         if (!jwtToken) {
-          toast.error("Vous n'êtes pas connecté.");
+          toast.error("You are not logged in.");
           return;
         }
 
@@ -115,11 +113,10 @@ const Profile = () => {
         };
 
         if (usernameInput === user.username) {
-          toast.info("Aucune modification apportée à l'username.");
+          toast.info("No changes made to the username.");
           return;
         }
 
-        // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
           `${BACKEND_URL}/users/${user._id}`,
           {
@@ -128,21 +125,20 @@ const Profile = () => {
           { headers }
         );
 
-        // Update the user's username in the local state
         setUser((prevUser) => ({
           ...prevUser,
           username: usernameInput,
         }));
 
-        toast.success("Username mis à jour avec succès.");
+        toast.success("Username updated successfully.");
       } else {
-        toast.error("Vous n'êtes pas autorisé à modifier cet username.");
+        toast.error("You are not authorized to modify this username.");
       }
     } catch (error) {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Erreur lors de la mise à jour de l'username.");
+        toast.error("Error updating username.");
       }
     }
   };
@@ -153,7 +149,7 @@ const Profile = () => {
       if (loggedInUserId && user && loggedInUserId === user._id) {
         const jwtToken = localStorage.getItem("jwtToken");
         if (!jwtToken) {
-          toast.error("Vous n'êtes pas connecté.");
+          toast.error("You are not logged in.");
           return;
         }
 
@@ -162,11 +158,10 @@ const Profile = () => {
         };
 
         if (emailInput === user.email) {
-          toast.info("Aucune modification apportée à l'email.");
+          toast.info("No changes made to the email.");
           return;
         }
 
-        // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
           `${BACKEND_URL}/users/${user._id}`,
           {
@@ -175,21 +170,20 @@ const Profile = () => {
           { headers }
         );
 
-        // Update the user's email in the local state
         setUser((prevUser) => ({
           ...prevUser,
           email: emailInput,
         }));
 
-        toast.success("Email mis à jour avec succès.");
+        toast.success("Email updated successfully.");
       } else {
-        toast.error("Vous n'êtes pas autorisé à modifier cet email.");
+        toast.error("You are not authorized to modify this email.");
       }
     } catch (error) {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Erreur lors de la mise à jour de l'email.");
+        toast.error("Error updating email.");
       }
     }
   };
@@ -199,65 +193,56 @@ const Profile = () => {
     navigate("/login");
   };
 
-  // Fonction pour gérer le téléchargement de l'avatar
+  // Function to handle avatar upload
   const handleUploadAvatar = async () => {
     try {
-      // Vérifier si un fichier a été sélectionné avant de soumettre la requête
       if (!selectedFile) {
-        toast.error("Veuillez choisir un fichier d'avatar.");
+        toast.error("Please choose an avatar file.");
         return;
       }
 
-      // Vérifier la taille du fichier sélectionné en utilisant la valeur de REACT_APP_MAX_FILE_SIZE définie dans .env
       const REACT_APP_MAX_FILE_SIZE = process.env.REACT_APP_MAX_FILE_SIZE;
       if (selectedFile.size > REACT_APP_MAX_FILE_SIZE) {
-        toast.error(`La taille du fichier doit être inférieure à ${REACT_APP_MAX_FILE_SIZE / (1024 * 1024)} MB.`);
+        toast.error(`File size must be less than ${REACT_APP_MAX_FILE_SIZE / (1024 * 1024)} MB.`);
         return;
       }
 
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        // Si le JWT token n'est pas disponible, l'utilisateur n'est pas authentifié, ne pas poursuivre la mise à jour
-        toast.error("Vous n'êtes pas connecté.");
+        toast.error("You are not logged in.");
         return;
       }
 
-      // Créez un nouvel objet FormData pour envoyer le fichier
       const formData = new FormData();
       formData.append("avatar", selectedFile);
 
-      // Envoyez une requête PUT au backend pour mettre à jour l'avatar
       const userId = user._id;
       const response = await axios.put(
         `${BACKEND_URL}/users/${userId}/avatar`,
         formData,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // Important pour l'upload de fichiers
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${jwtToken}`,
           },
         }
       );
 
-      // Si la requête réussit, mettez à jour l'avatar dans l'état local du composant
       setAvatar(response.data.avatar);
-      toast.success("Avatar mis à jour avec succès.");
+      toast.success("Avatar updated successfully.");
     } catch (error) {
-      console.error("Erreur lors du téléchargement de l'avatar :", error);
-      toast.error("Erreur lors du téléchargement de l'avatar.");
+      toast.error("Error uploading avatar.");
     }
   };
 
   const handleDeleteAccount = () => {
-    // Utiliser react-confirm-alert pour afficher un pop-up de confirmation
     confirmAlert({
-      title: "Confirmation de suppression",
-      message: "Êtes-vous sûr de vouloir supprimer votre compte ?",
+      title: "Confirmation of Deletion",
+      message: "Are you sure you want to delete your account?",
       buttons: [
         {
-          label: "Oui",
+          label: "Yes",
           onClick: () => {
-            // Requête DELETE pour supprimer le compte de l'utilisateur connecté
             axios
               .delete(`${BACKEND_URL}/users/${loggedInUserId}`, {
                 headers: {
@@ -265,28 +250,23 @@ const Profile = () => {
                 },
               })
               .then(() => {
-                // Effacter les autres items du localStorage
-                localStorage.clear()
-                // Rediriger vers la page d'accueil
+                localStorage.clear();
                 navigate("/");
               })
               .catch((error) => {
-                // Gérer les erreurs de suppression du compte, par exemple, afficher un message d'erreur
-                console.error("Erreur lors de la suppression du compte :", error);
-                toast.error("Erreur lors de la suppression du compte.");
+                toast.error("Error deleting account.");
               });
           },
         },
         {
-          label: "Non",
-          // Ne rien faire si l'utilisateur clique sur "Non"
+          label: "No",
         },
       ],
     });
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
+    <div className="max-w-md mx-auto p-4" style={{ paddingTop: "100px" }}>
       {user ? (
         <div>
           <h2 className="text-2xl font-bold mb-4">{user.username}'s Profile</h2>
@@ -294,7 +274,7 @@ const Profile = () => {
           {loggedInUserId && user && loggedInUserId === user._id && (
             <div>
               <div>
-                <h3 className="text-lg font-bold mb-2">Modifier l'Username</h3>
+                <h3 className="text-lg font-bold mb-2">Edit Username</h3>
                 <input
                   type="text"
                   value={usernameInput}
@@ -303,14 +283,14 @@ const Profile = () => {
                 />
                 <button
                   onClick={handleUpdateUsername}
-                  disabled={usernameInput === user.username}
+                  disabled={usernameInput.toLowerCase() === user.username.toLowerCase()}
                   className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                 >
-                  Sauvegarder l'Username
+                  Save Username
                 </button>
               </div>
               <div className="mt-4">
-                <h3 className="text-lg font-bold mb-2">Modifier l'Email</h3>
+                <h3 className="text-lg font-bold mb-2">Edit Email</h3>
                 <input
                   type="email"
                   value={emailInput}
@@ -322,7 +302,7 @@ const Profile = () => {
                   disabled={emailInput === user.email}
                   className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                 >
-                  Sauvegarder l'Email
+                  Save Email
                 </button>
                 <button
                   onClick={handleLogout}
@@ -379,11 +359,11 @@ const Profile = () => {
                 {avatar ? (
                   <img
                     src={`${BACKEND_URL}/avatars/${avatar}`}
-                    alt="Avatar de l'utilisateur"
+                    alt="User's Avatar"
                     className="w-48 h-48 mb-4 rounded"
                   />
                 ) : (
-                  <p>Aucun avatar téléchargé</p>
+                  <p>No uploaded avatar</p>
                 )}
                 <Dropzone
                   onDrop={(acceptedFiles) => setSelectedFile(acceptedFiles[0])}
@@ -392,8 +372,7 @@ const Profile = () => {
                     <div {...getRootProps()} className="p-4 border rounded cursor-pointer">
                       <input {...getInputProps()} />
                       <p>
-                        Faites glisser un fichier ici ou cliquez pour
-                        télécharger un avatar
+                        Drag and drop a file here or click to upload an avatar
                       </p>
                     </div>
                   )}
@@ -403,16 +382,16 @@ const Profile = () => {
                   disabled={!selectedFile}
                   className="w-full mt-4 px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
                 >
-                  Télécharger l'avatar
+                  Upload Avatar
                 </button>
               </div>
               <div className="mt-4">
-                <h2 className="text-2xl font-bold mb-2">Supprimer le Compte</h2>
+                <h2 className="text-2xl font-bold mb-2">Delete Account</h2>
                 <button
                   onClick={handleDeleteAccount}
                   className="w-full px-4 py-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none focus:bg-red-600"
                 >
-                  Supprimer le Compte
+                  Delete Account
                 </button>
               </div>
             </div>
