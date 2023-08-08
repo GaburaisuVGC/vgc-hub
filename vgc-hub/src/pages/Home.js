@@ -23,7 +23,7 @@ const Home = () => {
         </div>
 
         {/* Sidebar */}
-        <div className={`w-full lg:w-1/3 p-4 right-0 ${sidebarOpen ? 'block mb-80 lg:fixed' : 'hidden lg:block'}`}>
+        <div className={`w-full lg:w-1/3 p-4 right-0 lg:fixed ${sidebarOpen ? 'block mb-80' : 'hidden lg:block'}`}>
           <Sidebar />
         </div>
       </div>
