@@ -28,8 +28,8 @@ const Header = () => {
           const response = await axios.get(`${BACKEND_URL}/users/${username.toLowerCase()}`);
           setUser(response.data.user);
         } catch (error) {
-          // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-          toast.error('Erreur lors de la récupération du profil.');
+          // Handle profile retrieval error, for example, show an error message or redirect to an error page
+          toast.error('Error retrieving profile.');
         }
       }
     };
@@ -37,10 +37,10 @@ const Header = () => {
     fetchProfile();
   }, []);
 
-  // Vérifier si l'utilisateur est connecté (simulé ici avec une variable loggedInUsername)
+  // Check if the user is logged in (simulated here with a loggedInUsername variable)
   const loggedInUsername = localStorage.getItem('loggedInUsername');
 
-  // Fonction pour gérer le clic sur l'avatar ou le nom d'utilisateur
+  // Function to handle clicking on user avatar or username
   const handleUserInfoClick = () => {
     if (loggedInUsername) {
       navigate(`/${loggedInUsername}`);
@@ -48,7 +48,9 @@ const Header = () => {
   };
 
   return (
-    <header className="navbar flex justify-between items-center p-4 bg-gray-800 text-white h-20">
+    <header className='navbar flex justify-between items-center p-4 bg-gray-800 text-white h-20 fixed top-0 w-full'
+    style={{ zIndex: "1000" }}
+    >
       <div className="navbar-left">
         <Link to="/" className="navbar-logo text-3xl text-white">VGC Hub</Link>
       </div>
@@ -56,7 +58,7 @@ const Header = () => {
         {loggedInUserId && user && loggedInUserId === user._id ? (
           <div className="flex items-center">
             <div className="user-info flex items-center" onClick={handleUserInfoClick}>
-              {/* Afficher l'avatar de l'utilisateur et son nom d'utilisateur */}
+              {/* Display user's avatar and username */}
               <img
                 src={`${BACKEND_URL}/avatars/${user?.avatar}`}
                 alt="Avatar"
@@ -72,9 +74,9 @@ const Header = () => {
           </div>
         ) : (
           <div className="navbar-buttons flex items-center">
-            {/* Afficher les liens de navigation pour les pages Connexion et Inscription */}
-            <Link to="/login" className="navbar-button bg-gray-700 px-4 py-2 rounded-full mr-2">Connexion</Link>
-            <Link to="/signup" className="navbar-button bg-gray-700 px-4 py-2 rounded-full">Inscription</Link>
+            {/* Display navigation links for Login and Signup pages */}
+            <Link to="/login" className="navbar-button bg-gray-700 px-4 py-2 rounded-full mr-2">Login</Link>
+            <Link to="/signup" className="navbar-button bg-gray-700 px-4 py-2 rounded-full">Signup</Link>
           </div>
         )}
       </div>

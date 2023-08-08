@@ -7,27 +7,25 @@ import { useNavigate } from 'react-router-dom';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Signup = () => {
-
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est déjà connecté (en vérifiant la présence du jeton JWT)
+    // Check if the user is already logged in (by checking the presence of JWT token)
     const jwtToken = localStorage.getItem('jwtToken');
     if (jwtToken) {
-      // Rediriger vers la page d'accueil si l'utilisateur est déjà connecté
+      // Redirect to the home page if the user is already logged in
       navigate('/');
     }
   }, [navigate]);
 
-
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required('Le nom d\'utilisateur est requis'),
-    email: Yup.string().email('L\'adresse e-mail est invalide').required('L\'adresse e-mail est requise'),
+    username: Yup.string().required('Username is required'),
+    email: Yup.string().email('Email is invalid').required('Email is required'),
     password: Yup.string()
-      .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
-      .max(64, 'Le mot de passe ne peut pas contenir plus de 64 caractères')
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Le mot de passe doit contenir au moins une majuscule et un chiffre')
-      .required('Le mot de passe est requis'),
+      .min(8, 'Password must be at least 8 characters')
+      .max(64, 'Password cannot exceed 64 characters')
+      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter and one digit')
+      .required('Password is required'),
   });
 
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -40,14 +38,14 @@ const Signup = () => {
 
       toast.success(response.data.message);
     } catch (error) {
-      setErrors({ password: error.response.data.error }); // Afficher l'erreur liée au mot de passe
+      setErrors({ password: error.response.data.error }); // Display the password-related error
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-4">
+    <div className="max-w-md mx-auto p-4" style={{ paddingTop: '100px' }}>
       <h2 className="text-2xl font-bold mb-4">Signup</h2>
       <Formik
         initialValues={{ username: '', email: '', password: '' }}
@@ -56,7 +54,7 @@ const Signup = () => {
       >
         <Form>
           <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
             <Field
               type="text"
               name="username"
@@ -65,7 +63,7 @@ const Signup = () => {
             <ErrorMessage name="username" component="div" className="text-red-500 text-sm" />
           </div>
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">E-mail</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
             <Field
               type="email"
               name="email"
@@ -74,7 +72,7 @@ const Signup = () => {
             <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
           </div>
           <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mot de passe</label>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
             <Field
               type="password"
               name="password"
@@ -86,7 +84,7 @@ const Signup = () => {
             type="submit"
             className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
           >
-            S'inscrire
+            Sign Up
           </button>
         </Form>
       </Formik>

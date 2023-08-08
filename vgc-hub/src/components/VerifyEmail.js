@@ -15,7 +15,7 @@ const VerifyEmail = () => {
         toast.success(response.data.message);
         navigate('/email-verification-confirmation');
       } catch (error) {
-        toast.error('Erreur lors de la vérification de l\'e-mail.');
+        toast.error('Error verifying email.');
         navigate('/email-verification-error');
       }
     };
@@ -26,7 +26,7 @@ const VerifyEmail = () => {
   return (
     <div className="max-w-md mx-auto p-4">
       <h2 className="text-2xl font-bold mb-4">Email Verification</h2>
-      <p>Vérification de l'e-mail en cours...</p>
+      <p>Verifying email...</p>
     </div>
   );
 };

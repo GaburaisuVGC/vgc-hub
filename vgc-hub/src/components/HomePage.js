@@ -14,6 +14,7 @@ const HomePage = () => {
   const [timeline, setTimeline] = useState([]);
   const [loggedInUserId, setLoggedInUserId] = useState("");
   const [remainingChars, setRemainingChars] = useState(500);
+  const [viewMode, setViewMode] = useState("timeline");
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -21,9 +22,11 @@ const HomePage = () => {
         const jwtToken = localStorage.getItem("jwtToken");
         let response;
 
-        if (!jwtToken) {
-          response = await axios.get(`${BACKEND_URL}/posts`);
-        } else {
+        if (viewMode === "timeline") {
+          if (!jwtToken) {
+            setViewMode("latest");
+            response = await axios.get(`${BACKEND_URL}/posts`);
+          }
           const decodedToken = jwt_decode(jwtToken);
           setLoggedInUserId(decodedToken.userId);
           response = await axios.get(`${BACKEND_URL}/posts/timeline`, {
@@ -31,33 +34,30 @@ const HomePage = () => {
               Authorization: `Bearer ${jwtToken}`,
             },
           });
+        } else {
+          response = await axios.get(`${BACKEND_URL}/posts`);
         }
 
-        const allPosts = response.data.posts;
-
-        // Utiliser un objet pour garder trace des posts et de leur date de création
         const uniquePosts = {};
-        allPosts.forEach((post) => {
+        response.data.posts.forEach((post) => {
           const postId = post._id.toString();
           if (!uniquePosts[postId] || new Date(post.createdAt) > new Date(uniquePosts[postId].createdAt)) {
             uniquePosts[postId] = post;
           }
         });
 
-        // Transformer l'objet en array pour l'envoyer dans la réponse
         const sortedPosts = Object.values(uniquePosts);
 
-        // Trier les posts par ordre décroissant en fonction de la date de création
         sortedPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         setTimeline(sortedPosts);
       } catch (error) {
-        toast.error("Erreur lors de la récupération des posts.");
+        // Handle error if needed
       }
     };
 
     fetchPosts();
-  }, [loggedInUserId]);
+  }, [viewMode, loggedInUserId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,7 +72,7 @@ const HomePage = () => {
 
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour ajouter un post.");
+        toast.error("You must be logged in to add a post.");
         return;
       }
 
@@ -92,19 +92,18 @@ const HomePage = () => {
 
       toast.success(response.data.message);
     } catch (error) {
-      toast.error("Erreur lors de l'ajout du post.");
+      toast.error("Error adding the post.");
     }
   };
 
   const handleFileSelect = (acceptedFiles) => {
-    const REACT_APP_MAX_FILE_SIZE = process.env.REACT_APP_MAX_FILE_SIZE || 10 * 1024 * 1024; // Utiliser 10 MB comme valeur par défaut si la variable d'environnement n'est pas définie
+    const REACT_APP_MAX_FILE_SIZE = process.env.REACT_APP_MAX_FILE_SIZE || 10 * 1024 * 1024;
 
-    const selectedFiles = acceptedFiles.slice(0, 4); // Limiter le nombre de fichiers sélectionnés à 4
-    // Vérifier la taille de chaque fichier
+    const selectedFiles = acceptedFiles.slice(0, 4);
     const oversizedFiles = selectedFiles.filter((file) => file.size > REACT_APP_MAX_FILE_SIZE);
 
     if (oversizedFiles.length > 0) {
-      toast.error(`Certains fichiers dépassent la taille maximale autorisée (${REACT_APP_MAX_FILE_SIZE} octets).`);
+      toast.error(`Some files exceed the maximum allowed size (${REACT_APP_MAX_FILE_SIZE} bytes).`);
       return;
     }
 
@@ -115,21 +114,33 @@ const HomePage = () => {
     const inputContent = e.target.value;
     const maxLength = 500;
     setRemainingChars(maxLength - inputContent.length);
-    setContent(inputContent.slice(0, maxLength)); // Limit the content to the maximum character count
+    setContent(inputContent.slice(0, maxLength));
   };
 
-
+  // array of random placeholders
+  const placeholders = [
+    "What's on your mind?",
+    "How are you feeling?",
+    "What's happening?",
+    "What's new?",
+    "Got any plans?",
+    "Got any interesting calcs to share?",
+    "What's your call for the next tournament?"
+  ];
 
   return (
-    <div className="container-1 mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-4">Home</h2>
+    <div className="container-1 mx-auto px-4 py-8"
+    style={{ paddingTop: "100px" }}
+    >
+      <h2 className="text-3xl font-bold mb-4">Timeline</h2>
       <form onSubmit={handleSubmit} className="mb-4">
         <div className="form-group">
           <label htmlFor="content" className="block mb-2 font-bold">
-            Contenu
+            Send a post
           </label>
           <textarea
             id="content"
+            placeholder={placeholders[Math.floor(Math.random() * placeholders.length)]}
             rows={5}
             className="w-full px-4 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
             value={content}
@@ -138,7 +149,7 @@ const HomePage = () => {
             required={!selectedFiles.length}
           />
           <div className="text-right text-gray-500">
-            {remainingChars} caractères restants
+            {remainingChars} characters remaining
           </div>
         </div>
         <div className="form-group">
@@ -147,7 +158,7 @@ const HomePage = () => {
               <div className="dropzone border-dashed border-2 border-gray-300 rounded p-4" {...getRootProps()}>
                 <input {...getInputProps()} name="media" />
                 <p className="mb-2">
-                  Faites glisser jusqu'à 4 fichiers ici ou cliquez pour les télécharger
+                  Drag up to 4 files here or click to upload
                 </p>
               </div>
             )}
@@ -157,9 +168,30 @@ const HomePage = () => {
           type="submit"
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
-          Ajouter le Post
+          Add Post
         </button>
       </form>
+      <div className="mb-4">
+        <button
+          onClick={() => setViewMode("latest")}
+          className={`mr-2 px-3 py-1 rounded ${
+            viewMode === "latest" ? "bg-blue-500 text-white" : "bg-gray-300"
+          }`}
+        >
+          Latest Posts
+        </button>
+        {loggedInUserId && (
+        <button
+          onClick={() => setViewMode("timeline")}
+          className={`px-3 py-1 rounded ${
+            viewMode === "timeline" ? "bg-blue-500 text-white" : "bg-gray-300"
+          }`}
+        >
+          My Timeline
+        </button>
+      )}
+
+      </div>
       {timeline.length > 0 ? (
         <div className="grid gap-4 grid-cols-1">
           {timeline.map((post) => (
@@ -182,7 +214,7 @@ const HomePage = () => {
           ))}
         </div>
       ) : (
-        <p>Aucun post trouvé.</p>
+        <p>No posts found.</p>
       )}
       <ToastContainer />
     </div>

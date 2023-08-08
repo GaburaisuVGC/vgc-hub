@@ -38,8 +38,7 @@ const AdminPanel = () => {
       })
       .catch((error) => {
         // Gérer les erreurs de récupération de la liste des utilisateurs, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        console.error("Erreur lors de la récupération de la liste des utilisateurs :", error);
-        toast.error("Erreur lors de la récupération de la liste des utilisateurs.");
+        toast.error("Error while fetching users list.");
       });
 
     // Requête GET pour récupérer la liste des rapports depuis le backend
@@ -66,7 +65,7 @@ const AdminPanel = () => {
             });
             return userResponse.data.user;
           } catch (error) {
-            console.error("Erreur lors de la récupération de l'utilisateur par son ID :", error);
+            toast.error("Error while fetching user.");
             return null;
           }
         };
@@ -91,8 +90,7 @@ const AdminPanel = () => {
       })
       .catch((error) => {
         // Gérer les erreurs de récupération de la liste des rapports, par exemple, afficher un message d'erreur
-        console.error("Erreur lors de la récupération de la liste des rapports :", error);
-        toast.error("Erreur lors de la récupération de la liste des rapports.");
+        toast.error("Error while fetching reports list.");
       });
   }, []);
 
@@ -119,8 +117,7 @@ const AdminPanel = () => {
       })
       .catch((error) => {
         // Gérer les erreurs de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        console.error("Erreur lors de la récupération du profil :", error);
-        toast.error("Erreur lors de la récupération du profil.");
+        toast.error("Error while fetching profile.");
       });
   };
 
@@ -143,23 +140,22 @@ const AdminPanel = () => {
             user._id === userId ? { ...user, role: "admin" } : user
           )
         );
-        toast.success("Rôle administrateur donné avec succès.");
+        toast.success("Admin role updated successfully.");
       })
       .catch((error) => {
         // Gérer les erreurs de mise à jour du rôle, par exemple, afficher un message d'erreur
-        console.error("Erreur lors de la mise à jour du rôle administrateur :", error);
-        toast.error("Erreur lors de la mise à jour du rôle administrateur.");
+        toast.error("Error while updating admin role.");
       });
   };
 
   const handleDeleteUser = (userId) => {
     // Utiliser react-confirm-alert pour afficher un pop-up de confirmation
     confirmAlert({
-      title: "Confirmation de suppression",
-      message: "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      title: "Delete confirmation",
+      message: "Are you sure to do this?",
       buttons: [
         {
-          label: "Oui",
+          label: "Yes",
           onClick: () => {
             // Requête DELETE pour supprimer l'utilisateur spécifié par son ID
             axios
@@ -171,17 +167,16 @@ const AdminPanel = () => {
               .then((response) => {
                 // Mettez à jour la liste des utilisateurs après la suppression
                 setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId));
-                toast.success("Utilisateur supprimé avec succès.");
+                toast.success("User deleted successfully.");
               })
               .catch((error) => {
                 // Gérer les erreurs de suppression d'utilisateur, par exemple, afficher un message d'erreur
-                console.error("Erreur lors de la suppression de l'utilisateur :", error);
-                toast.error("Erreur lors de la suppression de l'utilisateur.");
+                toast.error("Error while deleting user.");
               });
           },
         },
         {
-          label: "Non",
+          label: "No",
           // Ne rien faire si l'utilisateur clique sur "Non"
         },
       ],
@@ -191,11 +186,11 @@ const AdminPanel = () => {
   const handleDeleteReport = (reportId) => {
     // Utiliser react-confirm-alert pour afficher un pop-up de confirmation
     confirmAlert({
-      title: "Confirmation de suppression",
-      message: "Êtes-vous sûr de vouloir supprimer ce rapport ?",
+      title: "Delete confirmation",
+      message: "Are you sure to do this?",
       buttons: [
         {
-          label: "Oui",
+          label: "Yes",
           onClick: () => {
             // Requête DELETE pour supprimer le rapport spécifié par son ID
             axios
@@ -210,17 +205,16 @@ const AdminPanel = () => {
                 setFilteredReports((prevReports) =>
                   prevReports.filter((report) => report._id !== reportId)
                 );
-                toast.success("Rapport supprimé avec succès.");
+                toast.success("Report deleted successfully.");
               })
               .catch((error) => {
                 // Gérer les erreurs de suppression du rapport, par exemple, afficher un message d'erreur
-                console.error("Erreur lors de la suppression du rapport :", error);
-                toast.error("Erreur lors de la suppression du rapport.");
+                toast.error("Error while deleting report.");
               });
           },
         },
         {
-          label: "Non",
+          label: "No",
           // Ne rien faire si l'utilisateur clique sur "Non"
         },
       ],
@@ -240,44 +234,46 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto"
+    style={{ paddingTop: "100px" }}
+    >
       <h1 className="text-3xl font-bold my-4">Panel Admin</h1>
 
       <section>
-        <h2 className="text-2xl font-bold">Liste des Utilisateurs</h2>
+        <h2 className="text-2xl font-bold">Users</h2>
         <ul>
           {users.map((user) => (
             <li key={user._id} className="py-4 border-b border-gray-300">
               <div className="flex items-center">
                 <img
                   src={`${BACKEND_URL}/avatars/${user.avatar}`}
-                  alt="Avatar de l'utilisateur"
+                  alt={`${user.username}'s avatar`}
                   className="w-12 h-12 rounded-full mr-4"
                 />
                 <div>
                   <span className="text-lg font-semibold">{user.username}</span>
                   <span className="block text-sm">{user.email}</span>
-                  <span className="block text-sm">Rôle: {user.role}</span>
+                  <span className="block text-sm">Role: {user.role}</span>
                 </div>
               </div>
               {/* Bouton qui link vers /admin/edit/:username pour modifier l'utilisateur */}
               <Link to={`/admin/edit/${user.username}`}>
                 <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                  Modifier
+                  Edit
                 </button>
               </Link>
               <button
                 onClick={() => handleDeleteUser(user._id)}
                 className="mt-2 ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
               >
-                Supprimer
+                Delete
               </button>
               {userRole === "admin" && user.role !== "admin" && (
                 <button
                   onClick={() => handleMakeAdmin(user._id)}
                   className="mt-2 ml-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                 >
-                  Donner le rôle admin
+                  Grant admin role
                 </button>
               )}
             </li>
@@ -286,25 +282,25 @@ const AdminPanel = () => {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mt-8">Liste des Rapports</h2>
+        <h2 className="text-2xl font-bold mt-8">Reports</h2>
         <div className="mb-4">
           <button
             onClick={() => handleFilterReports("")}
             className="mr-4 px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
           >
-            Tous les rapports
+            All Reports
           </button>
           <button
   onClick={() => handleFilterReports("post")}
   className="mr-4 px-4 py-2 text-white bg-black rounded hover:bg-gray-600"
 >
-  Rapports Utilisateur
+ User Reports
 </button>
           <button
             onClick={() => handleFilterReports("user")}
             className="mr-4 px-4 py-2 bg-yellow-300 text-black rounded hover:bg-yellow-400"
           >
-            Rapports Post
+            Post Reports
           </button>
         </div>
         <ul>
@@ -319,24 +315,24 @@ const AdminPanel = () => {
                 <div>
                   <span className="block">{report.comment}</span>
                   <span className="block text-sm">
-                    {report.postId ? "Report Utilisateur" : "Report Post"}
+                    {report.postId ? "User Report" : "Post Report"}
                   </span>
                 </div>
                 {report.postId && (
                   <Link to={`/post/${report.postId._id}`}>
-                    <span className="block ml-4 text-blue-500 hover:underline">Voir le post</span>
+                    <span className="block ml-4 text-blue-500 hover:underline">Go to post</span>
                   </Link>
                 )}
                 {report.userId && (
                   <>
                     <Link to={`/${report.user.username}`}>
                       <span className="block ml-4 text-blue-500 hover:underline">
-                        Profil reporté : @{report.user.username}
+                        Reported user : @{report.user.username}
                       </span>
                     </Link>
                     <img
                       src={`${BACKEND_URL}/avatars/${report.user?.avatar}`}
-                      alt={`Avatar de ${report.user?.username}`}
+                      alt={`${report.user?.username}'s avatar`}
                       width={50}
                       className="rounded-full mr-2 ml-4"
                     />

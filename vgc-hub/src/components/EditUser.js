@@ -15,7 +15,7 @@ const EditUser = () => {
   const [roleInput, setRoleInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatar, setAvatar] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false); // Variable d'état pour vérifier si l'utilisateur actuellement connecté est un admin
+  const [isAdmin, setIsAdmin] = useState(false); // State variable to check if the currently logged-in user is an admin
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,63 +29,63 @@ const EditUser = () => {
         setEmailInput(response.data.user.email);
         setAvatar(response.data.user.avatar);
         setRoleInput(response.data.user.role);
-        // Vous pouvez obtenir ici l'ID de l'utilisateur connecté (peut-être depuis le backend) et vérifier si c'est un admin.
-        // Pour cet exemple, je vais supposer que vous avez déjà cette information.
+        // You can get the ID of the logged-in user here (possibly from the backend) and check if it's an admin.
+        // For this example, I'll assume you already have this information.
 
-        // Récupérez le username de l'utilisateur connecté depuis le local storage
+        // Get the username of the logged-in user from local storage
         const loggedInUsername = localStorage.getItem("loggedInUsername");
 
-        // Vérifiez si l'utilisateur connecté est un administrateur ou non
+        // Check if the logged-in user is an admin
         if (loggedInUsername) {
             try {
                 const response = await axios.get(
                   `${BACKEND_URL}/users/${loggedInUsername}`
                 );
                 if (response.data.user.role !== "admin") {
-                    // Si l'utilisateur connecté n'est pas un admin, redirigez-le vers la page d'accueil ou une autre page appropriée.
+                    // If the logged-in user is not an admin, redirect them to the homepage or another appropriate page.
                     navigate("/");
                     } else {
-                        // Si l'utilisateur connecté est un admin, mettez à jour l'état local pour le refléter
+                        // If the logged-in user is an admin, update the local state to reflect that
                         setIsAdmin(true);
                     }
 
 
             } catch (error) {
-                // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-                toast.error("Erreur lors de la récupération du profil connecté.");
+                // Handle the error of fetching the logged-in user's profile, e.g., show an error message or redirect to an error page
+                toast.error("Error while fetching the logged-in user's profile.");
             }
 
         } else {
-          // Si le username de l'utilisateur connecté n'est pas disponible (non authentifié), redirigez-le vers la page d'accueil ou une autre page appropriée.
+          // If the username of the logged-in user is not available (not authenticated), redirect them to the homepage or another appropriate page.
           navigate("/");
         }
       } catch (error) {
-        // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        toast.error("Erreur lors de la récupération du profil.");
+        // Handle the error of fetching the profile, e.g., show an error message or redirect to an error page
+        toast.error("Error while fetching the profile.");
       }
     };
 
     fetchProfile();
   }, [username, navigate]);
 
-  // Fonction pour gérer la mise à jour de l'username
+  // Function to handle updating the username
   const handleUpdateUsername = async () => {
     try {
-      if (isAdmin) { // Vérifiez si l'utilisateur connecté est un admin pour autoriser la mise à jour de l'username
+      if (isAdmin) { // Check if the logged-in user is an admin to allow updating the username
         const jwtToken = localStorage.getItem("jwtToken");
         if (!jwtToken) {
-          // Si le JWT token n'est pas disponible, l'utilisateur n'est pas authentifié, ne pas poursuivre la mise à jour
-          toast.error("Vous n'êtes pas connecté.");
+          // If JWT token is not available, the user is not authenticated, don't proceed with the update
+          toast.error("You are not logged in.");
           return;
         }
 
-        // Si l'entrée de l'username est identique à l'username actuel, ne pas poursuivre la mise à jour
+        // If the username input is the same as the current username, don't proceed with the update
         if (usernameInput === user.username) {
-          toast.info("Aucune modification apportée à l'username.");
+          toast.info("No changes made to the username.");
           return;
         }
 
-        // Inclure le JWT token dans les en-têtes de la requête
+        // Include the JWT token in the request headers
         const headers = {
           Authorization: `Bearer ${jwtToken}`,
         };
@@ -97,40 +97,40 @@ const EditUser = () => {
           {
             username: usernameInput,
           },
-          { headers } // Passer l'objet des en-têtes pour inclure le JWT token
+          { headers } // Pass the headers object to include the JWT token
         );
 
-        toast.success("Username mis à jour avec succès.");
+        toast.success("Username updated successfully.");
       } else {
-        toast.error("Vous n'êtes pas autorisé à modifier cet username.");
+        toast.error("You are not authorized to modify this username.");
       }
     } catch (error) {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Erreur lors de la mise à jour de l'username.");
+        toast.error("Error while updating the username.");
       }
     }
   };
 
-   // Fonction pour gérer la mise à jour de l'email
+   // Function to handle updating the email
    const handleUpdateEmail = async () => {
     try {
-      if (isAdmin) { // Vérifiez si l'utilisateur connecté est un admin pour autoriser la mise à jour de l'email
+      if (isAdmin) { // Check if the logged-in user is an admin to allow updating the email
         const jwtToken = localStorage.getItem("jwtToken");
         if (!jwtToken) {
-          // Si le JWT token n'est pas disponible, l'utilisateur n'est pas authentifié, ne pas poursuivre la mise à jour
-          toast.error("Vous n'êtes pas connecté.");
+          // If JWT token is not available, the user is not authenticated, don't proceed with the update
+          toast.error("You are not logged in.");
           return;
         }
 
-        // Si l'entrée de l'email est identique à l'email actuel, ne pas poursuivre la mise à jour
+        // If the email input is the same as the current email, don't proceed with the update
         if (emailInput === user.email) {
-          toast.info("Aucune modification apportée à l'email.");
+          toast.info("No changes made to the email.");
           return;
         }
 
-        // Inclure le JWT token dans les en-têtes de la requête
+        // Include the JWT token in the request headers
         const headers = {
           Authorization: `Bearer ${jwtToken}`,
         };
@@ -142,40 +142,40 @@ const EditUser = () => {
           {
             email: emailInput,
           },
-          { headers } // Passer l'objet des en-têtes pour inclure le JWT token
+          { headers } // Pass the headers object to include the JWT token
         );
 
-        toast.success("Email mis à jour avec succès.");
+        toast.success("Email updated successfully.");
       } else {
-        toast.error("Vous n'êtes pas autorisé à modifier cet email.");
+        toast.error("You are not authorized to modify this email.");
       }
     } catch (error) {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Erreur lors de la mise à jour de l'email.");
+        toast.error("Error while updating the email.");
       }
     }
   };
 
-  // Fonction pour gérer la mise à jour du rôle
+  // Function to handle updating the role
   const handleUpdateRole = async () => {
     try {
-      if (isAdmin) { // Vérifiez si l'utilisateur connecté est un admin pour autoriser la mise à jour du rôle
+      if (isAdmin) { // Check if the logged-in user is an admin to allow updating the role
         const jwtToken = localStorage.getItem("jwtToken");
         if (!jwtToken) {
-          // Si le JWT token n'est pas disponible, l'utilisateur n'est pas authentifié, ne pas poursuivre la mise à jour
-          toast.error("Vous n'êtes pas connecté.");
+          // If JWT token is not available, the user is not authenticated, don't proceed with the update
+          toast.error("You are not logged in.");
           return;
         }
 
-        // Si l'entrée du rôle est identique au rôle actuel, ne pas poursuivre la mise à jour
+        // If the role input is the same as the current role, don't proceed with the update
         if (roleInput === user.role) {
-          toast.info("Aucune modification apportée au rôle.");
+          toast.info("No changes made to the role.");
           return;
         }
 
-        // Inclure le JWT token dans les en-têtes de la requête
+        // Include the JWT token in the request headers
         const headers = {
           Authorization: `Bearer ${jwtToken}`,
         };
@@ -187,65 +187,64 @@ const EditUser = () => {
           {
             role: roleInput,
           },
-          { headers } // Passer l'objet des en-têtes pour inclure le JWT token
+          { headers } // Pass the headers object to include the JWT token
         );
 
-        toast.success("Rôle mis à jour avec succès.");
+        toast.success("Role updated successfully.");
       } else {
-        toast.error("Vous n'êtes pas autorisé à modifier ce rôle.");
+        toast.error("You are not authorized to modify this role.");
       }
     } catch (error) {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Erreur lors de la mise à jour du rôle.");
+        toast.error("Error while updating the role.");
       }
     }
   };
 
- // Fonction pour gérer le téléchargement de l'avatar
- const handleUploadAvatar = async () => {
-  try {
-    // Vérifier si un fichier a été sélectionné avant de soumettre la requête
-    if (!selectedFile) {
-      toast.error("Veuillez choisir un fichier d'avatar.");
-      return;
-    }
-
-    const jwtToken = localStorage.getItem("jwtToken");
-    if (!jwtToken) {
-      // Si le JWT token n'est pas disponible, l'utilisateur n'est pas authentifié, ne pas poursuivre la mise à jour
-      toast.error("Vous n'êtes pas connecté.");
-      return;
-    }
-
-    // Créez un nouvel objet FormData pour envoyer le fichier
-    const formData = new FormData();
-    formData.append("avatar", selectedFile);
-
-    // Envoyez une requête PUT au backend pour mettre à jour l'avatar
-    const userId = user._id;
-    const response = await axios.put(
-      `${BACKEND_URL}/users/${userId}/avatar`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data", // Important pour l'upload de fichiers
-          Authorization: `Bearer ${jwtToken}`,
-        },
+  // Function to handle avatar upload
+  const handleUploadAvatar = async () => {
+    try {
+      // Check if a file has been selected before submitting the request
+      if (!selectedFile) {
+        toast.error("Please choose an avatar file.");
+        return;
       }
-    );
 
-    // Si la requête réussit, mettez à jour l'avatar dans l'état local du composant
-    setAvatar(response.data.avatar);
-    toast.success("Avatar mis à jour avec succès.");
-  } catch (error) {
-    console.error("Erreur lors du téléchargement de l'avatar :", error);
-    toast.error("Erreur lors du téléchargement de l'avatar.");
-  }
-};
+      const jwtToken = localStorage.getItem("jwtToken");
+      if (!jwtToken) {
+        // If JWT token is not available, the user is not authenticated, don't proceed with the update
+        toast.error("You are not logged in.");
+        return;
+      }
 
-return (
+      // Create a new FormData object to send the file
+      const formData = new FormData();
+      formData.append("avatar", selectedFile);
+
+      // Send a PUT request to the backend to update the avatar
+      const userId = user._id;
+      const response = await axios.put(
+        `${BACKEND_URL}/users/${userId}/avatar`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Important for file uploads
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
+
+      // If the request succeeds, update the avatar in the local component state
+      setAvatar(response.data.avatar);
+      toast.success("Avatar updated successfully.");
+    } catch (error) {
+      toast.error("Error while uploading the avatar.");
+    }
+  };
+
+  return (
     <div className="container mx-auto">
       {user ? (
         <div>
@@ -253,7 +252,7 @@ return (
           {isAdmin && (
             <div className="space-y-4">
               <div className="flex items-center">
-                <h3 className="font-bold">Modifier l'Username</h3>
+                <h3 className="font-bold">Edit Username</h3>
                 <input
                   type="text"
                   value={usernameInput}
@@ -265,11 +264,11 @@ return (
                   disabled={usernameInput === user.username}
                   className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
-                  Sauvegarder l'Username
+                  Save Username
                 </button>
               </div>
               <div className="flex items-center">
-                <h3 className="font-bold">Modifier l'Email</h3>
+                <h3 className="font-bold">Edit Email</h3>
                 <input
                   type="email"
                   value={emailInput}
@@ -281,25 +280,25 @@ return (
                   disabled={emailInput === user.email}
                   className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
-                  Sauvegarder l'Email
+                  Save Email
                 </button>
               </div>
               <div className="flex items-center">
-                <h3 className="font-bold">Modifier le Rôle</h3>
+                <h3 className="font-bold">Edit Role</h3>
                 <select
                   value={roleInput}
                   onChange={(e) => setRoleInput(e.target.value)}
                   className="px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-500"
                 >
-                  <option value="user">Utilisateur</option>
-                  <option value="admin">Administrateur</option>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
                 </select>
                 <button
                   onClick={handleUpdateRole}
                   disabled={roleInput === user.role}
                   className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
                 >
-                  Sauvegarder le Rôle
+                  Save Role
                 </button>
               </div>
               <div className="flex items-center">
@@ -307,19 +306,18 @@ return (
                 {avatar ? (
                   <img
                     src={`${BACKEND_URL}/avatars/${avatar}`}
-                    alt="Avatar de l'utilisateur"
+                    alt="User Avatar"
                     className="w-32 h-32 rounded-full mx-4"
                   />
                 ) : (
-                  <p>Aucun avatar téléchargé</p>
+                  <p>No uploaded avatar</p>
                 )}
                 <Dropzone onDrop={(acceptedFiles) => setSelectedFile(acceptedFiles[0])}>
                   {({ getRootProps, getInputProps }) => (
                     <div className="border rounded-md p-4 mt-2 cursor-pointer" {...getRootProps()}>
                       <input {...getInputProps()} />
                       <p>
-                        Faites glisser un fichier ici ou cliquez pour télécharger un
-                        avatar
+                        Drag and drop a file here or click to upload an avatar
                       </p>
                     </div>
                   )}
@@ -329,7 +327,7 @@ return (
                   disabled={!selectedFile}
                   className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 ml-2"
                 >
-                  Télécharger l'avatar
+                  Upload Avatar
                 </button>
               </div>
             </div>

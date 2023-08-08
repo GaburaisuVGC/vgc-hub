@@ -21,7 +21,7 @@ const EmailResendForm = () => {
       if (error.response && error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error('Erreur lors de l\'envoi de l\'e-mail de vérification.');
+        toast.error('Error sending verification email.');
       }
     }
     setIsLoading(false);

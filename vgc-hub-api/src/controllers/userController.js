@@ -709,3 +709,38 @@ exports.unbanUser = async (req, res) => {
       .json({ message: "Erreur lors du débannissement de l'utilisateur." });
   }
 };
+const escapeRegExp = require('lodash.escaperegexp');
+
+exports.searchUserByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    // Vérifiez que le nom d'utilisateur est fourni
+    // Si ce n'est pas le cas, renvoyez un array vide
+    if (username === '') {
+      return res.json({ results: [] });
+    }
+
+    // Supprimer le caractère "@" si présent
+    const sanitizedUsername = username.replace('@', '');
+
+    // Échapper les caractères spéciaux dans le nom d'utilisateur
+    const escapedUsername = escapeRegExp(sanitizedUsername);
+
+    // Utilisez une requête à la base de données pour rechercher les utilisateurs par nom d'utilisateur
+    const results = await User.find({ username: { $regex: escapedUsername, $options: 'i' } })
+      .select('_id username plainName avatar') // Sélectionnez les champs que vous souhaitez inclure dans les résultats
+      .limit(10); // Limitez le nombre de résultats si nécessaire
+
+    // Si aucun utilisateur n'est trouvé, renvoyez un array vide
+    if (!results) {
+      return res.json({ results: [] });
+    }
+
+    return res.json({ results });
+  } catch (error) {
+    console.error('Error searching for users by username:', error);
+    return res.status(500).json({ message: 'Error searching for users' });
+  }
+};
+

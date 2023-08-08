@@ -11,10 +11,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Vérifier si l'utilisateur est déjà connecté (en vérifiant la présence du jeton JWT)
+    // Check if the user is already logged in (by checking the presence of the JWT token)
     const jwtToken = localStorage.getItem('jwtToken');
     if (jwtToken) {
-      // Rediriger vers la page d'accueil si l'utilisateur est déjà connecté
+      // Redirect to the home page if the user is already logged in
       navigate('/');
     }
   }, [navigate]);
@@ -28,26 +28,28 @@ const Login = () => {
         password
       });
 
-      // Stocker le jeton JWT dans le localStorage
+      // Store the JWT token in localStorage
       localStorage.setItem('jwtToken', response.data.token);
       localStorage.setItem("loggedInUsername", username.toLowerCase());
 
-      // Rediriger vers la page du profil utilisateur après une connexion réussie
+      // Redirect to the user profile page after successful login
       navigate(`/${username.toLowerCase()}`);
 
     } catch (error) {
-      // Si erreur, afficher le message d'erreur renvoyé par le backend
+      // If error, display the error message returned by the backend
       if (error.response.data.error) {
           toast.error(error.response.data.error);
         } else {
-              toast.error('Erreur lors de la connexion. Veuillez vérifier vos identifiants.');
+              toast.error('Error during login. Please check your credentials.');
             }
-      // Afficher un message d'erreur ou faire autre chose en cas d'échec
+      // Display an error message or do something else on failure
     }
   };
 
   return (
-    <div className="w-64 mx-auto mt-4 text-center">
+    <div className="w-64 mx-auto mt-4 text-center"
+    style={{ paddingTop: "100px" }}
+    >
       <h2 className="text-2xl font-bold mb-4">Login</h2>
       <form onSubmit={handleLogin}>
         <input
@@ -74,10 +76,10 @@ const Login = () => {
         </button>
       </form>
       <Link to="/signup" className="text-blue-500 hover:underline block mt-2">
-        S'inscrire
+        Sign Up
       </Link>
       <Link to="/forgot-password" className="text-blue-500 hover:underline block mt-2">
-        Mot de passe oublié
+        Forgot Password
       </Link>
       <ToastContainer />
     </div>
