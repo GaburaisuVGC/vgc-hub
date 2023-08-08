@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -57,7 +57,7 @@ const ResetPasswordPage = () => {
           Reset Password
         </button>
       </form>
-      <ToastContainer />
+       
     </div>
   );
 };

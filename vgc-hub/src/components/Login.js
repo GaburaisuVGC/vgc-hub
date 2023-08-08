@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -81,7 +81,7 @@ const Login = () => {
       <Link to="/forgot-password" className="text-blue-500 hover:underline block mt-2">
         Forgot Password
       </Link>
-      <ToastContainer />
+       
     </div>
   );
 };

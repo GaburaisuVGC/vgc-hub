@@ -29,7 +29,7 @@ const PostInfo = () => {
       </div>
 
       {/* Burger Menu */}
-      <div className="lg:hidden p-4 fixed bottom-0 right-0 z-50">
+      <div className="lg:hidden p-4 fixed bottom-12 right-0 z-50">
       <button
           onClick={toggleSidebar}
           className="p-2 bg-blue-500 rounded text-white"

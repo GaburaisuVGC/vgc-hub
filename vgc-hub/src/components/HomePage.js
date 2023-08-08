@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dropzone from "react-dropzone";
 import "../styles/homepage.css";
@@ -157,9 +157,26 @@ const HomePage = () => {
             {({ getRootProps, getInputProps }) => (
               <div className="dropzone border-dashed border-2 border-gray-300 rounded p-4" {...getRootProps()}>
                 <input {...getInputProps()} name="media" />
-                <p className="mb-2">
-                  Drag up to 4 files here or click to upload
-                </p>
+                {selectedFiles.length > 0 ? (
+                  <div className="flex flex-col gap-2">
+                    {selectedFiles.map((file, index) => (
+                      <div key={index}
+                      >
+                        <p className="text-sm font-bold text-center">
+                          {file.name}
+                        </p>
+                        <p className="text-xs text-center">
+                          {file.size / 1000} KB
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                ) : (
+                  <p className="mb-2">
+                    Drag up to 4 files here or click to upload
+                  </p>
+                )}
               </div>
             )}
           </Dropzone>
@@ -216,7 +233,7 @@ const HomePage = () => {
       ) : (
         <p>No posts found.</p>
       )}
-      <ToastContainer />
+       
     </div>
   );
 };

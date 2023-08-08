@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Post from "./Post";
 import ReportForm from "./ReportForm";
@@ -638,7 +638,7 @@ const ProfilePage = () => {
         </div>
       )}
 
-      <ToastContainer />
+       
     </div>
   );
 };

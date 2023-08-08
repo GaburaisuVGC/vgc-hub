@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwt_decode from "jwt-decode";
 import { confirmAlert } from "react-confirm-alert";
@@ -350,7 +350,7 @@ const AdminPanel = () => {
         </ul>
       </section>
 
-      <ToastContainer />
+       
     </div>
   );
 };
