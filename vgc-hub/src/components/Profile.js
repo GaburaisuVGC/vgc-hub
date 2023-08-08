@@ -195,11 +195,7 @@ const Profile = () => {
   };
 
   const handleLogout = () => {
-    // Clear the JWT token from localStorage or cookies (adjust this based on your token storage approach)
-    localStorage.removeItem("jwtToken"); // If you stored the token in localStorage
-    // document.cookie = 'jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; // If you stored the token in cookies
-
-    // Redirect to the login page after logout
+    localStorage.clear();
     navigate("/login");
   };
 
