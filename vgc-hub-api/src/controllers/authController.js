@@ -9,23 +9,23 @@ const { ExtractJwt } = require('passport-jwt');
 
 exports.signup = async (req, res) => {
     const { username, email, password } = req.body;
-    const reservedUsernames = ['signup', 'login', 'admin', 'verify', 'id', 'search']; // Ajoutez d'autres noms réservés au besoin
+    const reservedUsernames = ['signup', 'login', 'admin', 'verify', 'id', 'search', 'gdpr', 'privacy', 'about', 'qa', 'post', 'edit']; // Ajoutez d'autres noms réservés au besoin
 
     // Vérifiez si l'adresse e-mail est déjà utilisée
     const existingUserByEmail = await User.findOne({ email });
     if (existingUserByEmail) {
-      return res.status(409).json({ error: 'L\'adresse e-mail est déjà utilisée' });
+      return res.status(409).json({ error: 'Email address already in use' });
     }
   
     // Vérifiez si l'username est déjà utilisé
     const existingUserByUsername = await User.findOne({ username });
     if (existingUserByUsername) {
-      return res.status(409).json({ error: 'Le nom d\'utilisateur est déjà utilisé' });
+      return res.status(409).json({ error: 'Username already in use' });
     }
 
     // Vérifiez si le nom d'utilisateur est dans la liste des mots réservés
   if (reservedUsernames.includes(username.toLowerCase())) {
-    return res.status(400).json({ error: 'Ce nom d\'utilisateur n\'est pas autorisé.' });
+    return res.status(400).json({ error: 'This username is not available' });
   }
   
 
@@ -54,10 +54,9 @@ exports.signup = async (req, res) => {
       // Envoyez un e-mail de vérification à l'utilisateur
       sendVerificationEmail(newUser.email, verificationToken);
   
-      return res.status(201).json({ message: 'Utilisateur enregistré avec succès. Veuillez vérifier votre e-mail pour activer votre compte.' });
+      return res.status(201).json({ message: 'User registered successfully. Please check your email for verification.' });
     } catch (err) {
-      console.error('Erreur lors de l\'enregistrement de l\'utilisateur:', err);
-      return res.status(500).json({ error: 'Erreur lors de l\'enregistrement de l\'utilisateur' });
+      return res.status(500).json({ error: 'Error while registering user. Please try again later.' });
     }
   };
 
@@ -74,8 +73,8 @@ const sendVerificationEmail = (email, verificationToken) => {
       const mailOptions = {
         from: process.env.MAIL_EMAIL, // L'adresse e-mail qui envoie l'e-mail
         to: email, // L'adresse e-mail du destinataire
-        subject: 'Vérification de votre compte',
-        text: `Cliquez sur le lien suivant pour vérifier votre compte : ${process.env.CLIENT_URL}/verify/${verificationToken}`,
+        subject: 'Welcome to VGC Hub! Verify your account now.',
+        text: `Click on this link to verify your account : ${process.env.CLIENT_URL}/verify/${verificationToken}`,
       };
     
       transporter.sendMail(mailOptions, (error, info) => {
@@ -95,11 +94,11 @@ const sendVerificationEmail = (email, verificationToken) => {
         const user = await User.findOne({ email });
     
         if (!user) {
-          return res.status(404).json({ error: 'Aucun utilisateur trouvé avec cet e-mail.' });
+          return res.status(404).json({ error: 'No user found with this email address.' });
         }
     
         if (user.isVerified) {
-          return res.status(400).json({ error: 'Votre e-mail est déjà vérifié.' });
+          return res.status(400).json({ error: 'Your account has already been verified.' });
         }
     
         const verificationToken = jwt.sign(
@@ -124,22 +123,22 @@ const sendVerificationEmail = (email, verificationToken) => {
         const mailOptions = {
           from: process.env.MAIL_EMAIL, // L'adresse e-mail qui envoie l'e-mail
           to: email, // L'adresse e-mail du destinataire
-          subject: 'Vérification de votre compte',
-          text: `Cliquez sur le lien suivant pour vérifier votre compte : ${process.env.CLIENT_URL}/verify/${verificationToken}`,
+          subject: 'Hi again! Verify your account now.',
+          text: `Click on this link to verify your account : ${process.env.CLIENT_URL}/verify/${verificationToken}`,
         };
     
         transporter.sendMail(mailOptions, (error, info) => {
           if (error) {
             console.log(error);
-            return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'e-mail de vérification.' });
+            return res.status(500).json({ error: 'An error occurred while sending the verification email.' });
           } else {
             console.log('Email sent: ' + info.response);
-            return res.json({ message: 'Un e-mail de vérification a été envoyé.' });
+            return res.json({ message: 'Verification email sent successfully.' });
           }
         });
       } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'e-mail de vérification.' });
+        return res.status(500).json({ error: 'An error occurred while resending the verification email.' });
       }
     };
 
@@ -159,14 +158,14 @@ passport.use(new LocalStrategy(
       try {
         const user = await User.findOne({ username });
         if (!user) {
-          return done(null, false, { message: 'L\'utilisateur n\'existe pas' });
+          return done(null, false, { message: 'User not found' });
         }
   
         const isMatch = await bcrypt.compare(password, user.password);
         if (isMatch) {
           return done(null, user);
         } else {
-          return done(null, false, { message: 'Mot de passe incorrect' });
+          return done(null, false, { message: 'Incorrect password' });
         }
       } catch (err) {
         return done(err);
@@ -223,8 +222,8 @@ passport.use(new LocalStrategy(
     const mailOptions = {
       from: process.env.MAIL_EMAIL, // L'adresse e-mail qui envoie l'e-mail
       to: email, // L'adresse e-mail du destinataire
-      subject: 'Réinitialisation du mot de passe',
-      text: `Cliquez sur le lien suivant pour réinitialiser votre mot de passe : ${resetLink}`,
+      subject: 'Password Reset Request',
+      text: `Click on this link to reset your password : ${resetLink}`,
     };
   
     transporter.sendMail(mailOptions, (error, info) => {
@@ -244,7 +243,7 @@ passport.use(new LocalStrategy(
       const user = await User.findOne({ email });
   
       if (!user) {
-        return res.status(404).json({ error: 'Aucun utilisateur trouvé avec cet e-mail.' });
+        return res.status(404).json({ error: 'No user found with this email address.' });
       }
   
       // Générez un token de réinitialisation de mot de passe
@@ -263,16 +262,16 @@ passport.use(new LocalStrategy(
   
       // Vérifiez si la mise à jour a été effectuée avec succès
       if (updateResult.nModified === 0) {
-        return res.status(500).json({ error: 'Erreur lors de la mise à jour du token de réinitialisation du mot de passe.' });
+        return res.status(500).json({ error: 'Error while updating reset password token.' });
       }
   
       // Envoyez l'e-mail de réinitialisation du mot de passe
       sendPasswordResetEmail(email, resetToken);
   
-      return res.json({ message: 'Un e-mail de réinitialisation du mot de passe a été envoyé.' });
+      return res.json({ message: 'Password reset email sent successfully.' });
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ error: 'Une erreur est survenue lors de l\'envoi de l\'e-mail de réinitialisation du mot de passe.' });
+      return res.status(500).json({ error: 'An error occurred while sending the password reset email.' });
     }
   };
   
@@ -288,18 +287,18 @@ exports.resetPassword = async (req, res) => {
     console.log(user)
 
     if (!user) {
-      return res.status(400).json({ error: 'Jeton de réinitialisation du mot de passe invalide.' });
+      return res.status(400).json({ error: 'Invalid reset password token.' });
     }
 
     // Vérifier si le jeton de réinitialisation du mot de passe a expiré
     const now = new Date();
     if (now > user.resetPasswordTokenExpiration) {
-      return res.status(400).json({ error: 'Le jeton de réinitialisation du mot de passe a expiré.' });
+      return res.status(400).json({ error: 'Reset password token has expired.' });
     }
 
     // Vérifier que les mots de passe saisis correspondent
     if (newPassword !== confirmPassword) {
-      return res.status(400).json({ error: 'Les mots de passe ne correspondent pas.' });
+      return res.status(400).json({ error: 'Passwords do not match.' });
     }
 
     // Hacher le nouveau mot de passe et enregistrer dans la base de données
@@ -309,9 +308,9 @@ exports.resetPassword = async (req, res) => {
     user.resetPasswordTokenExpiration = undefined;
     await user.save();
 
-    return res.json({ message: 'Le mot de passe a été réinitialisé avec succès.' });
+    return res.json({ message: 'Password reset successfully.' });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Une erreur est survenue lors de la réinitialisation du mot de passe.' });
+    return res.status(500).json({ error: 'An error occurred while resetting the password.' });
   }
 };
