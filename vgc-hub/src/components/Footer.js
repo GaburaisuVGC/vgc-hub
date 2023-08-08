@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="bg-gray-800 text-white py-8 md:py-12">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Première colonne */}
-        <div className="col-span-1 md:col-span-1 text-center md:text-left pl-4">
+        <div className="col-span-1 md:col-span-1 text-center md:text-left md:pl-4">
           <Link to="/" className="navbar-logo md:text-3xl mb-8 text-2xl text-white">VGC Hub</Link>
           {/* <a href="https://github.com/GaburaisuVGC" target="_blank" rel="noopener noreferrer" className="block mb-2">
             GitHub
