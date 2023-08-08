@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -75,7 +75,7 @@ const EditPost = () => {
           Update Post
         </button>
       </form>
-      <ToastContainer />
+       
     </div>
   );
 };

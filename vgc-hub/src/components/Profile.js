@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Dropzone from "react-dropzone";
@@ -404,7 +404,7 @@ const Profile = () => {
       ) : (
         <p>Loading Profile...</p>
       )}
-      <ToastContainer />
+       
     </div>
   );
 };

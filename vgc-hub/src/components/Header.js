@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -80,7 +80,7 @@ const Header = () => {
           </div>
         )}
       </div>
-      <ToastContainer />
+       
     </header>
   );
 };

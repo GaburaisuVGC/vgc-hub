@@ -19,10 +19,19 @@ import AboutVgcHub from './pages/infos/About';
 import QuestionsAndAnswers from './pages/infos/QandA';
 import PrivacyPage from './pages/infos/Privacy';
 import GDPRPage from './pages/infos/GDPR';
+import { ToastContainer } from 'react-toastify';
 require('dotenv').config();
 
 function App() {
   return (
+    <div>
+      <ToastContainer
+      position="bottom-right"
+      autoClose={2000}
+      pauseOnHover={true}
+      newestOnTop={true}
+      limit={1}   
+      />
     <Router>
       <Routes>
         <Route path="/" element={<BannedRouteGuard><Home /></BannedRouteGuard>} />
@@ -46,6 +55,7 @@ function App() {
         {/* Add other routes here for other pages */}
       </Routes>
     </Router>
+    </div>
   );
 }
 

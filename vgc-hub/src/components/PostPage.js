@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwt_decode from "jwt-decode";
 import "../styles/postpage.css";
@@ -843,7 +843,7 @@ const PostPage = () => {
             </div>
           )}
       </div>
-      <ToastContainer />
+       
     </div>
   );
 };

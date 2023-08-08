@@ -1,7 +1,7 @@
 // ForgotPasswordPage.js
 import React, { useState } from 'react';
 import axios from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -41,7 +41,7 @@ const ForgotPasswordPage = () => {
           Send Password Reset Email
         </button>
       </form>
-      <ToastContainer />
+       
     </div>
   );
 };

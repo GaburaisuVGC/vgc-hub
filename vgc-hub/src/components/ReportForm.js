@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwt_decode from "jwt-decode";
 
@@ -69,7 +69,7 @@ const ReportForm = ({ postId, userId, onClose }) => {
           </button>
         </div>
       </div>
-      <ToastContainer />
+       
     </div>
   );
 };
