@@ -14,6 +14,8 @@ const Sidebar = () => {
         clearTimeout(searchTimeout);
       }
 
+    // disable eslint warning for missing dependency
+    // eslint-disable-next-line react-hooks/exhaustive-deps
       searchTimeout = setTimeout(() => {
         handleSearch();
       }, 1000);

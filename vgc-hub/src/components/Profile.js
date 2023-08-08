@@ -117,6 +117,8 @@ const Profile = () => {
           return;
         }
 
+        // disable eslint for this line (no-unused-vars)
+        // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
           `${BACKEND_URL}/users/${user._id}`,
           {
@@ -162,6 +164,8 @@ const Profile = () => {
           return;
         }
 
+        // disable eslint for this line (no-unused-vars)
+        // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
           `${BACKEND_URL}/users/${user._id}`,
           {
