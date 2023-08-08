@@ -15,7 +15,7 @@ const Login = () => {
     const jwtToken = localStorage.getItem('jwtToken');
     if (jwtToken) {
       // Redirect to the home page if the user is already logged in
-      navigate('/');
+    //  navigate('/');
     }
   }, [navigate]);
 
@@ -33,7 +33,7 @@ const Login = () => {
       localStorage.setItem("loggedInUsername", username.toLowerCase());
 
       // Redirect to the user profile page after successful login
-      navigate(`/${username.toLowerCase()}`);
+      // navigate(`/${username.toLowerCase()}`);
 
     } catch (error) {
       // If error, display the error message returned by the backend
@@ -47,7 +47,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-64 mx-auto mt-4 text-center"
+    <div className="w-64 mx-auto mt-4 text-center mb-40"
     style={{ paddingTop: "100px" }}
     >
       <h2 className="text-2xl font-bold mb-4">Login</h2>
