@@ -17,33 +17,33 @@ const ForgotPasswordPage = () => {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error('Erreur lors de la demande de réinitialisation du mot de passe.');
+        toast.error('Error requesting password reset.');
       }
     }
   };
 
   return (
     <div className="w-64 mx-auto mt-4 text-center">
-    <h2 className="text-2xl font-bold mb-4">Mot de passe oublié</h2>
-    <form onSubmit={handleForgotPassword}>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        autoComplete="on"
-        className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-      />
-      <button
-        type="submit"
-        className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-      >
-        Envoyer un email de réinitialisation
-      </button>
-    </form>
-    <ToastContainer />
-  </div>
-);
+      <h2 className="text-2xl font-bold mb-4">Forgot Password</h2>
+      <form onSubmit={handleForgotPassword}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="on"
+          className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        />
+        <button
+          type="submit"
+          className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+        >
+          Send Password Reset Email
+        </button>
+      </form>
+      <ToastContainer />
+    </div>
+  );
 };
 
 export default ForgotPasswordPage;

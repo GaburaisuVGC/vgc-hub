@@ -66,7 +66,7 @@ const PostPage = () => {
         setReplyCount(postData.replies.length);
       }
     } catch (error) {
-      toast.error("Erreur lors de la récupération du post.");
+      toast.error("Error while fetching post.");
     }
   };
   
@@ -137,7 +137,7 @@ const PostPage = () => {
         setVerified(response.data.user.isVerified);
       } catch (error) {
         // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        toast.error("Erreur lors de la récupération du profil.");
+        toast.error("Error while fetching profile.");
       }
 
       }
@@ -167,7 +167,7 @@ const PostPage = () => {
       );
       setReplies(response.data.replies);
     } catch (error) {
-      toast.error("Erreur lors de la récupération des réponses.");
+      toast.error("Error while fetching replies.");
     }
   };
 
@@ -181,7 +181,7 @@ const PostPage = () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour citer un post.");
+        toast.error("You need to be logged in to quote a post.");
         return;
       }
 
@@ -201,9 +201,9 @@ const PostPage = () => {
       setQuoteModalOpen(false);
       setQuoteContent("");
 
-      toast.success("Post cité avec succès !");
+      toast.success("Post quoted successfully.");
     } catch (error) {
-      toast.error("Erreur lors de la citation du post.");
+      toast.error("Error while quoting post.");
     }
   };
 
@@ -215,7 +215,7 @@ const PostPage = () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour aimer un post.");
+        toast.error("You need to be logged in to like a post.");
         return;
       }
 
@@ -247,7 +247,7 @@ const PostPage = () => {
 
       setIsLiked((prevIsLiked) => !prevIsLiked);
     } catch (error) {
-      toast.error("Erreur lors du traitement de l'action Like.");
+      toast.error("Error while liking post.");
     }
   };
 
@@ -255,7 +255,7 @@ const PostPage = () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour re-poster un post.");
+        toast.error("You need to be logged in to repost a post.");
         return;
       }
 
@@ -288,19 +288,24 @@ const PostPage = () => {
         setIsReposted((prevIsReposted) => !prevIsReposted);
       }
     } catch (error) {
-      toast.error("Erreur lors du traitement de l'action Repost.");
+      toast.error("Error while reposting post.");
     }
   };
 
   if (!post) {
-    return <p>Loading Post...</p>;
+    return         <div className="flex items-center justify-center h-screen">
+    <p
+      className="text-2xl font-bold text-gray-800"
+    >
+      Loading Post...</p>
+    </div>;
   }
 
   const handleDeletePost = async () => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour supprimer un post.");
+        toast.error("You need to be logged in to delete a post.");
         return;
       }
 
@@ -318,7 +323,7 @@ const PostPage = () => {
       navigate("/");
       window.location.reload();
     } catch (error) {
-      toast.error("Erreur lors de la suppression du post.");
+      toast.error("Error while deleting post.");
     }
   };
 
@@ -398,7 +403,7 @@ const PostPage = () => {
 
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour répondre à un post.");
+        toast.error("You need to be logged in to reply to a post.");
         return;
       }
 
@@ -416,9 +421,9 @@ const PostPage = () => {
       setReplyModalOpen(false);
 
 
-      toast.success("Réponse ajoutée avec succès !");
+      toast.success("Reply added successfully.");
     } catch (error) {
-      toast.error("Erreur lors de l'ajout de la réponse.");
+      toast.error("Error while adding reply.");
     }
   };
 
@@ -432,7 +437,7 @@ const PostPage = () => {
           const oversizedFiles = selectedFiles.filter((file) => file.size > REACT_APP_MAX_FILE_SIZE);
       
           if (oversizedFiles.length > 0) {
-            toast.error(`Certains fichiers dépassent la taille maximale autorisée (${REACT_APP_MAX_FILE_SIZE} octets).`);
+            toast.error(`Some files were too big. Max file size is ${REACT_APP_MAX_FILE_SIZE / 1024 / 1024} MB.`);
             return;
           }
       
@@ -468,7 +473,9 @@ const PostPage = () => {
 
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto"
+    style={{ paddingTop: "100px" }}
+    >
       {showLikesModal && (
         <LikesComponent
           postId={postId}
@@ -531,55 +538,54 @@ const PostPage = () => {
   </p>
 )}
       </div>
-        {hasMedia && (
-          <div className="absolute top-0 right-0 mt-2 mr-2">
-            <GiPaperClip size={24} />
-          </div>
-        )}
-                    {loggedInUserId ?(
-        <>
-        {/* div qui fixe le bouton à droite */}
-        <div className="flex mb-4">
-  <button
-    className="text-xl text-gray-600 ml-auto rounded-full bg-gray-300 p-2 hover:bg-gray-400 w-10 h-10 flex items-center justify-center mt-4"
-    onClick={handleOptionsClick}
-    aria-label="Options"
-  >
-    ...
-  </button>
-</div>
 
-
-
-        </>
-      )
-      : null}
         {showOptionsPanel && (
-  <div className="flex mb-4">
-    <div className="absolute top-10 mt-8 right-0 bg-white rounded-lg shadow-md p-2 space-y-2">
+  <div className="flex">
+    <div className="absolute top-10 mt-12 right-0 bg-white rounded-lg shadow-md p-2 space-y-2">
 
     <button
         // Afficher le formulaire de signalement au clic
         onClick={() => setIsReportFormOpen(true)}
         className={`block w-full text-left px-4 py-2 text-red-500 hover:text-red-600`}
       >
-        Signaler le post
+        Report
       </button>
     </div>
   </div>
 )}
-        <div className="flex items-center mb-4">
-          <img
-            src={`${BACKEND_URL}/avatars/${post.user?.avatar}`}
-            alt={`Avatar de ${post.user?.username}`}
-            width={50}
-            className="rounded-full mr-2"
-          />
-          <Link to={`/${post.user?.username}`} className="text-blue-500">
-            @{post.user?.username}
-          </Link>
-        </div>
-        <p>{post.content}</p>
+<div className="flex items-center mb-4">
+  <img
+    src={`${BACKEND_URL}/avatars/${post.user?.avatar}`}
+    alt={`${post.user?.username}'s avatar`}
+    width={50}
+    className="rounded-full mr-2"
+  />
+  <Link to={`/${post.user?.username}`} className="text-blue-500">
+    @{post.user?.username}
+  </Link>
+  {hasMedia && (
+    <div className="absolute top-0 right-0 mt-2 mr-2">
+      <GiPaperClip size={24} />
+    </div>
+  )}
+  {loggedInUserId ? (
+    <>
+      {/* div qui fixe le bouton à droite */}
+      <div className="flex mb-4 mt-4 ml-auto"> {/* Ajout de la classe ml-auto */}
+        <button
+          className="text-xl text-gray-600 rounded-full bg-gray-300 p-2 hover:bg-gray-400 w-10 h-10 flex items-center justify-center mt-4"
+          onClick={handleOptionsClick}
+          aria-label="Options"
+        >
+          ...
+        </button>
+      </div>
+    </>
+  ) : null}
+</div>
+
+<p className="text-2xl">{post.content}</p>
+
         <div className={getMediaContainerClass(post.media.length)}>
           {post.media.map((mediaUrl) => {
             const extension = mediaUrl.split(".").pop();
@@ -621,7 +627,7 @@ const PostPage = () => {
                     <div className="flex items-center mb-4">
           <img
             src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
-            alt={`Avatar de ${quotedPost.user?.username}`}
+            alt={`${quotedPost.user?.username}'s avatar`}
             width={50}
             className="rounded-full mr-2"
           />
@@ -632,7 +638,7 @@ const PostPage = () => {
         <p className="text-gray-500">{formatDate(post.createdAt)}</p>
         </div>
         <div>
-            <p>{quotedPost.content}</p>
+        <p className="text-2xl">{quotedPost.content}</p>
             <div className={getMediaContainerClass(post.media.length)}>
           {quotedPost.media.map((mediaUrl) => {
             const extension = mediaUrl.split(".").pop();
@@ -741,7 +747,7 @@ const PostPage = () => {
           maxLength="500"
         />
                                 <div className="text-right text-gray-500">
-            {remainingQuoteChars} caractères restants
+            {remainingQuoteChars} characters remaining
           </div>
         <div className="mt-4 flex justify-end">
           <button
@@ -777,7 +783,7 @@ const PostPage = () => {
                 maxLength="500"
               />
                         <div className="text-right text-gray-500">
-            {remainingChars} caractères restants
+            {remainingChars} characters remaining
           </div>
                       <div className="form-group">
           <Dropzone onDrop={handleFileSelect} accept={["image/*", "video/*"]} multiple>
@@ -785,7 +791,7 @@ const PostPage = () => {
               <div className="dropzone border-dashed border-2 border-gray-300 rounded p-4" {...getRootProps()}>
                 <input {...getInputProps()} name="media" />
                 <p className="mb-2">
-                  Faites glisser jusqu'à 4 fichiers ici ou cliquez pour les télécharger
+                  Drag up to 4 files here, or click to select files
                 </p>
               </div>
             )}
@@ -796,14 +802,14 @@ const PostPage = () => {
                   type="submit"
                   className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
-                  Répondre
+                  Reply
                 </button>
                 <button
                   type="button"
                   onClick={() => setReplyModalOpen(false)}
                   className="px-4 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
                 >
-                  Annuler
+                  Cancel
                 </button>
               </div>
             </form>
@@ -826,13 +832,13 @@ const PostPage = () => {
                 onClick={handleDeletePost}
                 className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
               >
-                Supprimer
+                Delete
               </button>
               <button
                 onClick={() => navigate(`/post/${postId}/edit`)}
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ml-2"
               >
-                Modifier
+                Edit
               </button>
             </div>
           )}

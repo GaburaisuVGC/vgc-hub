@@ -9,7 +9,7 @@ const { ExtractJwt } = require('passport-jwt');
 
 exports.signup = async (req, res) => {
     const { username, email, password } = req.body;
-    const reservedUsernames = ['signup', 'login', 'admin', 'verify', 'id']; // Ajoutez d'autres noms réservés au besoin
+    const reservedUsernames = ['signup', 'login', 'admin', 'verify', 'id', 'search']; // Ajoutez d'autres noms réservés au besoin
 
     // Vérifiez si l'adresse e-mail est déjà utilisée
     const existingUserByEmail = await User.findOne({ email });
@@ -28,14 +28,19 @@ exports.signup = async (req, res) => {
     return res.status(400).json({ error: 'Ce nom d\'utilisateur n\'est pas autorisé.' });
   }
   
-    // Hachez le mot de passe avant de l'enregistrer dans la base de données
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({
-      username: username.toLowerCase(),
-      plainName: username,
-      email,
-      password: hashedPassword,
-    });
+
+  // Générez un nombre aléatoire entre 0 et 953
+  const randomAvatarIndex = Math.floor(Math.random() * 954); // 0 to 953
+
+  // Hachez le mot de passe avant de l'enregistrer dans la base de données
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = new User({
+    username: username.toLowerCase(),
+    plainName: username,
+    email,
+    password: hashedPassword,
+    avatar: `${randomAvatarIndex}.png`, // Utilisation de l'avatar aléatoire
+  });
     try {
       await newUser.save();
   

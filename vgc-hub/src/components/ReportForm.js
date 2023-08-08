@@ -3,6 +3,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwt_decode from "jwt-decode";
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const ReportForm = ({ postId, userId, onClose }) => {
@@ -13,7 +14,7 @@ const ReportForm = ({ postId, userId, onClose }) => {
 
     const jwtToken = localStorage.getItem("jwtToken");
     if (!jwtToken) {
-      toast.error("Vous devez être connecté pour signaler un post ou un utilisateur.");
+      toast.error("You must be logged in to report a post or user.");
       return;
     }
 
@@ -24,7 +25,7 @@ const ReportForm = ({ postId, userId, onClose }) => {
     axios
       .post(
         url,
-        { ...reportData, reportedBy: jwt_decode(jwtToken).userId }, // Ajouter le champ reportedBy avec l'ID de l'utilisateur connecté
+        { ...reportData, reportedBy: jwt_decode(jwtToken).userId },
         {
           headers: {
             Authorization: `Bearer ${jwtToken}`,
@@ -32,40 +33,39 @@ const ReportForm = ({ postId, userId, onClose }) => {
         }
       )
       .then((response) => {
-        toast.success("Le signalement a été soumis avec succès.");
-        onClose(); // Appeler la fonction onClose pour fermer le formulaire
+        toast.success("The report has been successfully submitted.");
+        onClose();
       })
       .catch((error) => {
-        console.error("Erreur lors du signalement :", error);
-        toast.error("Erreur lors du signalement.");
-        onClose(); // Appeler la fonction onClose pour fermer le formulaire
+        toast.error("Error while submitting the report.");
+        onClose();
       });
   };
 
   return (
     <div className="fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-4 rounded-lg">
-        <h2 className="text-lg font-bold mb-4">Signaler le post</h2>
+        <h2 className="text-lg font-bold mb-4">Report Post</h2>
         <textarea
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          placeholder="Raison du signalement"
+          placeholder="Reason for reporting"
           className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:border-blue-500"
         />
         <div className="mt-4 flex justify-end">
           <button
             type="button"
-            onClick={onClose} // Appeler la fonction onClose pour fermer le formulaire
+            onClick={onClose}
             className="px-4 py-2 mr-2 bg-red-500 text-white rounded hover:bg-red-600"
           >
-            Annuler
+            Cancel
           </button>
           <button
             type="button"
             onClick={handleReportSubmit}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
           >
-            Signaler
+            Report
           </button>
         </div>
       </div>

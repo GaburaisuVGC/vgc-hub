@@ -133,7 +133,7 @@ const Post = ({ post }) => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour citer un post.");
+        toast.error("You must be logged in to quote a post.");
         return;
       }
 
@@ -153,9 +153,9 @@ const Post = ({ post }) => {
       setQuoteModalOpen(false);
       setQuoteContent("");
 
-      toast.success("Post cité avec succès !");
+      toast.success("Post quoted successfully.");
     } catch (error) {
-      toast.error("Erreur lors de la citation du post.");
+      toast.error("Error quoting post.");
     }
   };
 
@@ -163,7 +163,7 @@ const Post = ({ post }) => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour aimer un post.");
+        toast.error("You must be logged in to like a post.");
         return;
       }
 
@@ -195,7 +195,7 @@ const Post = ({ post }) => {
 
       setIsLiked((prevIsLiked) => !prevIsLiked);
     } catch (error) {
-      toast.error("Erreur lors du traitement de l'action Like.");
+      toast.error("Error liking post.");
     }
   };
 
@@ -203,7 +203,7 @@ const Post = ({ post }) => {
     try {
       const jwtToken = localStorage.getItem("jwtToken");
       if (!jwtToken) {
-        toast.error("Vous devez être connecté pour re-poster un post.");
+        toast.error("You must be logged in to repost a post.");
         return;
       }
 
@@ -236,7 +236,7 @@ const Post = ({ post }) => {
         setIsReposted((prevIsReposted) => !prevIsReposted);
       }
     } catch (error) {
-      toast.error("Erreur lors du traitement de l'action Repost.");
+      toast.error("Error reposting post.");
     }
   };
   const formatDate = (dateString) => {
@@ -326,7 +326,7 @@ const Post = ({ post }) => {
         )}
         <img
           src={`${BACKEND_URL}/avatars/${post.user?.avatar}`}
-          alt={`Avatar de ${post.user?.username}`}
+          alt={`${post.user?.username}'s avatar`}
           width={50}
           className="rounded-full mr-2"
         />
@@ -340,7 +340,7 @@ const Post = ({ post }) => {
         )}
       </div>
       <div onClick={handlePostClick}>
-        <p>{post.content}</p>
+      <p className="text-2xl">{post.content}</p>
         {post.media && post.media.length > 0 && (
           <div
             className={`media-container ${getMediaContainerClass(
@@ -388,7 +388,7 @@ const Post = ({ post }) => {
                     <div className="flex items-center mb-4">
           <img
             src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
-            alt={`Avatar de ${quotedPost.user?.username}`}
+            alt={`${quotedPost.user?.username}'s avatar`}
             width={50}
             className="rounded-full mr-2"
           />
@@ -399,7 +399,7 @@ const Post = ({ post }) => {
         <p className="text-gray-500">{formatDate(post.createdAt)}</p>
         </div>
         <div>
-            <p>{quotedPost.content}</p>
+        <p className="text-2xl">{quotedPost.content}</p>
         </div>
         <div
         style={

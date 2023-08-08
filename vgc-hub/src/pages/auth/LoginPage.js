@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../../components/Header';
 import Login from '../../components/Login';
+import Footer from '../../components/Footer';
 
 
 const LoginPage = () => {
@@ -8,6 +9,7 @@ const LoginPage = () => {
     <div>
         <Header />
         <Login />
+        <Footer />
     </div>
   );
 };
