@@ -291,7 +291,7 @@ const EditUser = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto flex flex-col min-h-screen">
       {user ? (
         <div>
           <h2 className="text-3xl font-bold my-4">{user.username}'s Profile</h2>

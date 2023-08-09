@@ -13,6 +13,7 @@ import QuotesComponent from './QuotesComponent';
 import Dropzone from "react-dropzone";
 import Post from "./Post";
 import ReportForm from "./ReportForm";
+import PokePasteComponent from "./PokePasteComponent";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const PostPage = () => {
@@ -42,6 +43,7 @@ const PostPage = () => {
   const [isReportFormOpen, setIsReportFormOpen] = useState(false);
   const [remainingChars, setRemainingChars] = useState(500);
   const [remainingQuoteChars, setRemainingQuoteChars] = useState(500);
+
   const navigate = useNavigate();
 
   const fetchPost = async () => {
@@ -471,9 +473,77 @@ const PostPage = () => {
     setQuoteContent(inputContent.slice(0, maxLength)); // Limit the content to the maximum character count
   };
 
+  const formatPostContent = (content) => {
+    // else if (hashtagRegex.test(part)) {
+//   const hashtag = part.substring(1);
+//   return (
+//     <Link
+//       className="text-blue-500 hover:underline z-50"
+//       key={index}
+//       to={`/search?q=${hashtag}`}
+//       onClick={(e) => e.stopPropagation()}
+//     >
+//       {part}{" "}
+//     </Link>
+//   );
+// }
+// eslint-disable-next-line
+const hashtagRegex = /#([\w]+)/g;
+const mentionRegex = /@(\w+)/g; // Capture les mentions avec ou sans parenthèses
+const linkRegex = /(https?:\/\/[^\s]+)/g;
+
+const lines = content.split("\n");
+
+const formattedContent = lines.map((line, lineIndex) => {
+const parts = line.split(" ");
+const formattedParts = parts.map((part, index) => {
+let match = mentionRegex.exec(part);
+if (match && match[1]) {
+  const username = match[1];
+  return (
+    <Link
+      className="text-blue-500 hover:underline z-50"
+      key={index}
+      to={`/${username.toLowerCase()}`}
+      onClick={(e) => e.stopPropagation()}
+    >
+      @{username}{" "}
+    </Link>
+  );
+} else if (linkRegex.test(part)) {
+  const url = part;
+  return (
+    <a
+      key={index}
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      className="text-blue-500 hover:underline z-50"
+    >
+      {part}{" "}
+    </a>
+  );
+} else {
+  return <span key={index}>{part} </span>;
+}
+});
+
+return (
+<div key={lineIndex} className="mb-2">
+  {formattedParts}
+</div>
+);
+});
+
+return formattedContent;
+};
+  
+  const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/;
+  const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
 
   return (
-    <div className="container mx-auto"
+    <div className="container mx-auto flex flex-col min-h-screen"
     style={{ paddingTop: "100px" }}
     >
       {showLikesModal && (
@@ -495,7 +565,7 @@ const PostPage = () => {
         />
       )}
 
-      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4 relative mb-4">
+      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4 relative mb-4 w-full">
       <h2 className="text-3xl font-bold my-4">Post</h2>
       {repliedPost && (
                   <div
@@ -523,7 +593,7 @@ const PostPage = () => {
                 ) 
       }
       </div>
-      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4 relative">
+      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4 relative w-full">
       <div>
       {repliedPost && (
   <p className="text-gray-500">
@@ -584,8 +654,12 @@ const PostPage = () => {
     </>
   ) : null}
 </div>
-
-<p className="text-2xl">{post.content}</p>
+<p className="text-2xl">{formatPostContent(post.content)}</p>
+{pokePasteLinkMatches && (
+        <div className="mt-4">
+          <PokePasteComponent pageCode={pokePasteLinkMatches[1]} />
+        </div>
+      )}
 
         <div className={getMediaContainerClass(post.media.length)}>
           {post.media.map((mediaUrl) => {

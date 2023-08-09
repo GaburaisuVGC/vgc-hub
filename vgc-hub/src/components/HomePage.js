@@ -6,6 +6,7 @@ import Dropzone from "react-dropzone";
 import "../styles/homepage.css";
 import Post from "./Post";
 import jwt_decode from "jwt-decode";
+import { Link } from "react-router-dom";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const HomePage = () => {
@@ -58,6 +59,7 @@ const HomePage = () => {
 
     fetchPosts();
   }, [viewMode, loggedInUserId]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -129,7 +131,7 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="container-1 mx-auto px-4 py-8"
+    <div className="container-1 mx-auto px-4 py-8 flex flex-col min-h-screen"
     style={{ paddingTop: "100px" }}
     >
       <h2 className="text-3xl font-bold mb-4">Timeline</h2>
@@ -226,7 +228,12 @@ const HomePage = () => {
                   : ""
               }
             >
-              <Post key={post._id} post={post} />
+              <Post
+                key={post._id}
+                post={{
+                  ...post,
+                }}
+              />
             </div>
           ))}
         </div>
