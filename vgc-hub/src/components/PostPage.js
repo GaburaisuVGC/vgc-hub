@@ -559,6 +559,7 @@ const PostPage = () => {
     alt={`${post.user?.username}'s avatar`}
     width={50}
     className="rounded-full mr-2"
+    style={{ background: post.user?.color || '' }}
   />
   <Link to={`/${post.user?.username}`} className="text-blue-500">
     @{post.user?.username}
@@ -615,7 +616,7 @@ const PostPage = () => {
             );
           })}
         </div>
-        <p className="mt-4">Le {formatDate(post.createdAt)}</p>
+        <p className="mt-4">{formatDate(post.createdAt)}</p>
         {post.edited === true && (
           <span className="italic text-gray-500"> (edited)</span>
         )}
@@ -630,6 +631,7 @@ const PostPage = () => {
             alt={`${quotedPost.user?.username}'s avatar`}
             width={50}
             className="rounded-full mr-2"
+            style={{ background: quotedPost.user?.color || '' }}
           />
           <Link to={`/${quotedPost.user?.username}`} className="text-blue-500">
             @{quotedPost.user?.username}
