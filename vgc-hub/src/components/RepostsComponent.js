@@ -29,6 +29,7 @@ const RepostsComponent = ({ postId, setShowRepostsModal }) => {
                 alt={`${user?.username}'s avatar`}
                 width={50}
                 className="rounded-full mr-2"
+                style={{ background: user?.color || '' }}
               />
               <a href={`/${user.username}`} className="text-blue-500 hover:underline">
                 @{user.username}

@@ -78,7 +78,7 @@ exports.getPosts = async (req, res) => {
     // Populer les détails de l'utilisateur associé à chaque post
     for (const post of posts) {
       const user = await User.findById(post.user)
-        .select("username avatar isVerified role")
+        .select("username avatar color isVerified role")
         .lean()
         .exec();
       post.user = user;
@@ -134,7 +134,7 @@ exports.getUserPosts = async (req, res) => {
     // Populer les détails de l'utilisateur associé à chaque post
     for (const post of userPosts) {
       const user = await User.findById(post.user)
-        .select("username avatar isVerified role")
+        .select("username avatar color isVerified role")
         .lean()
         .exec();
       post.user = user;
@@ -174,7 +174,7 @@ exports.getUserPosts = async (req, res) => {
 
     for (const post of reposts) {
       const user = await User.findById(post.user)
-        .select("username avatar isVerified role")
+        .select("username avatar color isVerified role")
         .lean()
         .exec();
       post.user = user;
@@ -235,7 +235,7 @@ exports.getPostById = async (req, res) => {
     }
 
     const user = await User.findById(post.user)
-      .select("username avatar isVerified role")
+      .select("username avatar color isVerified role")
       .lean()
       .exec();
     post.user = user;
@@ -500,7 +500,7 @@ exports.getPostLikes = async (req, res) => {
 
     // Trouver les utilisateurs qui ont liké le post en fonction des IDs des utilisateurs dans le champ likes
     const likes = await User.find({ _id: { $in: post.likes } }).select(
-      "username avatar _id"
+      "username avatar color _id"
     );
 
     return res.json({ likes });
@@ -525,7 +525,7 @@ exports.getPostReposts = async (req, res) => {
     // Trouver les utilisateurs qui ont reposté le post en fonction des IDs des utilisateurs dans le champ reposts
     const reposts = await User.find({
       _id: { $in: post.reposts.map((repost) => repost) },
-    }).select("username avatar _id");
+    }).select("username avatar color _id");
 
     return res.json({ reposts });
   } catch (error) {
@@ -555,7 +555,7 @@ exports.getPostQuotes = async (req, res) => {
     // Populer les détails de l'utilisateur associé à chaque post
     for (const quote of quotes) {
       const user = await User.findById(quote.user)
-        .select("username avatar isVerified role")
+        .select("username avatar color isVerified role")
         .lean()
         .exec();
       quote.user = user;
@@ -661,7 +661,7 @@ exports.getPostReplies = async (req, res) => {
     // Trouver les posts qui répondent au post en fonction des IDs des posts dans le champ quoteOf
     const replies = await Post.find({ replyTo: postId }).populate(
       "user",
-      "username avatar isVerified role"
+      "username avatar color isVerified role"
     );
 
     // Modifiez chaque post pour inclure le lien vers le média
@@ -702,7 +702,7 @@ exports.getTimeline = async (req, res) => {
       // Find the posts from the user
       const userPosts = await Post.find({ user: user._id })
         .sort({ createdAt: -1 })
-        .populate('user', 'username avatar isVerified role')
+        .populate('user', 'username avatar color isVerified role')
         .lean();
 
       followingPosts.push(...userPosts);
@@ -710,7 +710,7 @@ exports.getTimeline = async (req, res) => {
       // Find the reposts from the user and populate the original post details
       for (const repost of user.reposts) {
         const repostedPost = await Post.findById(repost.post)
-          .populate('user', 'username avatar isVerified role')
+          .populate('user', 'username avatar color isVerified role')
           .lean();
 
         followingPosts.push({
@@ -736,14 +736,14 @@ exports.getTimeline = async (req, res) => {
     // Find the posts and reposts from the logged-in user
     const myPosts = await Post.find({ user: currentUser._id })
       .sort({ createdAt: -1 })
-      .populate('user', 'username avatar isVerified role')
+      .populate('user', 'username avatar color isVerified role')
       .lean();
 
     followingPosts.push(...myPosts);
 
     for (const repost of currentUser.reposts) {
       const repostedPost = await Post.findById(repost.post)
-        .populate('user', 'username avatar isVerified role')
+        .populate('user', 'username avatar color isVerified role')
         .lean();
 
         if (repostedPost) {

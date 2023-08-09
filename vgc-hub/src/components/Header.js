@@ -60,10 +60,11 @@ const Header = () => {
             <div className="user-info flex items-center" onClick={handleUserInfoClick}>
               {/* Display user's avatar and username */}
               <img
-                src={`${BACKEND_URL}/avatars/${user?.avatar}`}
-                alt="Avatar"
-                className="user-avatar w-10 h-10 rounded-full cursor-pointer"
-              />
+  src={`${BACKEND_URL}/avatars/${user?.avatar}`}
+  alt="Avatar"
+  className="user-avatar w-10 h-10 rounded-full cursor-pointer"
+  style={{ background: user?.color || '' }}
+/>
               <p className="user-username text-white ml-2 cursor-pointer">@{loggedInUsername}</p>
             </div>
             <div>

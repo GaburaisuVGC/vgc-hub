@@ -249,6 +249,7 @@ const AdminPanel = () => {
                   src={`${BACKEND_URL}/avatars/${user.avatar}`}
                   alt={`${user.username}'s avatar`}
                   className="w-12 h-12 rounded-full mr-4"
+                  style={{ background: user?.color || '' }}
                 />
                 <div>
                   <span className="text-lg font-semibold">{user.username}</span>
@@ -335,6 +336,7 @@ const AdminPanel = () => {
                       alt={`${report.user?.username}'s avatar`}
                       width={50}
                       className="rounded-full mr-2 ml-4"
+                      style={{ background: report.user?.color || '' }}
                     />
                   </>
                 )}

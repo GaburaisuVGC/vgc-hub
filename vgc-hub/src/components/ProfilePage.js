@@ -521,12 +521,13 @@ const ProfilePage = () => {
             src={`${BACKEND_URL}/avatars/${user.avatar}`}
             alt={`${user.username}'s avatar`}
             className="rounded-full w-48 h-48 object-cover mb-4"
+            style={{ background: user?.color || '' }}
           />
           <div className="flex items-center mb-4">
-            <span className="mr-2 font-bold" onClick={handleFollowersClick}>
+            <span className="mr-2 text-gray-600" onClick={handleFollowersClick}>
               {followerCount} Followers
             </span>
-            <span className="mr-2 font-bold" onClick={handleFollowingsClick}>
+            <span className="mr-2 text-gray-600" onClick={handleFollowingsClick}>
               {followingCount} Followings
             </span>
             {loggedInUserId !== user._id && !isBlocked && !isBlockedByYou ? (
@@ -599,6 +600,7 @@ const ProfilePage = () => {
                     src={`${BACKEND_URL}/avatars/${follower.avatar}`}
                     alt={`${follower.username}'s avatar`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
+                    style={{ background: follower?.color || '' }}
                   />
                   <Link to={`/${follower.username}`} className="text-blue-500">
                     @{follower.username}
@@ -627,6 +629,7 @@ const ProfilePage = () => {
                     src={`${BACKEND_URL}/avatars/${following.avatar}`}
                     alt={`${following.username}'s avatar`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
+                    style={{ background: following?.color || '' }}
                   />
                   <Link to={`/${following.username}`} className="text-blue-500">
                     @{following.username}
