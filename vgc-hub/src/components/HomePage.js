@@ -6,7 +6,6 @@ import Dropzone from "react-dropzone";
 import "../styles/homepage.css";
 import Post from "./Post";
 import jwt_decode from "jwt-decode";
-import { Link } from "react-router-dom";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const HomePage = () => {
