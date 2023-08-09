@@ -116,36 +116,34 @@ const EditUser = () => {
 
   const handleUpdatePlainName = async () => {
     try {
-      if (loggedInUserId && user && loggedInUserId === user._id) {
+      if (isAdmin) { // Check if the logged-in user is an admin to allow updating the username
         const jwtToken = localStorage.getItem("jwtToken");
         if (!jwtToken) {
+          // If JWT token is not available, the user is not authenticated, don't proceed with the update
           toast.error("You are not logged in.");
           return;
         }
 
-        const headers = {
-          Authorization: `Bearer ${jwtToken}`,
-        };
-
+        // If the username input is the same as the current username, don't proceed with the update
         if (plainNameInput === user.plainName) {
           toast.info("No changes made to the name.");
           return;
         }
 
-        // disable eslint for this line (no-unused-vars)
+        // Include the JWT token in the request headers
+        const headers = {
+          Authorization: `Bearer ${jwtToken}`,
+        };
+
+        const userId = user._id;
         // eslint-disable-next-line no-unused-vars
         const response = await axios.put(
-          `${BACKEND_URL}/users/${user._id}`,
+          `${BACKEND_URL}/users/${userId}`,
           {
             plainName: plainNameInput,
           },
-          { headers }
+          { headers } // Pass the headers object to include the JWT token
         );
-
-        setUser((prevUser) => ({
-          ...prevUser,
-          plainName: plainNameInput,
-        }));
 
         toast.success("Name updated successfully.");
       } else {
@@ -155,10 +153,11 @@ const EditUser = () => {
       if (error.response.data.error) {
         toast.error(error.response.data.error);
       } else {
-        toast.error("Error updating name.");
+        toast.error("Error while updating the name.");
       }
     }
-  }
+  };
+
 
    // Function to handle updating the email
    const handleUpdateEmail = async () => {
