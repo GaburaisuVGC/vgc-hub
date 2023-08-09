@@ -47,7 +47,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-64 mx-auto mt-4 text-center mb-40"
+    <div className="w-64 mx-auto mt-4 text-center mb-40 flex flex-col min-h-screen"
     style={{ paddingTop: "100px" }}
     >
       <h2 className="text-2xl font-bold mb-4">Login</h2>

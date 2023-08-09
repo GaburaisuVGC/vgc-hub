@@ -54,7 +54,7 @@ const EditPost = () => {
   };
 
   return (
-    <div className="container mx-auto" style={{ paddingTop: "100px" }}>
+    <div className="container mx-auto flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
       <h2 className="text-3xl font-bold my-4">Edit Post</h2>
       <form onSubmit={handleUpdate} className="max-w-md mx-auto bg-white p-4 rounded-lg shadow-md">
         <div className="mb-4">

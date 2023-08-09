@@ -45,7 +45,7 @@ const Signup = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 mb-40" style={{ paddingTop: '100px' }}>
+    <div className="max-w-md mx-auto p-4 mb-40 flex flex-col min-h-screen" style={{ paddingTop: '100px' }}>
       <h2 className="text-2xl font-bold mb-4">Signup</h2>
       <Formik
         initialValues={{ username: '', email: '', password: '' }}

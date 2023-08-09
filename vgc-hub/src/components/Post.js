@@ -6,6 +6,7 @@ import { GiPaperClip, GiHearts, GiChatBubble } from "react-icons/gi";
 import { BsFillArrowUpSquareFill } from "react-icons/bs";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import PokePasteComponent from "./PokePasteComponent";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const Post = ({ post }) => {
@@ -22,6 +23,8 @@ const Post = ({ post }) => {
   const [quoteCount, setQuoteCount] = useState(0);
   const [replyCount, setReplyCount] = useState(0);
   const [repliedPost, setRepliedPost] = useState(null);
+  const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/;
+  const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
 
   const handleQuoteClick = () => {
     setQuoteModalOpen(true);
@@ -291,7 +294,71 @@ const Post = ({ post }) => {
     return "media-item";
   };
 
-
+  const formatPostContent = (content) => {
+            // else if (hashtagRegex.test(part)) {
+        //   const hashtag = part.substring(1);
+        //   return (
+        //     <Link
+        //       className="text-blue-500 hover:underline z-50"
+        //       key={index}
+        //       to={`/search?q=${hashtag}`}
+        //       onClick={(e) => e.stopPropagation()}
+        //     >
+        //       {part}{" "}
+        //     </Link>
+        //   );
+        // }
+    // eslint-disable-next-line
+    const hashtagRegex = /#([\w]+)/g;
+    const mentionRegex = /@(\w+)/g; // Capture les mentions avec ou sans parenthèses
+    const linkRegex = /(https?:\/\/[^\s]+)/g;
+  
+    const lines = content.split("\n");
+  
+    const formattedContent = lines.map((line, lineIndex) => {
+      const parts = line.split(" ");
+      const formattedParts = parts.map((part, index) => {
+        let match = mentionRegex.exec(part);
+        if (match && match[1]) {
+          const username = match[1];
+          return (
+            <Link
+              className="text-blue-500 hover:underline z-50"
+              key={index}
+              to={`/${username.toLowerCase()}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              @{username}{" "}
+            </Link>
+          );
+        } else if (linkRegex.test(part)) {
+          const url = part;
+          return (
+            <a
+              key={index}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="text-blue-500 hover:underline z-50"
+            >
+              {part}{" "}
+            </a>
+          );
+        } else {
+          return <span key={index}>{part} </span>;
+        }
+      });
+  
+      return (
+        <div key={lineIndex} className="mb-2">
+          {formattedParts}
+        </div>
+      );
+    });
+  
+    return formattedContent;
+  };
   
 
   return (
@@ -340,10 +407,15 @@ const Post = ({ post }) => {
           <span className="italic text-gray-500 ml-1"> (edited)</span>
         )}
       </div>
-      <div onClick={handlePostClick}>
-      <p className="text-2xl">{post.content}</p>
+      <div>
+      <p className="text-2xl"  onClick={handlePostClick}>{formatPostContent(post.content)}</p>
+      {pokePasteLinkMatches && (
+        <div className="mt-4">
+          <PokePasteComponent pageCode={pokePasteLinkMatches[1]} />
+        </div>
+      )}
         {post.media && post.media.length > 0 && (
-          <div
+          <div onClick={handlePostClick}
             className={`media-container ${getMediaContainerClass(
               post.media.length
             )}`}

@@ -382,7 +382,7 @@ const ProfilePage = () => {
       user?.status === "banned"
     ) {
       return (
-        <div className="container mx-auto" style={{ paddingTop: "100px" }}>
+        <div className="container mx-auto flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
           <div className="bg-gray-100 text-gray-800 rounded-md p-4">
             <p>Your account has been banned.</p>
             <button
@@ -404,7 +404,7 @@ const ProfilePage = () => {
 
     if (user?.status === "banned") {
       return (
-        <div className="container mx-auto" style={{ paddingTop: "100px" }}>
+        <div className="container mx-auto flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
           <div className="bg-gray-100 text-gray-800 rounded-md p-4">
             <p>This user has been banned.</p>
             {loggedInUserRole === "admin" && (
@@ -422,7 +422,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="container mx-auto" style={{ paddingTop: "100px" }}>
+    <div className="container mx-auto flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
       {user ? (
         <div className="bg-white rounded-lg shadow-md p-4 mt-4">
           <div className="flex items-center justify-between mb-4">
