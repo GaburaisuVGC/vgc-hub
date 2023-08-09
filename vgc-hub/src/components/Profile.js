@@ -14,6 +14,7 @@ const Profile = () => {
   const { username } = useParams();
   const [user, setUser] = useState(null);
   const [usernameInput, setUsernameInput] = useState("");
+  const [plainNameInput, setPlainNameInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [loggedInUserId, setLoggedInUserId] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -144,6 +145,52 @@ const Profile = () => {
       }
     }
   };
+
+  const handleUpdatePlainName = async () => {
+    try {
+      if (loggedInUserId && user && loggedInUserId === user._id) {
+        const jwtToken = localStorage.getItem("jwtToken");
+        if (!jwtToken) {
+          toast.error("You are not logged in.");
+          return;
+        }
+
+        const headers = {
+          Authorization: `Bearer ${jwtToken}`,
+        };
+
+        if (plainNameInput === user.plainName) {
+          toast.info("No changes made to the name.");
+          return;
+        }
+
+        // disable eslint for this line (no-unused-vars)
+        // eslint-disable-next-line no-unused-vars
+        const response = await axios.put(
+          `${BACKEND_URL}/users/${user._id}`,
+          {
+            plainName: plainNameInput,
+          },
+          { headers }
+        );
+
+        setUser((prevUser) => ({
+          ...prevUser,
+          plainName: plainNameInput,
+        }));
+
+        toast.success("Name updated successfully.");
+      } else {
+        toast.error("You are not authorized to modify this name.");
+      }
+    } catch (error) {
+      if (error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Error updating name.");
+      }
+    }
+  }
 
   // Handle changing the email
   const handleUpdateEmail = async () => {
@@ -294,6 +341,22 @@ const Profile = () => {
                 </button>
               </div>
               <div className="mt-4">
+                <h3 className="text-lg font-bold mb-2">Edit Name</h3>
+                <input
+                  type="text"
+                  value={plainNameInput}
+                  onChange={(e) => setPlainNameInput(e.target.value)}
+                  className="w-full px-4 py-2 mb-4 border rounded shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                />
+                <button
+                  onClick={handleUpdatePlainName}
+                  disabled={plainNameInput === user.plainName}
+                  className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+                >
+                  Save Name
+                </button>
+                </div>
+              <div className="mt-4">
                 <h3 className="text-lg font-bold mb-2">Edit Email</h3>
                 <input
                   type="email"
@@ -365,6 +428,7 @@ const Profile = () => {
                     src={`${BACKEND_URL}/avatars/${avatar}`}
                     alt="User's Avatar"
                     className="w-48 h-48 mb-4 rounded"
+                    style={{ background: user?.color || '' }}
                   />
                 ) : (
                   <p>No uploaded avatar</p>

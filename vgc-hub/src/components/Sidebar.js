@@ -68,6 +68,7 @@ const Sidebar = () => {
                         alt={`${user.username}'s avatar`}
                         width={50}
                         className="rounded-full mr-2"
+                        style={{ background: user?.color || '' }}
                       />
                       <span className="font-semibold">{user.plainName}</span>
                       <span className="text-gray-500 ml-1">@{user.username.toLowerCase()}</span>

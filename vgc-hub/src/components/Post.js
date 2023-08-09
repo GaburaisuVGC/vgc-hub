@@ -329,6 +329,7 @@ const Post = ({ post }) => {
           alt={`${post.user?.username}'s avatar`}
           width={50}
           className="rounded-full mr-2"
+          style={{ background: post.user?.color || '' }}
         />
         <Link to={`/${post.user?.username}`} className="text-blue-500">
           @{post.user?.username}
@@ -391,6 +392,7 @@ const Post = ({ post }) => {
             alt={`${quotedPost.user?.username}'s avatar`}
             width={50}
             className="rounded-full mr-2"
+            style={{ background: quotedPost.user?.color || '' }}
           />
           <Link to={`/${quotedPost.user?.username}`} className="text-blue-500">
             @{quotedPost.user?.username}

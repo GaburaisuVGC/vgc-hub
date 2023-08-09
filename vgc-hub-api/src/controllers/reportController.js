@@ -58,7 +58,7 @@ exports.getReports = async (req, res) => {
       }
   
       // Récupérez la liste des rapports depuis la base de données
-      const reports = await Report.find().populate('postId userId reportedBy', 'username email avatar');
+      const reports = await Report.find().populate('postId userId reportedBy', 'username email avatar color');
   
       // Retournez une réponse JSON avec les rapports
       res.json({ reports });

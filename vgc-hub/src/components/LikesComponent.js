@@ -29,6 +29,7 @@ const LikesComponent = ({ postId, setShowLikesModal }) => {
                 alt={`Avatar de ${user?.username}`}
                 width={50}
                 className="rounded-full mr-2"
+                style={{ background: user?.color || '' }}
               />
               <a href={`/${user.username}`} className="text-blue-500 hover:underline">
                 @{user.username}
