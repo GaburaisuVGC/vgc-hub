@@ -317,7 +317,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4" style={{ paddingTop: "100px" }}>
+    <div className="max-w-md mx-auto p-4 flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
       {user ? (
         <div>
           <h2 className="text-2xl font-bold mb-4">{user.username}'s Profile</h2>

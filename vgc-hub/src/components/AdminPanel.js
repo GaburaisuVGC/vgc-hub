@@ -234,7 +234,7 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="container mx-auto"
+    <div className="container mx-auto flex flex-col min-h-screen"
     style={{ paddingTop: "100px" }}
     >
       <h1 className="text-3xl font-bold my-4">Panel Admin</h1>

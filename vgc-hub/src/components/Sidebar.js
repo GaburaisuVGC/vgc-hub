@@ -40,7 +40,8 @@ const Sidebar = () => {
 
   const handleInputChange = (e) => {
     const inputText = e.target.value;
-    setSearchUsername(inputText);
+    const sanitizedInput = inputText.replace(/[\\/]/g, '');
+    setSearchUsername(sanitizedInput);
   };
 
   return (

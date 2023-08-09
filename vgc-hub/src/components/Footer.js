@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8 md:py-12">
+    <footer className="bg-gray-800 text-white py-8 md:py-12 mt-auto">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Première colonne */}
         <div className="col-span-1 md:col-span-1 text-center md:text-left md:pl-4">
@@ -46,7 +46,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="container mx-auto text-center mt-6">
-        <p>2023 VGC Hub. v0.2.0</p>
+        <p>2023 VGC Hub. v0.3.0</p>
       </div>
     </footer>
   );

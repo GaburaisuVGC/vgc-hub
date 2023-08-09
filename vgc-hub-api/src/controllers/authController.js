@@ -34,6 +34,7 @@ exports.signup = async (req, res) => {
 
   // Générez une couleur aléatoire pour l'utilisateur en hexadécimal
   const randomColor = Math.floor(Math.random() * 16777215).toString(16); // Convertir en hexadécimal
+  const paddedColor = randomColor.padStart(6, '0'); // Ajouter des zéros à gauche si nécessaire
 
   // Hachez le mot de passe avant de l'enregistrer dans la base de données
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -43,7 +44,7 @@ exports.signup = async (req, res) => {
     email,
     password: hashedPassword,
     avatar: `${randomAvatarIndex}.png`, // Utilisation de l'avatar aléatoire
-    color: `#${randomColor}`, // Utilisation de la couleur aléatoire
+    color: `#${paddedColor}`, // Utilisation de la couleur aléatoire
   });
     try {
       await newUser.save();

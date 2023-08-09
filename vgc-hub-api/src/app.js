@@ -36,6 +36,7 @@ const postRoutes = require('./routes/postRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const privateMessageRoutes = require('./routes/privateMessageRoutes');
 const groupMessageRoutes = require('./routes/groupMessageRoutes');
+const pokePasteRoutes = require('./routes/pokePasteRoutes');
 
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
@@ -44,6 +45,7 @@ app.use('/posts', postRoutes);
 app.use('/reports', reportRoutes);
 app.use('/private', privateMessageRoutes);
 app.use('/group', groupMessageRoutes);
+app.use('/pokepaste', pokePasteRoutes);
 
 const port = process.env.BACKEND_PORT || 5000;
 
