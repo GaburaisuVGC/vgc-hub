@@ -546,8 +546,8 @@ const formattedContent = lines.map((line, lineIndex) => {
 return formattedContent;
 };
   
-  const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/;
-  const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
+const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/g;
+const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
 
   return (
     <div className="container mx-auto flex flex-col min-h-screen"
@@ -661,12 +661,28 @@ return formattedContent;
     </>
   ) : null}
 </div>
-<p className="text-2xl">{formatPostContent(post.content)}</p>
-{pokePasteLinkMatches && (
-        <div className="mt-4">
-          <PokePasteComponent pageCode={pokePasteLinkMatches[1]} />
+<div>
+  <div className="text-2xl" onClick={handlePostClick}>
+    {formatPostContent(post.content)}
+  </div>
+  <div>
+  {pokePasteLinkMatches &&
+  pokePasteLinkMatches.map((linkMatch, index) => {
+    const pageCodeMatch = linkMatch.match(/https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/);
+    const pageCode = pageCodeMatch && pageCodeMatch[1];
+
+    if (pageCode) {
+      return (
+        <div key={index} className="mt-4">
+          <PokePasteComponent pageCode={pageCode} />
         </div>
-      )}
+      );
+    }
+    return null;
+  })}
+
+  </div>
+</div>
 
         <div className={getMediaContainerClass(post.media.length)}>
           {post.media.map((mediaUrl) => {
