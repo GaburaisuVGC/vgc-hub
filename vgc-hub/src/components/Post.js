@@ -23,7 +23,7 @@ const Post = ({ post }) => {
   const [quoteCount, setQuoteCount] = useState(0);
   const [replyCount, setReplyCount] = useState(0);
   const [repliedPost, setRepliedPost] = useState(null);
-  const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/;
+  const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/g;
   const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
 
   const handleQuoteClick = () => {
@@ -414,12 +414,29 @@ const Post = ({ post }) => {
         )}
       </div>
       <div>
-      <p className="text-2xl"  onClick={handlePostClick}>{formatPostContent(post.content)}</p>
-      {pokePasteLinkMatches && (
-        <div className="mt-4">
-          <PokePasteComponent pageCode={pokePasteLinkMatches[1]} />
+      <div>
+  <div className="text-2xl" onClick={handlePostClick}>
+    {formatPostContent(post.content)}
+  </div>
+  <div>
+  {pokePasteLinkMatches &&
+  pokePasteLinkMatches.map((linkMatch, index) => {
+    const pageCodeMatch = linkMatch.match(/https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/);
+    const pageCode = pageCodeMatch && pageCodeMatch[1];
+
+    if (pageCode) {
+      return (
+        <div key={index} className="mt-4">
+          <PokePasteComponent pageCode={pageCode} />
         </div>
-      )}
+      );
+    }
+    return null;
+  })}
+
+  </div>
+</div>
+
         {post.media && post.media.length > 0 && (
           <div onClick={handlePostClick}
             className={`media-container ${getMediaContainerClass(
