@@ -331,23 +331,29 @@ const Post = ({ post }) => {
               @{username}{" "}
             </Link>
           );
-        } else if (linkRegex.test(part)) {
-          const url = part;
-          const truncatedUrl = url.length > 24 ? url.substring(0, 24) + "..." : url;
-          return (
-            <a
-              key={index}
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-blue-500 hover:underline z-50"
-            >
-              {truncatedUrl}{" "}
-            </a>
-          );
         } else {
-          return <span key={index}>{part} </span>;
+          const linkMatches = part.match(linkRegex);
+          if (linkMatches) {
+            const formattedLinks = linkMatches.map((link, linkIndex) => (
+              <a
+                key={linkIndex}
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-blue-500 hover:underline z-50"
+              >
+                {link.length > 24 ? link.substring(0, 24) + "..." : link}{" "}
+              </a>
+            ));
+            return (
+              <span key={index}>
+                {formattedLinks.length > 1 ? formattedLinks : formattedLinks[0]}{" "}
+              </span>
+            );
+          } else {
+            return <span key={index}>{part} </span>;
+          }
         }
       });
   
@@ -360,7 +366,6 @@ const Post = ({ post }) => {
   
     return formattedContent;
   };
-  
 
   return (
     <div className="post relative">
