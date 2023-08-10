@@ -46,7 +46,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="container mx-auto text-center mt-6">
-        <p>2023 VGC Hub. v0.3.0</p>
+        <p>2023 VGC Hub. v0.3.1</p>
       </div>
     </footer>
   );
