@@ -333,6 +333,7 @@ const Post = ({ post }) => {
           );
         } else if (linkRegex.test(part)) {
           const url = part;
+          const truncatedUrl = url.length > 24 ? url.substring(0, 24) + "..." : url;
           return (
             <a
               key={index}
@@ -342,7 +343,7 @@ const Post = ({ post }) => {
               onClick={(e) => e.stopPropagation()}
               className="text-blue-500 hover:underline z-50"
             >
-              {part}{" "}
+              {truncatedUrl}{" "}
             </a>
           );
         } else {
