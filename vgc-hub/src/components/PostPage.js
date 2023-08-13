@@ -495,6 +495,7 @@ const linkRegex = /(https?:\/\/[^\s]+)/g;
 const lines = content.split("\n");
 
 const formattedContent = lines.map((line, lineIndex) => {
+  mentionRegex.lastIndex = 0; // Reset the regex
   const parts = line.split(" ");
   const formattedParts = parts.map((part, index) => {
     let match = mentionRegex.exec(part);

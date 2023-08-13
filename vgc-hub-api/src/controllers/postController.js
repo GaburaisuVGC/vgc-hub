@@ -1,73 +1,26 @@
 // controllers/postController.js
 const Post = require("../models/post");
 const User = require("../models/user");
+const Notification = require('../models/notification');
 
 // Contrôleur pour ajouter un nouveau post
+const PostService = require('../services/postService');
+
 exports.createPost = async (req, res) => {
   const { content, quoteOf } = req.body;
   const { user } = req;
 
   try {
-    // Vérifier si le nombre de médias dépasse 4
-    if (req.files && req.files.length > 4) {
-      return res
-        .status(400)
-        .json({
-          message:
-            "Vous ne pouvez télécharger que 4 images ou 1 vidéo par post",
-        });
-    }
+    const postService = new PostService();
+    const result = await postService.createPost(content, quoteOf, user, req.files);
 
-    // Vérifier si l'utilisateur est connecté
-    if (!user) {
-      return res
-        .status(401)
-        .json({ message: "Vous devez être connecté pour créer un post" });
-    }
-
-    // Vérifier si le contenu du post est fourni si le nombre de médias est inférieur ou égal à 4
-    if (!content && req.files.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Veuillez fournir du contenu pour le post" });
-    }
-
-    if (quoteOf) {
-      const quotePost = await Post.findById(quoteOf);
-      if (!quotePost) {
-        return res.status(404).json({ message: "Post to quote not found" });
-      }
-    }
-
-    // Créer le nouveau post
-    const post = new Post({
-      user: user._id,
-      content,
-      media: req.files ? req.files.map((file) => file.filename) : [],
-      quoteOf: quoteOf ? quoteOf : null, // Référence au post cité s'il existe
-    });
-
-    await post.save();
-
-    if (quoteOf) {
-      const quotePost = await Post.findById(quoteOf);
-      if (quotePost) {
-        quotePost.quotes.push(post._id);
-        await quotePost.save();
-      }
-    }
-
-    return res.json({ message: "Post ajouté avec succès", post });
+    return res.status(result.status).json(result.data);
   } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({
-        message: "Une erreur est survenue lors de l'ajout du post",
-        error,
-      });
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 exports.getPosts = async (req, res) => {
   try {
@@ -380,6 +333,14 @@ exports.deletePost = async (req, res) => {
       }
     }
 
+    // if the post is in a notification.postId, remove the notification
+    const notifications = await Notification.find({ postId: post._id });
+    if (notifications && notifications.length > 0) {
+      for (const notification of notifications) {
+        await notification.deleteOne();
+      }
+    }
+
     // Remove the post from the "posts" collection
     await post.deleteOne({ _id: postId });
 
@@ -395,91 +356,35 @@ exports.deletePost = async (req, res) => {
   }
 };
 
+const LikeNotificationService = require('../services/likeNotificationService');
+
 exports.likePost = async (req, res) => {
   const { postId } = req.params;
   const { userId } = req.body;
 
   try {
-    const post = await Post.findById(postId);
-    if (!post) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    const likeService = new LikeNotificationService();
+    const result = await likeService.handleLike(postId, userId);
 
-    // Vérifiez si l'utilisateur a déjà liké le post
-    const isLiked = post.likes.includes(userId);
-
-    if (isLiked) {
-      // Si l'utilisateur a déjà liké le post, on le retire des likes
-      post.likes.pull(userId);
-      // On retire également le post de la liste des posts likés par l'utilisateur
-      const user = await User.findById(userId);
-      if (user) {
-        user.likes.pull(postId);
-        await user.save();
-      }
-    } else {
-      // Sinon, on ajoute l'utilisateur aux likes
-      post.likes.push(userId);
-      // On ajoute également le post à la liste des posts likés par l'utilisateur
-      const user = await User.findById(userId);
-      if (user) {
-        user.likes.push(postId);
-        await user.save();
-      }
-    }
-
-    await post.save();
-
-    return res.status(200).json({ message: "Like updated successfully", post });
+    return res.status(result.status).json(result.data);
   } catch (error) {
     console.error("Error updating like:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
+
+const RepostService = require('../services/repostNotificationService');
+
 exports.repostPost = async (req, res) => {
   const { postId } = req.params;
   const { userId } = req.body;
 
   try {
-    const originalPost = await Post.findById(postId);
-    if (!originalPost) {
-      return res.status(404).json({ message: "Original post not found" });
-    }
+    const repostService = new RepostService();
+    const result = await repostService.handleRepost(postId, userId);
 
-    // Vérifier si l'id du post est déjà dans l'array reposts de l'utilisateur
-    const existingRepost = originalPost.reposts.some(
-      (repost) => repost.toString() === userId
-    );
-    if (existingRepost) {
-      // Retirer le post des reposts de l'utilisateur
-      const user = await User.findById(userId);
-      if (user) {
-        user.reposts = user.reposts.filter(
-          (repost) => repost.post.toString() !== postId
-        );
-        await user.save();
-      }
-      // Retirer l'utilisateur des reposts du post
-      originalPost.reposts = originalPost.reposts.filter(
-        (repost) => repost.toString() !== userId
-      );
-      await originalPost.save();
-      return res.status(200).json({ message: "Repost removed successfully" });
-    }
-
-    // Ajouter le post aux reposts de l'utilisateur avec la date du repost
-    const user = await User.findById(userId);
-    if (user) {
-      user.reposts.push({ post: postId, repostedAt: Date.now() });
-      await user.save();
-    }
-
-    // Ajouter l'utilisateur aux reposts du post avec la date du repost
-    originalPost.reposts.push(userId);
-    await originalPost.save();
-
-    return res.status(201).json({ message: "Post reposted successfully" });
+    return res.status(result.status).json(result.data);
   } catch (error) {
     console.error("Error reposting:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -584,68 +489,24 @@ exports.getPostQuotes = async (req, res) => {
   }
 };
 
+const ReplyService = require('../services/replyNotificationService');
+
 exports.createReply = async (req, res) => {
   const { postId } = req.params;
   const { content } = req.body;
   const { user } = req;
 
   try {
-    // Vérifier si le post auquel nous répondons existe
-    const parentPost = await Post.findById(postId);
-    if (!parentPost) {
-      return res.status(404).json({ message: "Post to reply not found" });
-    }
+    const replyService = new ReplyService();
+    const result = await replyService.createReply(postId, content, user, req.files);
 
-    // Vérifier si l'utilisateur est connecté
-    if (!user) {
-      return res
-        .status(401)
-        .json({ message: "Vous devez être connecté pour répondre à un post" });
-    }
-
-            // Vérifier si le nombre de médias dépasse 4
-            if (req.files && req.files.length > 4) {
-              return res
-                .status(400)
-                .json({
-                  message:
-                    "Vous ne pouvez télécharger que 4 images ou 1 vidéo par post",
-                });
-            }
-
-          // Vérifier si le contenu du post est fourni si le nombre de médias est inférieur ou égal à 4
-    if (!content && req.files.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Veuillez fournir du contenu pour le post" });
-    }
-
-    // Créer le nouveau post pour la réponse
-    const replyPost = new Post({
-      user: user._id,
-      content,
-      media: req.files ? req.files.map((file) => file.filename) : [],
-      replyTo: parentPost._id, // Stocker l'ID du post auquel il répond
-    });
-
-    // Enregistrer la réponse dans la base de données
-    await replyPost.save();
-
-    // Ajouter la référence de la réponse au post parent
-    parentPost.replies.push(replyPost._id);
-    await parentPost.save();
-
-    return res.json({ message: "Réponse ajoutée avec succès", replyPost });
+    return res.status(result.status).json(result.data);
   } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({
-        message: "Une erreur est survenue lors de l'ajout de la réponse",
-        error,
-      });
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 exports.getPostReplies = async (req, res) => {
   const { postId } = req.params;

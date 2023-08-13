@@ -20,6 +20,7 @@ import QuestionsAndAnswers from './pages/infos/QandA';
 import PrivacyPage from './pages/infos/Privacy';
 import GDPRPage from './pages/infos/GDPR';
 import { ToastContainer } from 'react-toastify';
+import NotificationPage from './pages/profile/NotificationPage';
 require('dotenv').config();
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
         <Route path="/qa" element={<QuestionsAndAnswers />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/gdpr" element={<GDPRPage />} />
+        <Route path="/notifications" element={<NotificationPage />} />
         {/* Add other routes here for other pages */}
       </Routes>
     </Router>
