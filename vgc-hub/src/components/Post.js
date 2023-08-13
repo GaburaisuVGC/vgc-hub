@@ -295,26 +295,26 @@ const Post = ({ post }) => {
   };
 
   const formatPostContent = (content) => {
-            // else if (hashtagRegex.test(part)) {
-        //   const hashtag = part.substring(1);
-        //   return (
-        //     <Link
-        //       className="text-blue-500 hover:underline z-50"
-        //       key={index}
-        //       to={`/search?q=${hashtag}`}
-        //       onClick={(e) => e.stopPropagation()}
-        //     >
-        //       {part}{" "}
-        //     </Link>
-        //   );
-        // }
+    // else if (hashtagRegex.test(part)) {
+    //   const hashtag = part.substring(1);
+    //   return (
+    //     <Link
+    //       className="text-blue-500 hover:underline z-50"
+    //       key={index}
+    //       to={`/search?q=${hashtag}`}
+    //       onClick={(e) => e.stopPropagation()}
+    //     >
+    //       {part}{" "}
+    //     </Link>
+    //   );
+    // }
     // eslint-disable-next-line
     const hashtagRegex = /#([\w]+)/g;
     const mentionRegex = /@(\w+)/g; // Capture les mentions avec ou sans parenthèses
     const linkRegex = /(https?:\/\/[^\s]+)/g;
-  
+
     const lines = content.split("\n");
-  
+
     const formattedContent = lines.map((line, lineIndex) => {
       mentionRegex.lastIndex = 0; // Reset l'index de la regex
       const parts = line.split(" ");
@@ -357,14 +357,14 @@ const Post = ({ post }) => {
           }
         }
       });
-  
+
       return (
         <div key={lineIndex} className="mb-2">
           {formattedParts}
         </div>
       );
     });
-  
+
     return formattedContent;
   };
 
@@ -374,23 +374,31 @@ const Post = ({ post }) => {
         {post.isReposted && (
           <p className="text-gray-500">
             Reposted by{" "}
-            <Link to={`/${post.repostUsername}`}>{post.repostUsername}</Link>
+            <Link
+              to={`/${post.repostUsername}`}
+              className="hover:underline z-50"
+            >
+              {post.repostUsername}
+            </Link>
           </p>
         )}
       </div>
       <div>
-      {repliedPost && (
-  <p className="text-gray-500">
-    Reply to{" "}
-    {repliedPost.user?.username ? (
-      <Link to={`/${repliedPost.user.username}`}>
-        @{repliedPost.user.username}
-      </Link>
-    ) : (
-      "deleted-user"
-    )}
-  </p>
-)}
+        {repliedPost && (
+          <p className="text-gray-500">
+            Reply to{" "}
+            {repliedPost.user?.username ? (
+              <Link
+                to={`/${repliedPost.user.username}`}
+                className="hover:underline z-50"
+              >
+                @{repliedPost.user.username}
+              </Link>
+            ) : (
+              "deleted-user"
+            )}
+          </p>
+        )}
       </div>
       <div className="flex items-start mb-4 relative">
         {post.media && post.media.length > 0 && (
@@ -403,9 +411,12 @@ const Post = ({ post }) => {
           alt={`${post.user?.username}'s avatar`}
           width={50}
           className="rounded-full mr-2"
-          style={{ background: post.user?.color || '' }}
+          style={{ background: post.user?.color || "" }}
         />
-        <Link to={`/${post.user?.username}`} className="text-blue-500">
+        <Link
+          to={`/${post.user?.username}`}
+          className="text-blue-500 hover:underline z-50"
+        >
           @{post.user?.username}
         </Link>
         <span className="mx-2">&#183;</span>
@@ -415,31 +426,33 @@ const Post = ({ post }) => {
         )}
       </div>
       <div>
-      <div>
-  <div className="text-2xl" onClick={handlePostClick}>
-    {formatPostContent(post.content)}
-  </div>
-  <div>
-  {pokePasteLinkMatches &&
-  pokePasteLinkMatches.map((linkMatch, index) => {
-    const pageCodeMatch = linkMatch.match(/https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/);
-    const pageCode = pageCodeMatch && pageCodeMatch[1];
+        <div>
+          <div className="text-2xl" onClick={handlePostClick}>
+            {formatPostContent(post.content)}
+          </div>
+          <div>
+            {pokePasteLinkMatches &&
+              pokePasteLinkMatches.map((linkMatch, index) => {
+                const pageCodeMatch = linkMatch.match(
+                  /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/
+                );
+                const pageCode = pageCodeMatch && pageCodeMatch[1];
 
-    if (pageCode) {
-      return (
-        <div key={index} className="mt-4">
-          <PokePasteComponent pageCode={pageCode} />
+                if (pageCode) {
+                  return (
+                    <div key={index} className="mt-4">
+                      <PokePasteComponent pageCode={pageCode} />
+                    </div>
+                  );
+                }
+                return null;
+              })}
+          </div>
         </div>
-      );
-    }
-    return null;
-  })}
-
-  </div>
-</div>
 
         {post.media && post.media.length > 0 && (
-          <div onClick={handlePostClick}
+          <div
+            onClick={handlePostClick}
             className={`media-container ${getMediaContainerClass(
               post.media.length
             )}`}
@@ -479,141 +492,142 @@ const Post = ({ post }) => {
         )}
       </div>
       {quotedPost && (
-          <div className="mt-8 border-t-2 border-gray-300 pt-8 max-w-lg bg-gray-100 rounded-lg p-4"
-          onClick={() => handleQuotedPostClick(quotedPost)}
-          >
-                    <div className="flex items-center mb-4">
-          <img
-            src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
-            alt={`${quotedPost.user?.username}'s avatar`}
-            width={50}
-            className="rounded-full mr-2"
-            style={{ background: quotedPost.user?.color || '' }}
-          />
-          <Link to={`/${quotedPost.user?.username}`} className="text-blue-500">
-            @{quotedPost.user?.username}
-          </Link>
-          <span className="mx-2">&#183;</span>
-        <p className="text-gray-500">{formatDate(post.createdAt)}</p>
-        </div>
-        <div>
-        <p className="text-2xl">{formatPostContent(quotedPost.content)}</p>
-        </div>
         <div
-        style={
-{
-  width: "30%",
-}
-        }
-        className={`media-container-quoted ${getQuotedMediaContainerClass(
-          quotedPost.media.length
-        )}`}
+          className="mt-8 border-t-2 border-gray-300 pt-8 max-w-lg bg-gray-100 rounded-lg p-4"
+          onClick={() => handleQuotedPostClick(quotedPost)}
         >
-          {quotedPost.media.map((mediaUrl) => {
-            const extension = mediaUrl.split(".").pop();
-            const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
-              extension.toLowerCase()
-            );
-
-            return isVideo ? (
-              <div key={mediaUrl} className="rounded shadow-md media-item">
-                <video
-                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
-                  controls
-                  style={{
-                    borderRadius: "16px",
-                    width: "100%",
-                  }}
-                />
-              </div>
-            ) : (
-              <div key={mediaUrl} className="rounded shadow-md media-item">
-                <img
-                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
-                  alt={mediaUrl}
-                  style={{
-                    width: "50%",
-                  }}
-                />
-              </div>
-            );
-          })}
-        </div>
+          <div className="flex items-center mb-4">
+            <img
+              src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
+              alt={`${quotedPost.user?.username}'s avatar`}
+              width={50}
+              className="rounded-full mr-2"
+              style={{ background: quotedPost.user?.color || "" }}
+            />
+            <Link
+              to={`/${quotedPost.user?.username}`}
+              className="text-blue-500 hover:underline z-50"
+            >
+              @{quotedPost.user?.username}
+            </Link>
+            <span className="mx-2">&#183;</span>
+            <p className="text-gray-500">{formatDate(post.createdAt)}</p>
           </div>
-        )}
-<div className="flex items-center justify-between mt-2">
-  {/* Afficher le bouton Like et le nombre de likes */}
-  <div className="flex items-center mr-6">
-    <button onClick={handleLikeClick} className="flex items-center">
-      <GiHearts
-        size={24}
-        className={`mr-2 ${isLiked ? "text-red-500" : "text-gray-500"}`}
-      />
-      <span className="text-gray-500">{likeCount}</span>
-    </button>
-  </div>
-  {/* Afficher le bouton Repost et le nombre de reposts */}
-  <div className="flex items-center mr-6">
-    <button onClick={handleRepostClick} className="flex items-center">
-      <BsFillArrowUpSquareFill
-        size={24}
-        className={`mr-2 ${isReposted ? "text-green-500" : "text-gray-500"}`}
-      />
-      <span className="text-gray-500">{repostCount}</span>
-    </button>
-  </div>
-  {/* Afficher le bouton Quote */}
-  <div className="flex items-center">
-    <button onClick={handleQuoteClick} className="flex items-center">
-      <GiChatBubble size={24} className="mr-2 text-gray-500" />
-      <span className="text-gray-500">{quoteCount} Quote</span>
-    </button>
-  </div>
-  {/* Afficher le bouton Reply, fixé tout à droite*/}
-  <div className="flex items-center ml-auto">
-    <button onClick={handlePostClick} className="flex items-center">
-      <GiChatBubble size={24} className="mr-2 text-gray-500" />
-    </button>
-    <span onClick={handlePostClick} className="text-gray-500">
-      {replyCount}
-    </span>
-  </div>
-</div>
-
-
-{quoteModalOpen && (
-  <div className="quote-modal fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-4 rounded-lg">
-      <h2 className="text-lg font-bold mb-4">Quote this post</h2>
-      <form onSubmit={handleQuoteSubmit}>
-        <textarea
-          value={quoteContent}
-          onChange={(e) => setQuoteContent(e.target.value)}
-          placeholder="Enter your quote here..."
-          required
-          className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:border-blue-500"
-        />
-        <div className="mt-4 flex justify-end">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          <div>
+            <p className="text-2xl">{formatPostContent(quotedPost.content)}</p>
+          </div>
+          <div
+            style={{
+              width: "30%",
+            }}
+            className={`media-container-quoted ${getQuotedMediaContainerClass(
+              quotedPost.media.length
+            )}`}
           >
-            Quote
-          </button>
-          <button
-            type="button"
-            onClick={() => setQuoteModalOpen(false)}
-            className="px-4 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Cancel
+            {quotedPost.media.map((mediaUrl) => {
+              const extension = mediaUrl.split(".").pop();
+              const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
+                extension.toLowerCase()
+              );
+
+              return isVideo ? (
+                <div key={mediaUrl} className="rounded shadow-md media-item">
+                  <video
+                    src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
+                    controls
+                    style={{
+                      borderRadius: "16px",
+                      width: "100%",
+                    }}
+                  />
+                </div>
+              ) : (
+                <div key={mediaUrl} className="rounded shadow-md media-item">
+                  <img
+                    src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
+                    alt={mediaUrl}
+                    style={{
+                      width: "50%",
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      <div className="flex items-center justify-between mt-2">
+        {/* Afficher le bouton Like et le nombre de likes */}
+        <div className="flex items-center mr-6">
+          <button onClick={handleLikeClick} className="flex items-center">
+            <GiHearts
+              size={24}
+              className={`mr-2 ${isLiked ? "text-red-500" : "text-gray-500"}`}
+            />
+            <span className="text-gray-500">{likeCount}</span>
           </button>
         </div>
-      </form>
-    </div>
-  </div>
-)}
+        {/* Afficher le bouton Repost et le nombre de reposts */}
+        <div className="flex items-center mr-6">
+          <button onClick={handleRepostClick} className="flex items-center">
+            <BsFillArrowUpSquareFill
+              size={24}
+              className={`mr-2 ${
+                isReposted ? "text-green-500" : "text-gray-500"
+              }`}
+            />
+            <span className="text-gray-500">{repostCount}</span>
+          </button>
+        </div>
+        {/* Afficher le bouton Quote */}
+        <div className="flex items-center">
+          <button onClick={handleQuoteClick} className="flex items-center">
+            <GiChatBubble size={24} className="mr-2 text-gray-500" />
+            <span className="text-gray-500">{quoteCount} Quote</span>
+          </button>
+        </div>
+        {/* Afficher le bouton Reply, fixé tout à droite*/}
+        <div className="flex items-center ml-auto">
+          <button onClick={handlePostClick} className="flex items-center">
+            <GiChatBubble size={24} className="mr-2 text-gray-500" />
+          </button>
+          <span onClick={handlePostClick} className="text-gray-500">
+            {replyCount}
+          </span>
+        </div>
+      </div>
 
-
+      {quoteModalOpen && (
+        <div className="quote-modal fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded-lg">
+            <h2 className="text-lg font-bold mb-4">Quote this post</h2>
+            <form onSubmit={handleQuoteSubmit}>
+              <textarea
+                value={quoteContent}
+                onChange={(e) => setQuoteContent(e.target.value)}
+                placeholder="Enter your quote here..."
+                required
+                className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:border-blue-500"
+              />
+              <div className="mt-4 flex justify-end">
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                  Quote
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setQuoteModalOpen(false)}
+                  className="px-4 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

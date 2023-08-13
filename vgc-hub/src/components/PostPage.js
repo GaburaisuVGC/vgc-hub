@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwt_decode from "jwt-decode";
 import "../styles/postpage.css";
 import { GiPaperClip, GiHearts, GiChatBubble } from "react-icons/gi";
 import { BsFillArrowUpSquareFill } from "react-icons/bs";
-import LikesComponent from './LikesComponent';
-import RepostsComponent from './RepostsComponent';
-import QuotesComponent from './QuotesComponent';
+import LikesComponent from "./LikesComponent";
+import RepostsComponent from "./RepostsComponent";
+import QuotesComponent from "./QuotesComponent";
 import Dropzone from "react-dropzone";
 import Post from "./Post";
 import ReportForm from "./ReportForm";
@@ -51,19 +51,19 @@ const PostPage = () => {
       const response = await axios.get(`${BACKEND_URL}/posts/post/${postId}`);
       const postData = response.data.post;
       setPost(postData);
-  
+
       if (postData.likes) {
         setLikeCount(postData.likes.length);
       }
-  
+
       if (postData.reposts) {
         setRepostCount(postData.reposts.length);
       }
-  
+
       if (postData.quotes) {
         setQuoteCount(postData.quotes.length);
       }
-  
+
       if (postData.replies) {
         setReplyCount(postData.replies.length);
       }
@@ -71,11 +71,11 @@ const PostPage = () => {
       toast.error("Error while fetching post.");
     }
   };
-  
+
   const fetchReplyTo = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/posts/post/${postId}`);
-  
+
       if (response.data.post.replyTo) {
         axios
           .get(`${BACKEND_URL}/posts/post/${response.data.post.replyTo}`)
@@ -87,11 +87,11 @@ const PostPage = () => {
       // Handle error
     }
   };
-  
+
   const fetchQuotedPost = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/posts/post/${postId}`);
-  
+
       if (response.data.post.quoteOf) {
         axios
           .get(`${BACKEND_URL}/posts/post/${response.data.post.quoteOf}`)
@@ -103,14 +103,13 @@ const PostPage = () => {
       // Handle error
     }
   };
-  
+
   useEffect(() => {
     fetchPost();
     fetchQuotedPost();
     fetchReplyTo();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
-  
 
   useEffect(() => {
     if (user && !verified) {
@@ -130,24 +129,22 @@ const PostPage = () => {
     const fetchProfile = async () => {
       const jwtToken = localStorage.getItem("jwtToken");
       if (jwtToken) {
-      const username = localStorage.getItem("loggedInUsername");
-      try {
-        const response = await axios.get(
-          `${BACKEND_URL}/users/${username.toLowerCase()}`
-        );
-        setUser(response.data.user);
-        setVerified(response.data.user.isVerified);
-      } catch (error) {
-        // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
-        toast.error("Error while fetching profile.");
-      }
-
+        const username = localStorage.getItem("loggedInUsername");
+        try {
+          const response = await axios.get(
+            `${BACKEND_URL}/users/${username.toLowerCase()}`
+          );
+          setUser(response.data.user);
+          setVerified(response.data.user.isVerified);
+        } catch (error) {
+          // Gérer l'erreur de récupération du profil, par exemple, afficher un message d'erreur ou rediriger vers une page d'erreur
+          toast.error("Error while fetching profile.");
+        }
       }
     };
 
     fetchProfile();
   }, []);
-
 
   useEffect(() => {
     if (user) {
@@ -161,19 +158,19 @@ const PostPage = () => {
   }, [user, postId]);
 
   useEffect(() => {
-      // Fonction pour récupérer les réponses du post depuis le backend
-  const fetchReplies = async () => {
-    try {
-      const response = await axios.get(
-        `${BACKEND_URL}/posts/post/${postId}/replies`
-      );
-      setReplies(response.data.replies);
-    } catch (error) {
-      toast.error("Error while fetching replies.");
-    }
-  };
+    // Fonction pour récupérer les réponses du post depuis le backend
+    const fetchReplies = async () => {
+      try {
+        const response = await axios.get(
+          `${BACKEND_URL}/posts/post/${postId}/replies`
+        );
+        setReplies(response.data.replies);
+      } catch (error) {
+        toast.error("Error while fetching replies.");
+      }
+    };
 
-  fetchReplies();
+    fetchReplies();
   }, [postId]);
 
   // Fonction pour gérer la soumission du formulaire de citation
@@ -295,12 +292,11 @@ const PostPage = () => {
   };
 
   if (!post) {
-    return         <div className="flex items-center justify-center h-screen">
-    <p
-      className="text-2xl font-bold text-gray-800"
-    >
-      Loading Post...</p>
-    </div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-2xl font-bold text-gray-800">Loading Post...</p>
+      </div>
+    );
   }
 
   const handleDeletePost = async () => {
@@ -312,14 +308,11 @@ const PostPage = () => {
       }
 
       // Envoyez une requête DELETE au backend pour supprimer le post
-      const response = await axios.delete(
-        `${BACKEND_URL}/posts/${postId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        }
-      );
+      const response = await axios.delete(`${BACKEND_URL}/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      });
 
       toast.success(response.data.message);
       navigate("/");
@@ -368,26 +361,26 @@ const PostPage = () => {
     return "w-full h-full";
   };
 
-    // Fonctions pour ouvrir les modaux
-    const handleLikesClick = () => {
-      setShowLikesModal(true);
-    };
-  
-    const handleRepostsClick = () => {
-      setShowRepostsModal(true);
-    };
-  
-    const handleQuotesClick = () => {
-      setShowQuotesModal(true);
-    };
+  // Fonctions pour ouvrir les modaux
+  const handleLikesClick = () => {
+    setShowLikesModal(true);
+  };
 
-    const handlePostClick = (quote) => {
-      navigate(`/post/${quote._id}`);
-      window.location.reload();
-    };
+  const handleRepostsClick = () => {
+    setShowRepostsModal(true);
+  };
+
+  const handleQuotesClick = () => {
+    setShowQuotesModal(true);
+  };
+
+  const handlePostClick = (quote) => {
+    navigate(`/post/${quote._id}`);
+    window.location.reload();
+  };
 
   const hasMedia = post.media && post.media.length > 0;
- 
+
   // Fonction pour gérer la soumission du formulaire de réponse
   const handleReplySubmit = async (e) => {
     e.preventDefault();
@@ -422,29 +415,35 @@ const PostPage = () => {
       setSelectedFiles([]);
       setReplyModalOpen(false);
 
-
       toast.success("Reply added successfully.");
     } catch (error) {
       toast.error("Error while adding reply.");
     }
   };
 
-      // Fonction pour gérer la sélection de fichiers
-      const handleFileSelect = (acceptedFiles) => {
-          const REACT_APP_MAX_FILE_SIZE = process.env.REACT_APP_MAX_FILE_SIZE || 10 * 1024 * 1024; // Utiliser 10 MB comme valeur par défaut si la variable d'environnement n'est pas définie
-      
-          const selectedFiles = acceptedFiles.slice(0, 4); // Limiter le nombre de fichiers sélectionnés à 4
-      
-          // Vérifier la taille de chaque fichier
-          const oversizedFiles = selectedFiles.filter((file) => file.size > REACT_APP_MAX_FILE_SIZE);
-      
-          if (oversizedFiles.length > 0) {
-            toast.error(`Some files were too big. Max file size is ${REACT_APP_MAX_FILE_SIZE / 1024 / 1024} MB.`);
-            return;
-          }
-      
-          setSelectedFiles(selectedFiles);
-        };
+  // Fonction pour gérer la sélection de fichiers
+  const handleFileSelect = (acceptedFiles) => {
+    const REACT_APP_MAX_FILE_SIZE =
+      process.env.REACT_APP_MAX_FILE_SIZE || 10 * 1024 * 1024; // Utiliser 10 MB comme valeur par défaut si la variable d'environnement n'est pas définie
+
+    const selectedFiles = acceptedFiles.slice(0, 4); // Limiter le nombre de fichiers sélectionnés à 4
+
+    // Vérifier la taille de chaque fichier
+    const oversizedFiles = selectedFiles.filter(
+      (file) => file.size > REACT_APP_MAX_FILE_SIZE
+    );
+
+    if (oversizedFiles.length > 0) {
+      toast.error(
+        `Some files were too big. Max file size is ${
+          REACT_APP_MAX_FILE_SIZE / 1024 / 1024
+        } MB.`
+      );
+      return;
+    }
+
+    setSelectedFiles(selectedFiles);
+  };
 
   // Fonction pour ouvrir le modal de réponse
   const handleReplyClick = () => {
@@ -475,90 +474,88 @@ const PostPage = () => {
 
   const formatPostContent = (content) => {
     // else if (hashtagRegex.test(part)) {
-//   const hashtag = part.substring(1);
-//   return (
-//     <Link
-//       className="text-blue-500 hover:underline z-50"
-//       key={index}
-//       to={`/search?q=${hashtag}`}
-//       onClick={(e) => e.stopPropagation()}
-//     >
-//       {part}{" "}
-//     </Link>
-//   );
-// }
-// eslint-disable-next-line
-const hashtagRegex = /#([\w]+)/g;
-const mentionRegex = /@(\w+)/g; // Capture les mentions avec ou sans parenthèses
-const linkRegex = /(https?:\/\/[^\s]+)/g;
+    //   const hashtag = part.substring(1);
+    //   return (
+    //     <Link
+    //       className="text-blue-500 hover:underline z-50"
+    //       key={index}
+    //       to={`/search?q=${hashtag}`}
+    //       onClick={(e) => e.stopPropagation()}
+    //     >
+    //       {part}{" "}
+    //     </Link>
+    //   );
+    // }
+    // eslint-disable-next-line
+    const hashtagRegex = /#([\w]+)/g;
+    const mentionRegex = /@(\w+)/g; // Capture les mentions avec ou sans parenthèses
+    const linkRegex = /(https?:\/\/[^\s]+)/g;
 
-const lines = content.split("\n");
+    const lines = content.split("\n");
 
-const formattedContent = lines.map((line, lineIndex) => {
-  mentionRegex.lastIndex = 0; // Reset the regex
-  const parts = line.split(" ");
-  const formattedParts = parts.map((part, index) => {
-    let match = mentionRegex.exec(part);
-    if (match && match[1]) {
-      const username = match[1];
+    const formattedContent = lines.map((line, lineIndex) => {
+      mentionRegex.lastIndex = 0; // Reset the regex
+      const parts = line.split(" ");
+      const formattedParts = parts.map((part, index) => {
+        let match = mentionRegex.exec(part);
+        if (match && match[1]) {
+          const username = match[1];
+          return (
+            <Link
+              className="text-blue-500 hover:underline z-50"
+              key={index}
+              to={`/${username.toLowerCase()}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              @{username}{" "}
+            </Link>
+          );
+        } else {
+          const linkMatches = part.match(linkRegex);
+          if (linkMatches) {
+            const formattedLinks = linkMatches.map((link, linkIndex) => (
+              <a
+                key={linkIndex}
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="text-blue-500 hover:underline z-50"
+              >
+                {link.length > 24 ? link.substring(0, 24) + "..." : link}{" "}
+              </a>
+            ));
+            return (
+              <span key={index}>
+                {formattedLinks.length > 1 ? formattedLinks : formattedLinks[0]}{" "}
+              </span>
+            );
+          } else {
+            return <span key={index}>{part} </span>;
+          }
+        }
+      });
+
       return (
-        <Link
-          className="text-blue-500 hover:underline z-50"
-          key={index}
-          to={`/${username.toLowerCase()}`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          @{username}{" "}
-        </Link>
+        <div key={lineIndex} className="mb-2">
+          {formattedParts}
+        </div>
       );
-    } else {
-      const linkMatches = part.match(linkRegex);
-      if (linkMatches) {
-        const formattedLinks = linkMatches.map((link, linkIndex) => (
-          <a
-            key={linkIndex}
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="text-blue-500 hover:underline z-50"
-          >
-            {link.length > 24 ? link.substring(0, 24) + "..." : link}{" "}
-          </a>
-        ));
-        return (
-          <span key={index}>
-            {formattedLinks.length > 1 ? formattedLinks : formattedLinks[0]}{" "}
-          </span>
-        );
-      } else {
-        return <span key={index}>{part} </span>;
-      }
-    }
-  });
+    });
+
+    return formattedContent;
+  };
+
+  const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/g;
+  const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
 
   return (
-    <div key={lineIndex} className="mb-2">
-      {formattedParts}
-    </div>
-  );
-});
-
-return formattedContent;
-};
-  
-const pokePasteLinkRegex = /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/g;
-const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
-
-  return (
-    <div className="container mx-auto flex flex-col min-h-screen"
-    style={{ paddingTop: "100px" }}
+    <div
+      className="container mx-auto flex flex-col min-h-screen"
+      style={{ paddingTop: "100px" }}
     >
       {showLikesModal && (
-        <LikesComponent
-          postId={postId}
-          setShowLikesModal={setShowLikesModal}
-        />
+        <LikesComponent postId={postId} setShowLikesModal={setShowLikesModal} />
       )}
       {showRepostsModal && (
         <RepostsComponent
@@ -574,116 +571,121 @@ const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
       )}
 
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4 relative mb-4 w-full">
-      <h2 className="text-3xl font-bold my-4">Post</h2>
-      {repliedPost && (
-                  <div
-                  key={repliedPost._id}
-                  className={
-                    repliedPost.media.length === 1
-                      ? "post-container-single"
-                      : repliedPost.media.length === 2
-                      ? "post-container-two"
-                      : repliedPost.media.length === 3
-                      ? "post-container-three"
-                      : repliedPost.media.length === 4
-                      ? "post-container-four"
-                      : "" // Ajoutez une classe vide pour les autres cas
-                  }
-                  style={
-                    {
-                      marginTop: "1rem",
-                      marginBottom: "1rem",
-                    }
-                  }
-                >
-                  <Post key={repliedPost._id} post={repliedPost} />
-                </div>
-                ) 
-      }
+        <h2 className="text-3xl font-bold my-4">Post</h2>
+        {repliedPost && (
+          <div
+            key={repliedPost._id}
+            className={
+              repliedPost.media.length === 1
+                ? "post-container-single"
+                : repliedPost.media.length === 2
+                ? "post-container-two"
+                : repliedPost.media.length === 3
+                ? "post-container-three"
+                : repliedPost.media.length === 4
+                ? "post-container-four"
+                : "" // Ajoutez une classe vide pour les autres cas
+            }
+            style={{
+              marginTop: "1rem",
+              marginBottom: "1rem",
+            }}
+          >
+            <Post key={repliedPost._id} post={repliedPost} />
+          </div>
+        )}
       </div>
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-md p-4 relative w-full">
-      <div>
-      {repliedPost && (
-  <p className="text-gray-500">
-    Reply to{" "}
-    {repliedPost.user?.username ? (
-      <Link to={`/${repliedPost.user.username}`}>
-        @{repliedPost.user.username}
-      </Link>
-    ) : (
-      "deleted-user"
-    )}
-  </p>
-)}
-      </div>
+        <div>
+          {repliedPost && (
+            <p className="text-gray-500">
+              Reply to{" "}
+              {repliedPost.user?.username ? (
+                <Link
+                  to={`/${repliedPost.user.username}`}
+                  className="hover:underline z-50"
+                >
+                  @{repliedPost.user.username}
+                </Link>
+              ) : (
+                "deleted-user"
+              )}
+            </p>
+          )}
+        </div>
 
         {showOptionsPanel && (
-  <div className="flex">
-    <div className="absolute top-10 mt-12 right-0 bg-white rounded-lg shadow-md p-2 space-y-2">
-
-    <button
-        // Afficher le formulaire de signalement au clic
-        onClick={() => setIsReportFormOpen(true)}
-        className={`block w-full text-left px-4 py-2 text-red-500 hover:text-red-600`}
-      >
-        Report
-      </button>
-    </div>
-  </div>
-)}
-<div className="flex items-center mb-4">
-  <img
-    src={`${BACKEND_URL}/avatars/${post.user?.avatar}`}
-    alt={`${post.user?.username}'s avatar`}
-    width={50}
-    className="rounded-full mr-2"
-    style={{ background: post.user?.color || '' }}
-  />
-  <Link to={`/${post.user?.username}`} className="text-blue-500">
-    @{post.user?.username}
-  </Link>
-  {hasMedia && (
-    <div className="absolute top-0 right-0 mt-2 mr-2">
-      <GiPaperClip size={24} />
-    </div>
-  )}
-  {loggedInUserId ? (
-    <>
-      {/* div qui fixe le bouton à droite */}
-      <div className="flex mb-4 mt-4 ml-auto"> {/* Ajout de la classe ml-auto */}
-        <button
-          className="text-xl text-gray-600 rounded-full bg-gray-300 p-2 hover:bg-gray-400 w-10 h-10 flex items-center justify-center mt-4"
-          onClick={handleOptionsClick}
-          aria-label="Options"
-        >
-          ...
-        </button>
-      </div>
-    </>
-  ) : null}
-</div>
-<div>
-  <div className="text-2xl" onClick={handlePostClick}>
-    {formatPostContent(post.content)}
-  </div>
-  <div>
-  {pokePasteLinkMatches &&
-  pokePasteLinkMatches.map((linkMatch, index) => {
-    const pageCodeMatch = linkMatch.match(/https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/);
-    const pageCode = pageCodeMatch && pageCodeMatch[1];
-
-    if (pageCode) {
-      return (
-        <div key={index} className="mt-4">
-          <PokePasteComponent pageCode={pageCode} />
+          <div className="flex">
+            <div className="absolute top-10 mt-12 right-0 bg-white rounded-lg shadow-md p-2 space-y-2">
+              <button
+                // Afficher le formulaire de signalement au clic
+                onClick={() => setIsReportFormOpen(true)}
+                className={`block w-full text-left px-4 py-2 text-red-500 hover:text-red-600`}
+              >
+                Report
+              </button>
+            </div>
+          </div>
+        )}
+        <div className="flex items-center mb-4">
+          <img
+            src={`${BACKEND_URL}/avatars/${post.user?.avatar}`}
+            alt={`${post.user?.username}'s avatar`}
+            width={50}
+            className="rounded-full mr-2"
+            style={{ background: post.user?.color || "" }}
+          />
+          <Link
+            to={`/${post.user?.username}`}
+            className="text-blue-500 hover:underline z-50"
+          >
+            @{post.user?.username}
+          </Link>
+          {hasMedia && (
+            <div className="absolute top-0 right-0 mt-2 mr-2">
+              <GiPaperClip size={24} />
+            </div>
+          )}
+          {loggedInUserId ? (
+            <>
+              {/* div qui fixe le bouton à droite */}
+              <div className="flex mb-4 mt-4 ml-auto">
+                {" "}
+                {/* Ajout de la classe ml-auto */}
+                <button
+                  className="text-xl text-gray-600 rounded-full bg-gray-300 p-2 hover:bg-gray-400 w-10 h-10 flex items-center justify-center mt-4"
+                  onClick={handleOptionsClick}
+                  aria-label="Options"
+                >
+                  ...
+                </button>
+              </div>
+            </>
+          ) : null}
         </div>
-      );
-    }
-    return null;
-  })}
+        <div>
+          <div className="text-2xl" onClick={handlePostClick}>
+            {formatPostContent(post.content)}
+          </div>
+          <div>
+            {pokePasteLinkMatches &&
+              pokePasteLinkMatches.map((linkMatch, index) => {
+                const pageCodeMatch = linkMatch.match(
+                  /https:\/\/pokepast\.es\/([a-zA-Z0-9]+)/
+                );
+                const pageCode = pageCodeMatch && pageCodeMatch[1];
 
-  </div>
-</div>
+                if (pageCode) {
+                  return (
+                    <div key={index} className="mt-4">
+                      <PokePasteComponent pageCode={pageCode} />
+                    </div>
+                  );
+                }
+                return null;
+              })}
+          </div>
+        </div>
 
         <div className={getMediaContainerClass(post.media.length)}>
           {post.media.map((mediaUrl) => {
@@ -718,212 +720,237 @@ const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
         {post.edited === true && (
           <span className="italic text-gray-500"> (edited)</span>
         )}
-       
-        {quotedPost && (
-          <div className="mt-8 border-t-2 border-gray-300 pt-8 max-w-lg bg-gray-100 rounded-lg p-4 mx-auto"
-          onClick={() => handlePostClick(quotedPost)}
-          >
-                    <div className="flex items-center mb-4">
-          <img
-            src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
-            alt={`${quotedPost.user?.username}'s avatar`}
-            width={50}
-            className="rounded-full mr-2"
-            style={{ background: quotedPost.user?.color || '' }}
-          />
-          <Link to={`/${quotedPost.user?.username}`} className="text-blue-500">
-            @{quotedPost.user?.username}
-          </Link>
-          <span className="mx-2">&#183;</span>
-        <p className="text-gray-500">{formatDate(post.createdAt)}</p>
-        </div>
-        <div>
-        <p className="text-2xl">{formatPostContent(quotedPost.content)}</p>
-            <div className={getMediaContainerClass(post.media.length)}>
-          {quotedPost.media.map((mediaUrl) => {
-            const extension = mediaUrl.split(".").pop();
-            const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
-              extension.toLowerCase()
-            );
 
-            return isVideo ? (
-              <div key={mediaUrl} className="rounded shadow-md media-item">
-                <video
-                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
-                  controls
-                  className={getImageClass(quotedPost.media.length)}
-                  style={{
-                    borderRadius: "16px",
-                    width: "100%",
-                  }}
-                />
+        {quotedPost && (
+          <div
+            className="mt-8 border-t-2 border-gray-300 pt-8 max-w-lg bg-gray-100 rounded-lg p-4 mx-auto"
+            onClick={() => handlePostClick(quotedPost)}
+          >
+            <div className="flex items-center mb-4">
+              <img
+                src={`${BACKEND_URL}/avatars/${quotedPost.user?.avatar}`}
+                alt={`${quotedPost.user?.username}'s avatar`}
+                width={50}
+                className="rounded-full mr-2"
+                style={{ background: quotedPost.user?.color || "" }}
+              />
+              <Link
+                to={`/${quotedPost.user?.username}`}
+                className="text-blue-500 hover:underline z-50"
+              >
+                @{quotedPost.user?.username}
+              </Link>
+              <span className="mx-2">&#183;</span>
+              <p className="text-gray-500">{formatDate(post.createdAt)}</p>
+            </div>
+            <div>
+              <p className="text-2xl">
+                {formatPostContent(quotedPost.content)}
+              </p>
+              <div className={getMediaContainerClass(post.media.length)}>
+                {quotedPost.media.map((mediaUrl) => {
+                  const extension = mediaUrl.split(".").pop();
+                  const isVideo = ["mp4", "avi", "mkv", "mov"].includes(
+                    extension.toLowerCase()
+                  );
+
+                  return isVideo ? (
+                    <div
+                      key={mediaUrl}
+                      className="rounded shadow-md media-item"
+                    >
+                      <video
+                        src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
+                        controls
+                        className={getImageClass(quotedPost.media.length)}
+                        style={{
+                          borderRadius: "16px",
+                          width: "100%",
+                        }}
+                      />
+                    </div>
+                  ) : (
+                    <div
+                      key={mediaUrl}
+                      className="rounded shadow-md media-item"
+                    >
+                      <img
+                        src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
+                        alt={mediaUrl}
+                        className={getImageClass(quotedPost.media.length)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
-            ) : (
-              <div key={mediaUrl} className="rounded shadow-md media-item">
-                <img
-                  src={`${BACKEND_URL}/posts/media/${mediaUrl}`}
-                  alt={mediaUrl}
-                  className={getImageClass(quotedPost.media.length)}
-                />
-              </div>
-            );
-          })}
-        </div>
-        </div>
+            </div>
           </div>
         )}
-<div className="flex items-center justify-start mt-2">
-  {/* Afficher le bouton Like et le nombre de likes */}
-  <div className="flex items-center mr-6">
-    <button onClick={handleLikeClick} className="flex items-center">
-      <GiHearts
-        size={24}
-        className={`mr-2 ${isLiked ? "text-red-500" : "text-gray-500"}`}
-      />
-    </button>
-    <span onClick={handleLikesClick} className="text-gray-500">{likeCount}</span>
-  </div>
-  {/* Afficher le bouton Repost et le nombre de reposts */}
-  <div className="flex items-center mr-6">
-    <button onClick={handleRepostClick} className="flex items-center">
-      <BsFillArrowUpSquareFill
-        size={24}
-        className={`mr-2 ${isReposted ? "text-green-500" : "text-gray-500"}`}
-      />
-    </button>
-    <span onClick={handleRepostsClick} className="text-gray-500">{repostCount}</span>
-  </div>
-  {/* Afficher le bouton Quote */}
-  <div className="flex items-center">
-    <button onClick={handleQuoteClick} className="flex items-center">
-      <GiChatBubble size={24} className="mr-2 text-gray-500" />
-    </button>
-    <span onClick={handleQuotesClick} className="text-gray-500">{quoteCount} Quote</span>
-  </div>
-  {/* Afficher le bouton Reply, fixé tout à droite*/}
-  <div className="flex items-center ml-auto">
-        <button onClick={handleReplyClick} className="flex items-center">
-          <GiChatBubble size={24} className="mr-2 text-gray-500" />
-        </button>
-        <span onClick={handleReplyClick} className="text-gray-500">
-          {replyCount}
-        </span>
-      </div>
-</div>
-{replies.map((reply) => (
-          <div
-          key={reply._id}
-          className={
-            reply.media.length === 1
-              ? "post-container-single"
-              : reply.media.length === 2
-              ? "post-container-two"
-              : reply.media.length === 3
-              ? "post-container-three"
-              : reply.media.length === 4
-              ? "post-container-four"
-              : "" // Ajoutez une classe vide pour les autres cas
-          }
-          style={
-            {
-              marginTop: "1rem",
-            }
-          }
-        >
-          <Post key={reply._id} post={reply} />
-        </div>
-      ))}
-{quoteModalOpen && (
-  <div className="quote-modal fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-4 rounded-lg">
-      <h2 className="text-lg font-bold mb-4">Quote this post</h2>
-      <form onSubmit={handleQuoteSubmit}>
-        <textarea
-          value={quoteContent}
-          placeholder="Enter your quote here..."
-          required
-          className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring focus:border-blue-500"
-          onChange={handleQuoteContentChange}
-          maxLength="500"
-        />
-                                <div className="text-right text-gray-500">
-            {remainingQuoteChars} characters remaining
-          </div>
-        <div className="mt-4 flex justify-end">
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Quote
-          </button>
-          <button
-            type="button"
-            onClick={() => setQuoteModalOpen(false)}
-            className="px-4 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-)}
-      {replyModalOpen && (
-        <div className="reply-modal fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg">
-            <h2 className="text-lg font-bold mb-4">Reply to this post</h2>
-            <form onSubmit={handleReplySubmit}>
-              <textarea
-              id="content"
-                placeholder="Reply here..."
-                value={content}
-                required={!selectedFiles.length} // Rendre le champ requis s'il n'y a pas de média attaché
-                className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring focus:border-blue-500"
-                onChange={handleContentChange}
-                maxLength="500"
+        <div className="flex items-center justify-start mt-2">
+          {/* Afficher le bouton Like et le nombre de likes */}
+          <div className="flex items-center mr-6">
+            <button onClick={handleLikeClick} className="flex items-center">
+              <GiHearts
+                size={24}
+                className={`mr-2 ${isLiked ? "text-red-500" : "text-gray-500"}`}
               />
-                        <div className="text-right text-gray-500">
-            {remainingChars} characters remaining
+            </button>
+            <span onClick={handleLikesClick} className="text-gray-500">
+              {likeCount}
+            </span>
           </div>
-                      <div className="form-group">
-          <Dropzone onDrop={handleFileSelect} accept={["image/*", "video/*"]} multiple>
-            {({ getRootProps, getInputProps }) => (
-              <div className="dropzone border-dashed border-2 border-gray-300 rounded p-4" {...getRootProps()}>
-                <input {...getInputProps()} name="media" />
-                <p className="mb-2">
-                  Drag up to 4 files here, or click to select files
-                </p>
-              </div>
-            )}
-          </Dropzone>
+          {/* Afficher le bouton Repost et le nombre de reposts */}
+          <div className="flex items-center mr-6">
+            <button onClick={handleRepostClick} className="flex items-center">
+              <BsFillArrowUpSquareFill
+                size={24}
+                className={`mr-2 ${
+                  isReposted ? "text-green-500" : "text-gray-500"
+                }`}
+              />
+            </button>
+            <span onClick={handleRepostsClick} className="text-gray-500">
+              {repostCount}
+            </span>
           </div>
-              <div className="mt-4 flex justify-end">
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Reply
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setReplyModalOpen(false)}
-                  className="px-4 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+          {/* Afficher le bouton Quote */}
+          <div className="flex items-center">
+            <button onClick={handleQuoteClick} className="flex items-center">
+              <GiChatBubble size={24} className="mr-2 text-gray-500" />
+            </button>
+            <span onClick={handleQuotesClick} className="text-gray-500">
+              {quoteCount} Quote
+            </span>
+          </div>
+          {/* Afficher le bouton Reply, fixé tout à droite*/}
+          <div className="flex items-center ml-auto">
+            <button onClick={handleReplyClick} className="flex items-center">
+              <GiChatBubble size={24} className="mr-2 text-gray-500" />
+            </button>
+            <span onClick={handleReplyClick} className="text-gray-500">
+              {replyCount}
+            </span>
           </div>
         </div>
-      )}
+        {replies.map((reply) => (
+          <div
+            key={reply._id}
+            className={
+              reply.media.length === 1
+                ? "post-container-single"
+                : reply.media.length === 2
+                ? "post-container-two"
+                : reply.media.length === 3
+                ? "post-container-three"
+                : reply.media.length === 4
+                ? "post-container-four"
+                : "" // Ajoutez une classe vide pour les autres cas
+            }
+            style={{
+              marginTop: "1rem",
+            }}
+          >
+            <Post key={reply._id} post={reply} />
+          </div>
+        ))}
+        {quoteModalOpen && (
+          <div className="quote-modal fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-4 rounded-lg">
+              <h2 className="text-lg font-bold mb-4">Quote this post</h2>
+              <form onSubmit={handleQuoteSubmit}>
+                <textarea
+                  value={quoteContent}
+                  placeholder="Enter your quote here..."
+                  required
+                  className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring focus:border-blue-500"
+                  onChange={handleQuoteContentChange}
+                  maxLength="500"
+                />
+                <div className="text-right text-gray-500">
+                  {remainingQuoteChars} characters remaining
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Quote
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setQuoteModalOpen(false)}
+                    className="px-4 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {replyModalOpen && (
+          <div className="reply-modal fixed top-0 left-0 h-screen w-screen flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-4 rounded-lg">
+              <h2 className="text-lg font-bold mb-4">Reply to this post</h2>
+              <form onSubmit={handleReplySubmit}>
+                <textarea
+                  id="content"
+                  placeholder="Reply here..."
+                  value={content}
+                  required={!selectedFiles.length} // Rendre le champ requis s'il n'y a pas de média attaché
+                  className="w-full px-3 py-2 border rounded-lg resize-none focus:outline-none focus:ring focus:border-blue-500"
+                  onChange={handleContentChange}
+                  maxLength="500"
+                />
+                <div className="text-right text-gray-500">
+                  {remainingChars} characters remaining
+                </div>
+                <div className="form-group">
+                  <Dropzone
+                    onDrop={handleFileSelect}
+                    accept={["image/*", "video/*"]}
+                    multiple
+                  >
+                    {({ getRootProps, getInputProps }) => (
+                      <div
+                        className="dropzone border-dashed border-2 border-gray-300 rounded p-4"
+                        {...getRootProps()}
+                      >
+                        <input {...getInputProps()} name="media" />
+                        <p className="mb-2">
+                          Drag up to 4 files here, or click to select files
+                        </p>
+                      </div>
+                    )}
+                  </Dropzone>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Reply
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setReplyModalOpen(false)}
+                    className="px-4 py-2 ml-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
-      {/* Afficher le formulaire de signalement si isReportFormOpen est true */}
+        {/* Afficher le formulaire de signalement si isReportFormOpen est true */}
 
-      {isReportFormOpen && (
-        <ReportForm postId={post._id} onClose={handleReportFormClose} />
-      )}
+        {isReportFormOpen && (
+          <ReportForm postId={post._id} onClose={handleReportFormClose} />
+        )}
 
-         {loggedInUserId &&
+        {loggedInUserId &&
           user &&
           loggedInUserId === user._id &&
           (user._id === post.user._id || user.role === "admin") && (
@@ -943,7 +970,6 @@ const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
             </div>
           )}
       </div>
-       
     </div>
   );
 };

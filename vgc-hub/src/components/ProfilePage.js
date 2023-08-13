@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { toast} from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Post from "./Post";
 import ReportForm from "./ReportForm";
@@ -382,7 +382,10 @@ const ProfilePage = () => {
       user?.status === "banned"
     ) {
       return (
-        <div className="container mx-auto flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
+        <div
+          className="container mx-auto flex flex-col min-h-screen"
+          style={{ paddingTop: "100px" }}
+        >
           <div className="bg-gray-100 text-gray-800 rounded-md p-4">
             <p>Your account has been banned.</p>
             <button
@@ -404,7 +407,10 @@ const ProfilePage = () => {
 
     if (user?.status === "banned") {
       return (
-        <div className="container mx-auto flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
+        <div
+          className="container mx-auto flex flex-col min-h-screen"
+          style={{ paddingTop: "100px" }}
+        >
           <div className="bg-gray-100 text-gray-800 rounded-md p-4">
             <p>This user has been banned.</p>
             {loggedInUserRole === "admin" && (
@@ -422,7 +428,10 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="container mx-auto flex flex-col min-h-screen" style={{ paddingTop: "100px" }}>
+    <div
+      className="container mx-auto flex flex-col min-h-screen"
+      style={{ paddingTop: "100px" }}
+    >
       {user ? (
         <div className="bg-white rounded-lg shadow-md p-4 mt-4">
           <div className="flex items-center justify-between mb-4">
@@ -521,13 +530,21 @@ const ProfilePage = () => {
             src={`${BACKEND_URL}/avatars/${user.avatar}`}
             alt={`${user.username}'s avatar`}
             className="rounded-full w-48 h-48 object-cover mb-4"
-            style={{ background: user?.color || '' }}
+            style={{ background: user?.color || "" }}
           />
           <div className="flex items-center mb-4">
-            <span className="mr-2 text-gray-600" onClick={handleFollowersClick}>
+            <span
+              className="mr-2 text-gray-600 hover:underline cursor-pointer
+            "
+              onClick={handleFollowersClick}
+            >
               {followerCount} Followers
             </span>
-            <span className="mr-2 text-gray-600" onClick={handleFollowingsClick}>
+            <span
+              className="mr-2 text-gray-600 hover:underline cursor-pointer
+            "
+              onClick={handleFollowingsClick}
+            >
               {followingCount} Followings
             </span>
             {loggedInUserId !== user._id && !isBlocked && !isBlockedByYou ? (
@@ -572,10 +589,7 @@ const ProfilePage = () => {
         </div>
       ) : (
         <div className="flex items-center justify-center h-screen">
-        <p
-          className="text-2xl font-bold text-gray-800"
-        >
-          Loading Profile...</p>
+          <p className="text-2xl font-bold text-gray-800">Loading Profile...</p>
         </div>
       )}
 
@@ -600,9 +614,12 @@ const ProfilePage = () => {
                     src={`${BACKEND_URL}/avatars/${follower.avatar}`}
                     alt={`${follower.username}'s avatar`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
-                    style={{ background: follower?.color || '' }}
+                    style={{ background: follower?.color || "" }}
                   />
-                  <Link to={`/${follower.username}`} className="text-blue-500">
+                  <Link
+                    to={`/${follower.username}`}
+                    className="text-blue-500 hover:underline"
+                  >
                     @{follower.username}
                   </Link>
                 </li>
@@ -629,9 +646,12 @@ const ProfilePage = () => {
                     src={`${BACKEND_URL}/avatars/${following.avatar}`}
                     alt={`${following.username}'s avatar`}
                     className="w-8 h-8 rounded-full mr-2 object-cover"
-                    style={{ background: following?.color || '' }}
+                    style={{ background: following?.color || "" }}
                   />
-                  <Link to={`/${following.username}`} className="text-blue-500">
+                  <Link
+                    to={`/${following.username}`}
+                    className="text-blue-500 hover:underline"
+                  >
                     @{following.username}
                   </Link>
                 </li>
@@ -640,8 +660,6 @@ const ProfilePage = () => {
           </div>
         </div>
       )}
-
-       
     </div>
   );
 };
