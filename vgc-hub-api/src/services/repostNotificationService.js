@@ -46,6 +46,9 @@ class RepostService {
     await originalPost.save();
 
     // Créer une notification pour le repost (si vous le souhaitez)
+    // Seulement si le reposteur est différent de l'auteur du post original
+
+    if (originalPost.user.toString() !== userId) {
     const notification = new Notification({
       user: originalPost.user,
       type: 'repost',
@@ -58,6 +61,8 @@ class RepostService {
     if (recipientSocket) {
       recipientSocket.emit('notification', notification);
     }
+
+}
 
     return { status: 201, data: { message: "Post reposted successfully" } };
   }
