@@ -738,7 +738,7 @@ const pokePasteLinkMatches = post.content.match(pokePasteLinkRegex);
         <p className="text-gray-500">{formatDate(post.createdAt)}</p>
         </div>
         <div>
-        <p className="text-2xl">{quotedPost.content}</p>
+        <p className="text-2xl">{formatPostContent(quotedPost.content)}</p>
             <div className={getMediaContainerClass(post.media.length)}>
           {quotedPost.media.map((mediaUrl) => {
             const extension = mediaUrl.split(".").pop();

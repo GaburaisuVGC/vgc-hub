@@ -42,6 +42,9 @@ class PostService {
           await quotePost.save();
 
               // Créer une notification pour le repost (si vous le souhaitez)
+              // Seulement si le reposteur est différent de l'auteur du post original
+
+                if (quotePost.user.toString() !== user._id.toString()) {
     const notification = new Notification({
         user: quotePost.user,
         type: 'quote',
@@ -55,6 +58,8 @@ class PostService {
             if (recipientSocket) {
               recipientSocket.emit('notification', notification);
             }
+
+        }
         }
       }
 
