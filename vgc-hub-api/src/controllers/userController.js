@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Post = require("../models/post");
+const Notification = require("../models/notification");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Yup = require("yup");
@@ -213,6 +214,14 @@ exports.deleteAccount = async (req, res) => {
       { $pull: { blockedUsers: userId } }
     );
 
+    // Supprimer les notifications de l'utilisateur
+    // Use deleteMany() to delete all the notifications of the user
+    await Notification.deleteMany({ user: userId });
+
+    // Supprimer les notifications contenant l'utilisateur (notifications.follower)
+    await Notification.deleteMany({ follower: userId });
+
+
     // Use deleteOne() to delete the user document
     await User.deleteOne({ _id: userId });
 
@@ -422,6 +431,7 @@ exports.updateAvatar = async (req, res) => {
       });
   }
 };
+const FollowNotificationService = require('../services/followNotificationService');
 
 // followUser controller
 exports.followUser = async (req, res) => {
@@ -462,6 +472,10 @@ exports.followUser = async (req, res) => {
     followedUser.followers.push(currentUser._id);
     await followedUser.save();
 
+    // Send a follow notification to the followed user
+    const followNotificationService = new FollowNotificationService();
+    await followNotificationService.handleFollow(userId, currentUser._id);
+
     res.status(200).json({ message: "Successfully followed the user." });
   } catch (error) {
     res.status(500).json({ message: "Error following the user.", error });
@@ -473,6 +487,9 @@ exports.unfollowUser = async (req, res) => {
   try {
     const { userId } = req.params;
     const currentUser = req.user; // Assuming you have the logged-in user available in req.user
+
+    // Supprimer la notification associée au follow
+    await Notification.findOneAndDelete({ user: userId, type: 'follow', follower: currentUser._id });
 
     // Remove the userId from the following array of the logged-in user
     currentUser.following = currentUser.following.filter(
