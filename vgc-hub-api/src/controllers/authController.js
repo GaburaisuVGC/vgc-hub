@@ -150,7 +150,7 @@ const sendVerificationEmail = (email, verificationToken) => {
 
   exports.login = (req, res) => {
     const user = req.user;
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
   
     return res.json({ token });
   };

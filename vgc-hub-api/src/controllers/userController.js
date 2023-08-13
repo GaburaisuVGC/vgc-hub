@@ -11,7 +11,7 @@ const grid = require("gridfs-stream");
 // Contrôleur pour mettre à jour le profil de l'utilisateur (modification)
 exports.updateProfile = async (req, res) => {
   const userId = req.params.userId;
-  const { username, email, password, role, avatar, plainName } = req.body;
+  const { username, email, password, role, avatar, plainName, color } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -56,6 +56,7 @@ exports.updateProfile = async (req, res) => {
     if (password) user.password = await bcrypt.hash(password, 10);
     if (role && req.user.role === "admin") user.role = role;
     if (avatar && req.user.role === "admin") user.avatar = avatar;
+    if (color) user.color = color;
 
     await user.save();
 
