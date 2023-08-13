@@ -36,6 +36,11 @@ class ReplyService {
       await parentPost.save();
 
     // Créer une notification pour la reply (si vous le souhaitez)
+      // Seulement si l'auteur de la reply n'est pas l'auteur du post original
+
+        if (parentPost.user.toString() !== user._id.toString()) {
+
+
     const notification = new Notification({
         user: parentPost.user,
         type: 'reply',
@@ -48,6 +53,8 @@ class ReplyService {
       if (recipientSocket) {
         recipientSocket.emit('notification', notification);
       }
+
+        }
 
       return { status: 201, data: { message: "Reply added successfully", replyPost } };
     } catch (error) {

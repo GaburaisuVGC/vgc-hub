@@ -28,6 +28,10 @@ class LikeNotificationService {
         user.likes.push(postId);
         await user.save();
 
+        // Créer une notification pour le like (si vous le souhaitez)
+        // Seulement si le liker est différent de l'auteur du post
+
+        if (post.user.toString() !== userId) {
         const notification = new Notification({
           user: post.user,
           type: 'like',
@@ -41,6 +45,7 @@ class LikeNotificationService {
         if (recipientSocket) {
           recipientSocket.emit('notification', notification);
         }
+    }
       }
     }
 

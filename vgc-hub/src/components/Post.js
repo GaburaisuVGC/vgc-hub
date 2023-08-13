@@ -497,7 +497,7 @@ const Post = ({ post }) => {
         <p className="text-gray-500">{formatDate(post.createdAt)}</p>
         </div>
         <div>
-        <p className="text-2xl">{quotedPost.content}</p>
+        <p className="text-2xl">{formatPostContent(quotedPost.content)}</p>
         </div>
         <div
         style={
