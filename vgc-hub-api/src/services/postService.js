@@ -66,9 +66,9 @@ class PostService {
           if (users) {
             users.forEach(async (mentionnedUser) => {
                 // Only if the mentionned user is not the post author
-                // if (mentionnedUser._id.toString() === user._id.toString()) {
-                //   return;
-                // }
+                if (mentionnedUser._id.toString() === user._id.toString()) {
+                  return;
+                }
                 const notification = new Notification({
                     user: mentionnedUser._id,
                     type: 'mention',
