@@ -316,6 +316,7 @@ const Post = ({ post }) => {
     const lines = content.split("\n");
   
     const formattedContent = lines.map((line, lineIndex) => {
+      mentionRegex.lastIndex = 0; // Reset l'index de la regex
       const parts = line.split(" ");
       const formattedParts = parts.map((part, index) => {
         let match = mentionRegex.exec(part);
