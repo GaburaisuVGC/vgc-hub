@@ -145,7 +145,8 @@ const Notifications = () => {
     const followerInfo = (
       <Link to={`/${notification.follower.username}`} className="flex items-center">
         <img src={`${BACKEND_URL}/avatars/${notification.follower.avatar}`} alt="Avatar" className="w-8 h-8 rounded-full mr-2" />
-        <span className="font-semibold">{notification.follower.plainName}</span>
+        <span className="font-semibold hover:underline
+        ">{notification.follower.plainName}</span>
       </Link>
     );
 

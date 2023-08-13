@@ -5,6 +5,7 @@ import Dropzone from "react-dropzone";
 import { toast} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { SketchPicker } from 'react-color';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 const EditUser = () => {
@@ -12,6 +13,8 @@ const EditUser = () => {
   const [user, setUser] = useState(null);
   const [usernameInput, setUsernameInput] = useState("");
   const [plainNameInput, setPlainNameInput] = useState("");
+  const [colorInput, setColorInput] = useState("");
+  const [showColorPicker, setShowColorPicker] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [roleInput, setRoleInput] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
@@ -154,6 +157,52 @@ const EditUser = () => {
         toast.error(error.response.data.error);
       } else {
         toast.error("Error while updating the name.");
+      }
+    }
+  };
+
+  const handleUpdateColor = async () => {
+    try {
+      if (isAdmin) { // Check if the logged-in user is an admin to allow updating the username
+        const jwtToken = localStorage.getItem("jwtToken");
+        if (!jwtToken) {
+          // If JWT token is not available, the user is not authenticated, don't proceed with the update
+          toast.error("You are not logged in.");
+          return;
+        }
+  
+        const headers = {
+          Authorization: `Bearer ${jwtToken}`,
+        };
+  
+        if (colorInput === user.color) {
+          toast.info("No changes made to the color.");
+          return;
+        }
+  
+        // eslint-disable-next-line no-unused-vars
+        const response = await axios.put(
+          `${BACKEND_URL}/users/${user._id}`,
+          {
+            color: colorInput,
+          },
+          { headers }
+        );
+  
+        setUser((prevUser) => ({
+          ...prevUser,
+          color: colorInput,
+        }));
+  
+        toast.success("Color updated successfully.");
+      } else {
+        toast.error("You are not authorized to modify this color.");
+      }
+    } catch (error) {
+      if (error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Error updating color.");
       }
     }
   };
@@ -329,6 +378,29 @@ const EditUser = () => {
                   Save Name
                 </button>
               </div>
+              <div className="flex items-center">
+  <h3 className="font-bold">Edit Color</h3>
+  <div
+    className="w-12 h-12 mb-2 rounded cursor-pointer"
+    style={{ backgroundColor: colorInput,
+      boxShadow: "0 0 0 1px rgba(0, 0, 0, 0.1)"
+    }}
+    onClick={() => setShowColorPicker(!showColorPicker)}
+  ></div>
+  {showColorPicker && (
+    <SketchPicker
+      color={colorInput}
+      onChange={(color) => setColorInput(color.hex)}
+    />
+  )}
+  <button
+    onClick={handleUpdateColor}
+    disabled={colorInput === user.color}
+    className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
+  >
+    Save Color
+  </button>
+</div>
               <div className="flex items-center">
                 <h3 className="font-bold">Edit Email</h3>
                 <input
